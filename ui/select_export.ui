@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>select_view</class>
+ <widget class="QDialog" name="select_view">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>544</width>
+    <height>315</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Sélection d'un export</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(220, 227, 231);</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QFormLayout" name="fl_filtre_view">
+     <item row="0" column="0">
+      <widget class="QLabel" name="lbl_filter">
+       <property name="font">
+        <font>
+         <family>Arial</family>
+         <pointsize>9</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(5, 144, 110);</string>
+       </property>
+       <property name="text">
+        <string>Filtrer :</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QListWidget" name="lw_list_view">
+       <property name="font">
+        <font>
+         <family>Arial</family>
+         <pointsize>9</pointsize>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(245, 245, 245);</string>
+       </property>
+       <item>
+        <property name="text">
+         <string>310 - Cartographie des habitats terrestres (Regroupée)</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>284 - Cartographie des habitats terrestres (SINP)</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>311 - Relevés phytosociologiques, attribués aux cartographies des habitats terrestres</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>235 - Passereaux chanteurs</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>1 - Synthese SINP</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>200 - Amphibiens (Points d'écoute) - Données</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>157 - Amphicapt | RNBH</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>59 - Coques Benthos | RNBH</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>211 - RNF Habitats benthiques (Biométrie)</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>62 - Benthos RNF (Biométrie | RNLDN</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="lbl_view">
+       <property name="font">
+        <font>
+         <family>Arial</family>
+         <pointsize>9</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(5, 144, 110);</string>
+       </property>
+       <property name="text">
+        <string>Export(s) disponible(s) :</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="lvl_description">
+       <property name="font">
+        <font>
+         <family>Arial</family>
+         <pointsize>9</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(5, 144, 110);</string>
+       </property>
+       <property name="text">
+        <string>Description de l'export :</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QLabel" name="lbl_descript_detail">
+       <property name="font">
+        <font>
+         <family>Arial</family>
+         <italic>false</italic>
+        </font>
+       </property>
+       <property name="text">
+        <string>[INCLUS TOUS LES ESPACES PROTEGES CONCERNES]</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QLineEdit" name="le_select">
+         <property name="font">
+          <font>
+           <family>Arial</family>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(245, 245, 245);</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pb_rechercher">
+         <property name="minimumSize">
+          <size>
+           <width>85</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>75</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Arial</family>
+           <pointsize>8</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="cursor">
+          <cursorShape>PointingHandCursor</cursorShape>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(5, 144, 110); color : white ;</string>
+         </property>
+         <property name="text">
+          <string>Rechercher</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="bb_viewfilter">
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>8</pointsize>
+      </font>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>bb_viewfilter</sender>
+   <signal>accepted()</signal>
+   <receiver>select_view</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>bb_viewfilter</sender>
+   <signal>rejected()</signal>
+   <receiver>select_view</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

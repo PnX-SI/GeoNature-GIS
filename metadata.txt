@@ -1,0 +1,46 @@
+; the next section is mandatory
+
+[general]
+name=Geonature - GIS
+email= 
+author= LUPSIG 2023-2024 : Laura Madonna, Colin Machet, Leïa Rabache
+qgisMinimumVersion=3.0
+description= Réaliser des exports d'une base de données Géonature depuis QGIS
+about=Ce plugin permet de réaliser des exports depuis une base de données Géonature en les filtrant ou non.
+version=version 0.1
+tracker=
+repository=https://github.com/Geonature-GIS/Geonature-GIS
+; end of mandatory metadata
+
+
+
+; start of optional metadata
+category=Plugins
+changelog=
+
+; Tags are in comma separated value format, spaces are allowed within the
+; tag name.
+; Tags should be in English language. Please also check for existing tags and
+; synonyms before creating a new one.
+tags=wkt,raster,hello world
+
+; these metadata can be empty, they will eventually become mandatory.
+homepage=https://www.itopen.it
+icon=icon.png
+
+; experimental flag (applies to the single version)
+experimental=True
+
+; deprecated flag (applies to the whole plugin and not only to the uploaded version)
+deprecated=False
+
+; if empty, it will be automatically set to major version + .99
+qgisMaximumVersion=3.99
+
+; Since QGIS 3.8, a comma separated list of plugins to be installed
+; (or upgraded) can be specified.
+; The example below will try to install (or upgrade) "MyOtherPlugin" version 1.12
+; and any version of "YetAnotherPlugin".
+; Both "MyOtherPlugin" and "YetAnotherPlugin" names come from their own metadata's
+; name field
+plugin_dependencies=MyOtherPlugin==1.12,YetAnotherPlugin
