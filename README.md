@@ -5,3 +5,6 @@ Plugin QGIS pour interroger le référentiel géographique et les exports de Gé
 ca va marché !
 
 allo !
+
+
+Oui !!!!
