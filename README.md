@@ -1,2 +1,2 @@
 # Geonature-GIS
-Plugin QGIS pour interroger le référentiel géographique et les exports de Géonature 
+Plugin QGIS pour interroger le référentiel géographique et les exports de Géonature.
