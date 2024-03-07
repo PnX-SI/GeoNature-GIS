@@ -18,7 +18,7 @@ form_connect, _ = uic.loadUiType(os.path.join(ui_path, "connect.ui"))
 
 
 class ConnexionWidget(QDialog, form_connect):
-    def __init__(self, interface):
+    def __init__(self, interface, parent=None):
         
         QWidget.__init__(self)
 
@@ -27,41 +27,22 @@ class ConnexionWidget(QDialog, form_connect):
 
 
 
+        ############################################ RECHERCHES ET TEST POUR LA CONNEXION A LA BDD ############################################
+        save = QSettings()
+
+        #champs de connexion à la base de données
+        self.db = QSqlDatabase.addDatabase("Geonature", "geonature")
+        self.db.setHostName(save.value(QLineEdit, "le_host"))
+        self.db.setPort(int(save.value(QLineEdit, "le_port")))
+        self.db.setDatabaseName(save.value(QLineEdit, "le_bdd"))
 
 
+        #champs authentification
+        self.db.setUserName(QLineEdit, "le_username")
+        self.db.setPassword(QgsPasswordLineEdit, "le_psw")
 
-
-
-
-
-
-
-
-
-
-
-
-
-# class ConnexionWidget(QWidget, form_connect):
-    
-    # def __init__(self, parent=None):
-    #     super(ConnexionWidget, self).__init__(parent)
-
-    #     save = QSettings()
-
-    #     #champs de connexion à la base de données
-    #     self.db = QSqlDatabase.addDatabase("Geonature", "geonature")
-    #     self.db.setHostName(QLineEdit, "le_host")
-    #     self.db.setPort(int(QLineEdit, "le_port"))
-    #     self.db.setDatabaseName(QLineEdit, "le_bdd")
-
-
-    #     #champs authentification
-    #     self.db.setUserName(QLineEdit, "le_username")
-    #     self.db.setPassword(QgsPasswordLineEdit, "le_psw")
-
-    #     if (not self.db.open()):
-    #         # apparition d'un message d'erreur si la connexion a la base ne s'effectue pas
-    #         QMessageBox.critical(self, "Erreur", u"Impossible de se connecter à la base de données ...", QMessageBox.Ok)
-    #     else:
-    #         print("c'est good !")
+        if (not self.db.open()):
+            # apparition d'un message d'erreur si la connexion a la base ne s'effectue pas
+            QMessageBox.critical(self, "Erreur", "Impossible de se connecter à la base de données ...", QMessageBox.Ok)
+        else:
+            print("Connecté !")
