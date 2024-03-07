@@ -2,13 +2,16 @@
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from PyQt5 import uic
+from PyQt5 import *
+from PyQt5.uic import *
+
 from qgis.core import *
 from qgis.gui import *
 import sys, os
 
 
 from .additional_data_filter_widget import *
+# from .geonaturegisPlugin import *
 
 
 
@@ -22,25 +25,23 @@ form_refgeo, _ = uic.loadUiType(os.path.join(ui_path, "referentiel_geographique_
 class RefGeoWidget(QDockWidget, form_refgeo):
     fermeFenetreFonction = pyqtSignal(list)
     
+    
 
     def __init__(self, interface):
+
+        self.interfaceAddData = interface
         QWidget.__init__(self)
         self.setupUi(self)
 
-    def initGui(self, dialog):
-        maFenetre = dialog
+
+        self.pb_additionalFilter.clicked.connect(self.openAddDataFilter)
 
 
-        self.pbAddData = maFenetre.findChild(QPushButton, "pb_additionalFilter")
-        self.pbAddData.clicked.connect(self.openAddDataFilter)
-
-        self.addAction(self.pbAddData)
 
 
 
     def openAddDataFilter(self):
-        # QMessageBox.information(self.interface.mainWindow(), u"Plugin Test1", u"Action 1 lancée")
-        connexion = AddDataFilterWidget(self.interface)
+        connexion = AddDataFilterWidget(self.interfaceAddData)
         connexion.show()
         result = connexion.exec_()
         if result:

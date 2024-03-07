@@ -18,8 +18,8 @@ form_add_data_filter, _ = uic.loadUiType(os.path.join(ui_path, "additional_data_
 
 
 class AddDataFilterWidget(QDialog, form_add_data_filter):
-    def __init__(self, parent=None):
-        
-        QWidget.__init__(self)
 
+    
+    def __init__(self, interface, parent=None):
+        QWidget.__init__(self)
         self.setupUi(self) # méthode de Ui_action1_form pour construire les widgets

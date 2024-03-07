@@ -17,7 +17,7 @@ form_connect, _ = uic.loadUiType(os.path.join(ui_path, "filter.ui"))
 
 
 
-class ConnexionWidget(QDialog, form_connect):
+class FilterWidget(QDialog, form_connect):
     def __init__(self, interface):
         
         QWidget.__init__(self)

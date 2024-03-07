@@ -41,32 +41,34 @@ class pluginGeonatGIS:
     #Définition action Connexion
     iconCo = QIcon(os.path.dirname(__file__) + "/icons/connexion.svg")
     self.actionConnexion = QAction(iconCo, "Connexion", self.interface.mainWindow())
+    self.actionConnexion.triggered.connect(self.openConnexion)
 
+
+    #Multi fenêtres dockées
     self.dicoFonction = {"refgeo": [False, None], "export": [False, None]}
-
+    #Fénêtre du référentiel géographqiue
     iconGeoRef = QIcon(os.path.dirname(__file__) + "/icons/refgeo.png")
     self.actionRefGeo = QAction(iconGeoRef, "Référentiel Géographique", self.interface.mainWindow())
-
+    self.actionRefGeo.triggered.connect(lambda :self.ouverture("refgeo"))
+    #Fenêtre des Exports
     iconExport = QIcon(os.path.dirname(__file__) + "/icons/export_g.png")
     self.actionExport = QAction(iconExport, "Export", self.interface.mainWindow())
+    self.actionExport.triggered.connect(lambda :self.ouverture("export"))
 
+
+    #Bouton Aide
     iconHelp = QIcon(os.path.dirname(__file__) + "/icons/help.png")
     self.actionHelp = QAction(iconHelp, "Aide", self.interface.mainWindow())
-    
+    self.actionHelp.triggered.connect(self.openHelp)
+
+
+    #Bouton À propos
     iconAbout = QIcon(os.path.dirname(__file__) + "/icons/about.svg")
     self.actionAbout = QAction(iconAbout, "À propos", self.interface.mainWindow())
-    
-
-
-
-    self.actionConnexion.triggered.connect(self.openConnexion)
-    self.actionRefGeo.triggered.connect(lambda :self.ouverture("refgeo"))
-    self.actionExport.triggered.connect(lambda :self.ouverture("export"))
-    self.actionHelp.triggered.connect(self.openHelp)
     self.actionAbout.triggered.connect(self.openAbout)
 
 
-
+    #Ajout des boutons dans la barres des menus
     self.menu.addAction(self.actionConnexion)
     self.menu.addAction(self.actionRefGeo)
     self.menu.addAction(self.actionExport)
@@ -78,12 +80,18 @@ class pluginGeonatGIS:
     menuBar = self.interface.mainWindow().menuBar()
     menuBar.insertMenu(self.interface.firstRightStandardMenu().menuAction(), self.menu)
 
+
     self.pluginEstActif = False
     self.fenetreDockee = None
   
 
+
+
   def unload(self):
     self.interface.mainWindow().menuBar().removeAction(self.menu.menuAction())
+
+
+
 
   def openConnexion(self):
     connexion = ConnexionWidget(self.interface)
@@ -93,12 +101,17 @@ class pluginGeonatGIS:
             pass
 
 
+
+
   def controleFenetreOuverte(self, fonctionAOuvrir):
         for fonction, listeInfo in self.dicoFonction.items():
             if fonction != fonctionAOuvrir:
                 if listeInfo[0]:
                     listeInfo[1].close()
  
+
+
+
 
   def ouverture(self, laFonction):
     self.controleFenetreOuverte(laFonction)
@@ -115,15 +128,24 @@ class pluginGeonatGIS:
       self.dicoFonction[laFonction][1].show()
 
 
+
+
+
   def openHelp(self):
     localHelp = (os.path.dirname(__file__) + "/help/user_manual_FR.pdf")
     localHelp = localHelp.replace("\\","/")
     QDesktopServices.openUrl(QUrl(localHelp))
 
+
+
+
   def openAbout(self):
     about = AboutWidget()
     about.show()
     result = about.exec_()
+
+
+
 
 
   def surFermetureFenetreFonction(self, listeFonctionAppelante):
