@@ -40,7 +40,7 @@ class pluginGeonatGIS:
 
     #Définition action Connexion
     iconCo = QIcon(os.path.dirname(__file__) + "/icons/connexion.svg")
-    self.actionConnexion = QAction(iconCo, u"Connexion", self.interface.mainWindow())
+    self.actionConnexion = QAction(iconCo, "Connexion", self.interface.mainWindow())
 
     self.dicoFonction = {"refgeo": [False, None], "export": [False, None]}
 

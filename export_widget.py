@@ -20,5 +20,5 @@ class ExportWidget(QDockWidget, form_export):
         self.setupUi(self)
 
     def closeEvent(self, event):
-        self.fermeFenetreFonction.emit(["Export"])
+        self.fermeFenetreFonction.emit(["export"])
         event.accept()
