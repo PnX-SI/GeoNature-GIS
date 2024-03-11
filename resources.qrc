@@ -1,7 +1,6 @@
 <RCC>
-    <qresource prefix="/plugins/geonaturegis" >
+    <qresource prefix="/plugins/Geonature-GIS-main" >
         <file>icon.png</file>
-        
         <file>icons/about.svg</file>
         <file>icons/connexion.svg</file>
         <file>icons/executer_traitement.png</file>
