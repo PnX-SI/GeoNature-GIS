@@ -16,7 +16,7 @@ repository=https://github.com/Geonature-GIS/Geonature-GIS
 
 ; start of optional metadata
 category=Plugins
-changelog=
+changelog=https://github.com/Geonature-GIS/Geonature-GIS/blob/main/CHANGELOG.md
 
 ; Tags are in comma separated value format, spaces are allowed within the
 ; tag name.
