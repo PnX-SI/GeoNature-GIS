@@ -57,7 +57,6 @@ class RefGeoWidget(QDockWidget, form_refgeo):
 
 
 
-        listsrc = ["LPO" , "IGN", "test", "ça marche ?"]
 
         self.getTypeZonage()
         self.getSource()
