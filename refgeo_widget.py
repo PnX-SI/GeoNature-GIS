@@ -10,7 +10,10 @@ from qgis.core import *
 from qgis.gui import *
 import sys, os
 
+
+from .geonaturegisPlugin import *
 from .additional_data_filter_widget import *
+
 
 # important pour PyQt5 et gestion du fichier resources.qrc
 sys.path.append(os.path.dirname(__file__))
@@ -41,12 +44,28 @@ class RefGeoWidget(QDockWidget, form_refgeo):
         self.username = wusername
         self.psw = wpsw
 
+        self.pb_reset.clicked.connect(self.reinitialisation)
+
+
+        
+
+
         self.pb_additionalFilter.clicked.connect(self.openAddDataFilter)
 
         # pour test sélection AOT
         self.pb_test_selection.clicked.connect(self.test_selection)
 
+
+
+        listsrc = ["LPO" , "IGN", "test", "ça marche ?"]
+
         self.getTypeZonage()
+        self.getSource()
+
+
+
+
+
 
     def test_selection(self):
         # récupération des zonages sélectionnés de la QListWidget "lw_zonage"
@@ -92,12 +111,115 @@ class RefGeoWidget(QDockWidget, form_refgeo):
 
             db.close()
 
+
+
+
+
+
+    def getSource(self):
+        db = QSqlDatabase.addDatabase("QPSQL", "geonature")
+        db.setHostName(self.host)
+        db.setPort(self.port)
+        db.setDatabaseName(self.bdd)
+        db.setUserName(self.username)
+        db.setPassword(self.psw)
+
+        if (not db.open()):
+            QMessageBox.critical(self, "Erreur", "Impossible de se connecter à la base de données ...", QMessageBox.Ok)
+        else:
+            wsql = "SELECT DISTINCT source from "
+            wsql += "(SELECT DISTINCT source FROM ref_geo.l_linears UNION SELECT DISTINCT source FROM ref_geo.l_points UNION SELECT DISTINCT source FROM ref_geo.l_areas) as rq0 "
+            wsql += "ORDER BY source;"
+            wquery = QSqlQuery(db)
+            wquery.prepare(wsql)
+            if not wquery.exec_():
+                QMessageBox.critical(self, u"Impossible de récupérer les types de zonage.", wquery.lastError().text(), QMessageBox.Ok)
+            else:
+                while wquery.next():
+                    # if wquery.value(0) == '' :
+                    #     wquery = "Non-renseigné"
+                    # else:
+                        self.ccb_source.addItemWithCheckState(str(wquery.value(0)), False, None)
+                                    
+
+            db.close()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    def initGui(self):
+        self.pb_help.clicked.connect(self.openHelp)
+
+
+
+
+    def reinitialisation(self):
+        print('Réinitialisé !')
+
+        #Zonage
+        self.lw_zonage.clearSelection()
+
+        #Source
+        self.ccb_source.deselectAllOptions()
+
+        #Enable
+
+
+        #Filtre additionel
+
+
+
+
+
+
+
+
+
+
+
+
+
     def openAddDataFilter(self):
         connexion = AddDataFilterWidget(self.interfaceAddData)
         connexion.show()
         result = connexion.exec_()
         if result:
             pass
+
+
+    def openHelp(self):
+        localHelp = (os.path.dirname(__file__) + "/help/user_manual_FR.pdf")
+        localHelp = localHelp.replace("\\","/")
+        QDesktopServices.openUrl(QUrl(localHelp))
+        print(localHelp)
+
+
+
+
 
     def closeEvent(self, event):
         self.fermeFenetreFonction.emit(["refgeo"])
