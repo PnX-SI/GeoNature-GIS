@@ -83,6 +83,8 @@ class RefGeoWidget(QDockWidget, form_refgeo):
             print("lst_element : ", lst_element)
 
 
+    
+# Ajout des valeurs de la sélection du zonage
     def getTypeZonage(self):
         db = QSqlDatabase.addDatabase("QPSQL", "geonature")
         db.setHostName(self.host)
@@ -95,10 +97,10 @@ class RefGeoWidget(QDockWidget, form_refgeo):
             QMessageBox.critical(self, "Erreur", "Impossible de se connecter à la base de données ...", QMessageBox.Ok)
         else:
             lstZonage = []
-            wsql = "SELECT DISTINCT source from "
-            wsql += "(SELECT DISTINCT source FROM ref_geo.l_linears UNION SELECT DISTINCT source FROM ref_geo.l_points UNION SELECT DISTINCT source FROM ref_geo.l_areas) as rq0 "
-            wsql += "WHERE source IS NOT NULL "
-            wsql += "ORDER BY source;"
+            wsql = "SELECT DISTINCT type_name FROM "
+            wsql += "(SELECT DISTINCT type_name FROM ref_geo.bib_areas_types UNION SELECT DISTINCT type_name FROM ref_geo.bib_linears_types UNION SELECT DISTINCT type_name FROM ref_geo.bib_points_types) as rq0 "
+            wsql += "WHERE type_name IS NOT NULL "
+            wsql += "ORDER BY type_name;"
             wquery = QSqlQuery(db)
             wquery.prepare(wsql)
             if not wquery.exec_():
