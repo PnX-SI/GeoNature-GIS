@@ -44,13 +44,29 @@ class RefGeoWidget(QDockWidget, form_refgeo):
         self.username = wusername
         self.psw = wpsw
 
+        # Fonction réinitialisation des paramètres des filtes 
         self.pb_reset.clicked.connect(self.reinitialisation)
 
+        # Fonction pour ouvrir l'aide
+        self.pb_help.clicked.connect(self.openHelp)
 
         
 
-
+        # Fonction de connexion à la fenêtre additional_data_filter_dialog
         self.pb_additionalFilter.clicked.connect(self.openAddDataFilter)
+
+        # Fonction pour tout cocher ou tout décocher dans la CheckableComboBox contenant les sources (ccb_source)
+        self.pb_check.clicked.connect(self.check_all)
+        self.pb_uncheck.clicked.connect(self.uncheck_all)
+
+
+        # Initialisation du nombre de sources sélectionnées
+        self.maj_lbl_sourceselectcount()
+        # Fonction pour mettre à jour le nombre de sources sélectionnées quand une case est cocher ou décocher dans ccb_source
+        self.ccb_source.checkedItemsChanged.connect(self.maj_lbl_sourceselectcount) # Ajout du signal
+
+        # Fonction pour mettre à jour le nombre de sources sélectionnées quand une case est cocher ou décocher dans ccb_source
+        self.lw_zonage.itemSelectionChanged.connect(self.maj_lbl_zonageparam)  # Ajout du signal
 
         # pour test sélection AOT
         self.pb_test_selection.clicked.connect(self.test_selection)
@@ -64,7 +80,7 @@ class RefGeoWidget(QDockWidget, form_refgeo):
 
 
 
-
+# ----------------------------- DEFINITION DES METHODES --------------------------------------------------------
 
     def test_selection(self):
         # récupération des zonages sélectionnés de la QListWidget "lw_zonage"
@@ -109,6 +125,10 @@ class RefGeoWidget(QDockWidget, form_refgeo):
                 while wquery.next():
                     lstZonage.append(wquery.value(0))
                 self.lw_zonage.addItems(lstZonage)
+                #  0 - 
+#                 self.lw_zonage.QListWidgetItem(lstZonage,self)
+#                 self.lw_zonage.setFlags(lstZonage.flags() | Qt.ItemIsUserCheckable) 
+#                 self.lw_zonage.setCheckState(Qt.Unchecked) 
 
             db.close()
 
@@ -151,29 +171,36 @@ class RefGeoWidget(QDockWidget, form_refgeo):
 
 
 
+    def check_all(self):
+            # Cocher toutes les cases de la QComboBox
+            self.ccb_source.selectAllOptions()
 
 
+    def uncheck_all(self):
+            # Déocher toutes les cases de la QComboBox
+            self.ccb_source.deselectAllOptions()
 
+    def maj_lbl_sourceselectcount(self):
+            # Compter le nombre de cases cochées
+            count = 0
+            for i in range(self.ccb_source.count()):
+                if self.ccb_source.checkedItems():
+                    count += 1
 
+            # Mettre à jour le texte du label
+            self.lbl_sourceselectcount.setText(f"{count} source(s) sélectionnée(s)")
 
+#  Afficher la sélection du / des type(s) de zonage(s) dans le label lbl_zonageparam
+    def maj_lbl_zonageparam(self):
+                # Mettre à jour le texte du label
+            listSelection = []
+            for uneSelection in self.lw_zonage.selectedItems():
+                uneSelection = uneSelection.text()
+                listSelection.append(uneSelection)
+            self.lbl_zonageparam.setText(f"Type(s) de zonage(s) sélectionné(s) : {listSelection}")
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    def initGui(self):
-        self.pb_help.clicked.connect(self.openHelp)
+    # def initGui(self):
+        # self.pb_help.clicked.connect(self.openHelp)
 
 
 
@@ -216,7 +243,7 @@ class RefGeoWidget(QDockWidget, form_refgeo):
         localHelp = (os.path.dirname(__file__) + "/help/user_manual_FR.pdf")
         localHelp = localHelp.replace("\\","/")
         QDesktopServices.openUrl(QUrl(localHelp))
-        print(localHelp)
+        # print(localHelp)
 
 
 

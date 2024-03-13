@@ -86,16 +86,10 @@
       <property name="verticalSpacing">
        <number>12</number>
       </property>
-      <item row="7" column="0">
-       <widget class="QPushButton" name="pb_test_selection">
-        <property name="maximumSize">
-         <size>
-          <width>200</width>
-          <height>16777215</height>
-         </size>
-        </property>
+      <item row="3" column="0">
+       <widget class="QLabel" name="lbl_sourceselectcount">
         <property name="text">
-         <string>Test sélections (zonages et sources) </string>
+         <string>** (1) source sélectionnée **</string>
         </property>
        </widget>
       </item>
@@ -144,17 +138,16 @@
         </item>
        </layout>
       </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="lbl_sourceselectcount">
-        <property name="text">
-         <string>** (1) source sélectionnée **</string>
+      <item row="7" column="0">
+       <widget class="QPushButton" name="pb_test_selection">
+        <property name="maximumSize">
+         <size>
+          <width>200</width>
+          <height>16777215</height>
+         </size>
         </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QLabel" name="lbl_zonageparam">
         <property name="text">
-         <string>**Affichage des paramètres du type de zonage**</string>
+         <string>Test sélections (zonages et sources) </string>
         </property>
        </widget>
       </item>
@@ -183,6 +176,9 @@
         </property>
         <property name="selectionMode">
          <enum>QAbstractItemView::MultiSelection</enum>
+        </property>
+        <property name="selectionRectVisible">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -248,6 +244,22 @@
         </property>
         <property name="text">
          <string>Sélection du type de zonage* :</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="2">
+       <widget class="QLabel" name="lbl_zonageparam">
+        <property name="maximumSize">
+         <size>
+          <width>700</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>**Affichage des paramètres du type de zonage**</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
