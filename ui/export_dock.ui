@@ -23,8 +23,8 @@
          <string>Aide</string>
         </property>
         <property name="icon">
-         <iconset>
-          <normaloff>../03-RESSOURCES/ICON/help.png</normaloff>../03-RESSOURCES/ICON/help.png</iconset>
+         <iconset resource="../resources.qrc">
+          <normaloff>:/plugins/Geonature-GIS-main/icons/help.png</normaloff>:/plugins/Geonature-GIS-main/icons/help.png</iconset>
         </property>
         <property name="iconSize">
          <size>
@@ -65,8 +65,8 @@
          <string>Réinitialiser</string>
         </property>
         <property name="icon">
-         <iconset>
-          <normaloff>../03-RESSOURCES/ICON/refresh.png</normaloff>../03-RESSOURCES/ICON/refresh.png</iconset>
+         <iconset resource="../resources.qrc">
+          <normaloff>:/plugins/Geonature-GIS-main/icons/refresh.png</normaloff>:/plugins/Geonature-GIS-main/icons/refresh.png</iconset>
         </property>
         <property name="iconSize">
          <size>
@@ -148,8 +148,8 @@
          <string>Sélectionner un Export</string>
         </property>
         <property name="icon">
-         <iconset>
-          <normaloff>../03-RESSOURCES/ICON/select_export.png</normaloff>../03-RESSOURCES/ICON/select_export.png</iconset>
+         <iconset resource="../resources.qrc">
+          <normaloff>:/plugins/Geonature-GIS-main/icons/select_export.png</normaloff>:/plugins/Geonature-GIS-main/icons/select_export.png</iconset>
         </property>
         <property name="iconSize">
          <size>
@@ -255,7 +255,7 @@
        <string notr="true">color: rgb(5, 144, 110);</string>
       </property>
       <property name="text">
-       <string> Ajout des filtres (optionnel) :</string>
+       <string> Ajout des filtres [optionnel] :</string>
       </property>
      </widget>
     </item>
@@ -290,8 +290,8 @@
        <string> Ajouter des filtres</string>
       </property>
       <property name="icon">
-       <iconset>
-        <normaloff>../03-RESSOURCES/ICON/plus.png</normaloff>../03-RESSOURCES/ICON/plus.png</iconset>
+       <iconset resource="../resources.qrc">
+        <normaloff>:/plugins/Geonature-GIS-main/icons/plus.png</normaloff>:/plugins/Geonature-GIS-main/icons/plus.png</iconset>
       </property>
       <property name="iconSize">
        <size>
@@ -361,8 +361,8 @@ color: rgb(255, 255, 255);
        <string>  EXÉCUTER</string>
       </property>
       <property name="icon">
-       <iconset>
-        <normaloff>../03-RESSOURCES/ICON/executer_traitement.png</normaloff>../03-RESSOURCES/ICON/executer_traitement.png</iconset>
+       <iconset resource="../resources.qrc">
+        <normaloff>:/plugins/Geonature-GIS-main/icons/executer_traitement.png</normaloff>:/plugins/Geonature-GIS-main/icons/executer_traitement.png</iconset>
       </property>
       <property name="iconSize">
        <size>
@@ -456,8 +456,8 @@ font: 75 10pt &quot;Arial&quot;;</string>
        <string> Charger la couche dans QGIS</string>
       </property>
       <property name="icon">
-       <iconset>
-        <normaloff>../03-RESSOURCES/ICON/view.png</normaloff>../03-RESSOURCES/ICON/view.png</iconset>
+       <iconset resource="../resources.qrc">
+        <normaloff>:/plugins/Geonature-GIS-main/icons/view.png</normaloff>:/plugins/Geonature-GIS-main/icons/view.png</iconset>
       </property>
       <property name="iconSize">
        <size>
@@ -531,8 +531,8 @@ color: rgb(255, 255, 255);
          <string>EXPORTER</string>
         </property>
         <property name="icon">
-         <iconset>
-          <normaloff>../03-RESSOURCES/ICON/export_w.png</normaloff>../03-RESSOURCES/ICON/export_w.png</iconset>
+         <iconset resource="../resources.qrc">
+          <normaloff>:/plugins/Geonature-GIS-main/icons/export_w.png</normaloff>:/plugins/Geonature-GIS-main/icons/export_w.png</iconset>
         </property>
         <property name="iconSize">
          <size>
@@ -623,6 +623,8 @@ color: rgb(255, 255, 255);
    <header>qgsfilewidget.h</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

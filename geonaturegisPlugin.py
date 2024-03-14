@@ -20,6 +20,8 @@ from .refgeo_widget import *
 from .export_widget import *
 from .about_widget import *
 
+import util
+
 class pluginGeonatGIS:
     def __init__(self, iface):
         #permet de conserver une reference vers l'interface de QGIS
@@ -62,7 +64,7 @@ class pluginGeonatGIS:
       #Bouton Aide
       iconHelp = QIcon(os.path.dirname(__file__) + "/icons/help.png")
       self.actionHelp = QAction(iconHelp, "Aide", self.interface.mainWindow())
-      self.actionHelp.triggered.connect(self.openHelp)
+      self.actionHelp.triggered.connect(util.openHelp)
 
       #Bouton À propos
       iconAbout = QIcon(os.path.dirname(__file__) + "/icons/about.svg")
@@ -117,11 +119,6 @@ class pluginGeonatGIS:
             self.interface.addDockWidget(Qt.RightDockWidgetArea, self.dicoFonction[laFonction][1])
             self.dicoFonction[laFonction][1].show()
 
-    def openHelp(self):
-        localHelp = (os.path.dirname(__file__) + "/help/user_manual_FR.pdf")
-        localHelp = localHelp.replace("\\","/")
-        QDesktopServices.openUrl(QUrl(localHelp))
-        print(localHelp)
 
     def openAbout(self):
         about = AboutWidget()

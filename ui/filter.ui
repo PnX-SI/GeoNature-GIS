@@ -209,8 +209,8 @@
           <string>Ajouter</string>
          </property>
          <property name="icon">
-          <iconset>
-           <normaloff>img/plus.png</normaloff>img/plus.png</iconset>
+          <iconset resource="../resources.qrc">
+           <normaloff>:/plugins/Geonature-GIS-main/icons/plus.png</normaloff>:/plugins/Geonature-GIS-main/icons/plus.png</iconset>
          </property>
         </widget>
        </item>
@@ -245,8 +245,8 @@
           <string>Supprimer</string>
          </property>
          <property name="icon">
-          <iconset>
-           <normaloff>img/moins.png</normaloff>img/moins.png</iconset>
+          <iconset resource="../resources.qrc">
+           <normaloff>:/plugins/Geonature-GIS-main/icons/moins.png</normaloff>:/plugins/Geonature-GIS-main/icons/moins.png</iconset>
          </property>
         </widget>
        </item>
@@ -308,7 +308,9 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../resources.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>btn_box</sender>

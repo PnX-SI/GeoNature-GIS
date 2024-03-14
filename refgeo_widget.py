@@ -11,8 +11,9 @@ from qgis.gui import *
 import sys, os
 
 
-from .geonaturegisPlugin import *
+from .geonaturegisPlugin import * 
 from .additional_data_filter_widget import *
+import util 
 
 
 # important pour PyQt5 et gestion du fichier resources.qrc
@@ -48,9 +49,11 @@ class RefGeoWidget(QDockWidget, form_refgeo):
         self.pb_reset.clicked.connect(self.reinitialisation)
 
         # Fonction pour ouvrir l'aide
-        self.pb_help.clicked.connect(self.openHelp)
+        self.pb_help.clicked.connect(util.openHelp)
 
-        
+
+        self.lstZonage = []
+
 
         # Fonction de connexion à la fenêtre additional_data_filter_dialog
         self.pb_additionalFilter.clicked.connect(self.openAddDataFilter)
@@ -72,12 +75,8 @@ class RefGeoWidget(QDockWidget, form_refgeo):
         self.pb_test_selection.clicked.connect(self.test_selection)
 
 
-
-
         self.getTypeZonage()
         self.getSource()
-
-
 
 
 # ----------------------------- DEFINITION DES METHODES --------------------------------------------------------
@@ -112,29 +111,23 @@ class RefGeoWidget(QDockWidget, form_refgeo):
         if (not db.open()):
             QMessageBox.critical(self, "Erreur", "Impossible de se connecter à la base de données ...", QMessageBox.Ok)
         else:
-            lstZonage = []
-            wsql = "SELECT DISTINCT type_name FROM "
-            wsql += "(SELECT DISTINCT type_name FROM ref_geo.bib_areas_types UNION SELECT DISTINCT type_name FROM ref_geo.bib_linears_types UNION SELECT DISTINCT type_name FROM ref_geo.bib_points_types) as rq0 "
+            wsql = "SELECT DISTINCT type_name, type_obj, nom_table, id_type FROM  "
+            wsql += "(SELECT DISTINCT type_name, 'surface' as type_obj, 'ref_geo.bib_areas_types' as nom_table, id_type FROM ref_geo.bib_areas_types UNION "
+            wsql +="SELECT DISTINCT type_name, 'ligne' as type_obj, 'ref_geo.bib_linears_types' as nom_table, id_type FROM ref_geo.bib_linears_types UNION "
+            wsql +="SELECT DISTINCT type_name, 'point' as type_obj, 'ref_geo.bib_points_types' as nom_table, id_type FROM ref_geo.bib_points_types) as rq0 " 
             wsql += "WHERE type_name IS NOT NULL "
-            wsql += "ORDER BY type_name;"
+            wsql += "ORDER BY type_name, type_obj;"
             wquery = QSqlQuery(db)
             wquery.prepare(wsql)
             if not wquery.exec_():
                 QMessageBox.critical(self, u"Impossible de récupérer les types de zonage.", wquery.lastError().text(), QMessageBox.Ok)
             else:
                 while wquery.next():
-                    lstZonage.append(wquery.value(0))
-                self.lw_zonage.addItems(lstZonage)
-                #  0 - 
-#                 self.lw_zonage.QListWidgetItem(lstZonage,self)
-#                 self.lw_zonage.setFlags(lstZonage.flags() | Qt.ItemIsUserCheckable) 
-#                 self.lw_zonage.setCheckState(Qt.Unchecked) 
+                    self.lstZonage.append((wquery.value(0), wquery.value(1), wquery.value(2), wquery.value(3)))
+                for i in self.lstZonage:
+                    self.lw_zonage.addItem(f"{i[0]} - {i[1]}")    
 
             db.close()
-
-
-
-
 
 
     def getSource(self):
@@ -166,11 +159,6 @@ class RefGeoWidget(QDockWidget, form_refgeo):
             db.close()
 
 
-
-
-
-
-
     def check_all(self):
             # Cocher toutes les cases de la QComboBox
             self.ccb_source.selectAllOptions()
@@ -181,14 +169,8 @@ class RefGeoWidget(QDockWidget, form_refgeo):
             self.ccb_source.deselectAllOptions()
 
     def maj_lbl_sourceselectcount(self):
-            # Compter le nombre de cases cochées
-            count = 0
-            for i in range(self.ccb_source.count()):
-                if self.ccb_source.checkedItems():
-                    count += 1
-
             # Mettre à jour le texte du label
-            self.lbl_sourceselectcount.setText(f"{count} source(s) sélectionnée(s)")
+            self.lbl_sourceselectcount.setText(f"{len(self.ccb_source.checkedItems())} source(s) sélectionnée(s)")
 
 #  Afficher la sélection du / des type(s) de zonage(s) dans le label lbl_zonageparam
     def maj_lbl_zonageparam(self):
@@ -204,7 +186,6 @@ class RefGeoWidget(QDockWidget, form_refgeo):
 
 
 
-
     def reinitialisation(self):
         print('Réinitialisé !')
 
@@ -215,39 +196,18 @@ class RefGeoWidget(QDockWidget, form_refgeo):
         self.ccb_source.deselectAllOptions()
 
         #Enable
-
+        
 
         #Filtre additionel
 
 
 
-
-
-
-
-
-
-
-
-
-
     def openAddDataFilter(self):
-        connexion = AddDataFilterWidget(self.interfaceAddData)
+        connexion = AddDataFilterWidget(self.interfaceAddData, self.host, self.port, self.bdd, self.username, self.psw )
         connexion.show()
         result = connexion.exec_()
         if result:
             pass
-
-
-    def openHelp(self):
-        localHelp = (os.path.dirname(__file__) + "/help/user_manual_FR.pdf")
-        localHelp = localHelp.replace("\\","/")
-        QDesktopServices.openUrl(QUrl(localHelp))
-        # print(localHelp)
-
-
-
-
 
     def closeEvent(self, event):
         self.fermeFenetreFonction.emit(["refgeo"])

@@ -69,8 +69,8 @@ font: 75 10pt &quot;Arial&quot;;</string>
         <string> Afficher les clés </string>
        </property>
        <property name="icon">
-        <iconset>
-         <normaloff>../03-RESSOURCES/ICON/view.png</normaloff>../03-RESSOURCES/ICON/view.png</iconset>
+        <iconset resource="../resources.qrc">
+         <normaloff>:/plugins/Geonature-GIS-main/icons/view.png</normaloff>:/plugins/Geonature-GIS-main/icons/view.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -83,7 +83,7 @@ font: 75 10pt &quot;Arial&quot;;</string>
     </layout>
    </item>
    <item>
-    <widget class="QListWidget" name="listWidget">
+    <widget class="QListWidget" name="lw_keys">
      <property name="modelColumn">
       <number>0</number>
      </property>
@@ -160,8 +160,8 @@ font: 75 10pt &quot;Arial&quot;;</string>
         <string> Charger des valeurs</string>
        </property>
        <property name="icon">
-        <iconset>
-         <normaloff>../03-RESSOURCES/ICON/view.png</normaloff>../03-RESSOURCES/ICON/view.png</iconset>
+        <iconset resource="../resources.qrc">
+         <normaloff>:/plugins/Geonature-GIS-main/icons/view.png</normaloff>:/plugins/Geonature-GIS-main/icons/view.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -174,7 +174,7 @@ font: 75 10pt &quot;Arial&quot;;</string>
     </layout>
    </item>
    <item>
-    <widget class="QListWidget" name="listWidget_2">
+    <widget class="QListWidget" name="lw_values">
      <item>
       <property name="text">
        <string>Valeurs :</string>
@@ -399,8 +399,8 @@ font: 75 10pt &quot;Arial&quot;;</string>
         <string> Ajouter </string>
        </property>
        <property name="icon">
-        <iconset>
-         <normaloff>../03-RESSOURCES/ICON/plus.png</normaloff>../03-RESSOURCES/ICON/plus.png</iconset>
+        <iconset resource="../resources.qrc">
+         <normaloff>:/plugins/Geonature-GIS-main/icons/plus.png</normaloff>:/plugins/Geonature-GIS-main/icons/plus.png</iconset>
        </property>
       </widget>
      </item>
@@ -430,8 +430,8 @@ font: 75 10pt &quot;Arial&quot;;</string>
         <string> Supprimer</string>
        </property>
        <property name="icon">
-        <iconset>
-         <normaloff>../03-RESSOURCES/ICON/moins.png</normaloff>../03-RESSOURCES/ICON/moins.png</iconset>
+        <iconset resource="../resources.qrc">
+         <normaloff>:/plugins/Geonature-GIS-main/icons/moins.png</normaloff>:/plugins/Geonature-GIS-main/icons/moins.png</iconset>
        </property>
       </widget>
      </item>
@@ -486,6 +486,8 @@ font: 75 10pt &quot;Arial&quot;;</string>
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../resources.qrc"/>
+ </resources>
  <connections/>
 </ui>
