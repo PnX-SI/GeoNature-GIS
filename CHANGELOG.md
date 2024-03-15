@@ -1,4 +1,4 @@
-Actual version : 0.2
+Actual version : 0.4.2
 
 08/03/2024 - Version 0.1 : Base du Plugin avec connexion entre les fenêtres QTdesigner 
 10/03/2024 - Version 0.2 : Implémentation, Connexion bdd, Sélection du type de zonage v1 , Ajout des icones
