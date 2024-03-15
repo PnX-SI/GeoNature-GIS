@@ -117,7 +117,7 @@ class RefGeoWidget(QDockWidget, form_refgeo):
                 data = uneSelection.data(Qt.UserRole)
                 id_type = data[3]
                 lst_type.append(str(id_type))
-            self.getSource(lst_type)
+        self.getSource(lst_type)
     # 0 - ----------------------------------------------------------------
 
 
