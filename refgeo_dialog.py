@@ -110,7 +110,7 @@ class RefGeoWidget(QDockWidget, form_refgeo):
     # 0 - EN COURS DE DEV ----------------------------------------
     def selection_typeZonage(self):  # Filtrer les sources en fonction du/des types de zonages sélectionnés 
         lst_type = []
-        if len(self.lw_zonage.selectedItems()) > 1 :
+        if len(self.lw_zonage.selectedItems()) >=1 :
         # récupération des zonages sélectionnés de la QListWidget "lw_zonage"
             for uneSelection in self.lw_zonage.selectedItems():
                 #print(uneSelection.data(Qt.UserRole))
