@@ -121,9 +121,11 @@ class pluginGeonatGIS:
 
 
     def openAbout(self):
-        about = AboutWidget()
+        about = AboutWidget(self.interface)
         about.show()
         result = about.exec_()
+        if result:
+            pass
 
     def surFermetureFenetreFonction(self, listeFonctionAppelante):
         fonctionAppelante = listeFonctionAppelante[0]

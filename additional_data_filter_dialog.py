@@ -9,6 +9,9 @@ from qgis.gui import *
 
 import  sys,os
 
+import util_dialog
+
+
 # important pour PyQt5 et gestion du fichier resources.qrc
 sys.path.append(os.path.dirname(__file__))
 from .resources_rc import *
@@ -35,17 +38,21 @@ class AddDataFilterWidget(QDialog, form_add_data_filter):
 
         self.pb_loadkeys.clicked.connect(self.loadKeysExemple)
 
-        # self.pb_loadvalues.clicked.connect(self.loadvaluesexemple)
+        self.lstkeys = []
+
+        self.pb_loadvalues.clicked.connect(self.loadvaluesexemple)
+
+        self.pb_annuler.clicked.connect(self.cancel)
 
 
    #---------------------------------------  DEFINITION DES METHODE ---------------------------------------------------------------
         
 
-    def loadKeysExemple(self):
+    def loadKeysExemple(self): # 0  EN COURS DE DEV ------------------------------------------------
 
 # POUR RÉCUPÉRER LES CLÉS DU CHAMP JSONB : 
 #  le champ JSONB se requête comme un dictionnaire 
-            # 0 ------------------------------------------------
+           
 
             db = QSqlDatabase.addDatabase("QPSQL", "geonature")
             db.setHostName(self.host)
@@ -57,21 +64,57 @@ class AddDataFilterWidget(QDialog, form_add_data_filter):
             if (not db.open()):
                 QMessageBox.critical(self, "Erreur", "Impossible de se connecter à la base de données ...", QMessageBox.Ok)
             else:
-                lstkeys = []
-                wsql = "SELECT DISTINCT jsonb_object_keys(additional_data) FROM ref_geo.l_areas"
-                wsql +="UNION SELECT DISTINCT jsonb_object_keys(additional_data) FROM ref_geo.l_linears"
-                wsql +="UNION SELECT DISTINCT jsonb_object_keys(additional_data) FROM ref_geo.l_points"
-                wsql +="WHERE additional_data IS NOT NULL;"
+
+                wsql = "SELECT DISTINCT jsonb_object_keys(additional_data) FROM ref_geo.l_areas "
+                wsql +="UNION SELECT DISTINCT jsonb_object_keys(additional_data) FROM ref_geo.l_linears "
+                wsql +="UNION SELECT DISTINCT jsonb_object_keys(additional_data) FROM ref_geo.l_points "
+                wsql +="WHERE additional_data IS NOT NULL; "
                 wquery = QSqlQuery(db)
                 wquery.prepare(wsql)
                 if not wquery.exec_():
-                    QMessageBox.critical(self, u"Impossible de récupérer les types de zonage.", wquery.lastError().text(), QMessageBox.Ok)
+                    QMessageBox.critical(self, u"Impossible de récupérer les clées.", wquery.lastError().text(), QMessageBox.Ok)
                 else:
                     while wquery.next():
-                        lstkeys.append(wquery.value(0))
-                    self.lw_keys.addItems(lstkeys)
+                          self.lstkeys.append(wquery.value(0))
+                    self.lw_keys.addItems(self.lstkeys)
     
                 db.close()
 
 
-    # def loadvaluesexemple(self):
+    def loadvaluesexemple(self): # 0  EN COURS DE DEV ------------------------------------------------
+            
+# POUR RÉCUPÉRER DES EXEMPLES DE VALEURS DU CHAMP JSONB : 
+#  le champ JSONB se requête comme un dictionnaire 
+           
+            db = QSqlDatabase.addDatabase("QPSQL", "geonature")
+            db.setHostName(self.host)
+            db.setPort(self.port)
+            db.setDatabaseName(self.bdd)
+            db.setUserName(self.username)
+            db.setPassword(self.psw)
+
+            if (not db.open()):
+                QMessageBox.critical(self, "Erreur", "Impossible de se connecter à la base de données ...", QMessageBox.Ok)
+            else:
+                # for i in self.lstkeys:
+                    lstvalues = []
+              
+                    wsql = "SELECT DISTINCT jsonb_each_text(additional_data) FROM ref_geo.l_areas "
+                    wsql +="UNION SELECT DISTINCT jsonb_each_text(additional_data) FROM ref_geo.l_linears "
+                    wsql +="UNION SELECT DISTINCT jsonb_each_text(additional_data) FROM ref_geo.l_points "
+                    wsql +="WHERE additional_data IS NOT NULL "
+                    wsql +="LIMIT 100;"
+                    wquery = QSqlQuery(db)
+                    wquery.prepare(wsql)
+                    if not wquery.exec_():
+                        QMessageBox.critical(self, u"Impossible de récupérer les valeurs.", wquery.lastError().text(), QMessageBox.Ok)
+                    else:
+                        while wquery.next():
+                            lstvalues.append(wquery.value(0))
+                        self.lw_values.addItems(lstvalues)
+        
+                    db.close()
+
+
+    def cancel(self):
+        self.reject()

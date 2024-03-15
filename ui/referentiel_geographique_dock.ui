@@ -260,7 +260,7 @@
       <item row="4" column="0">
        <widget class="QLabel" name="lbl_sourceselectcount">
         <property name="text">
-         <string>** (1) source sélectionnée **</string>
+         <string>** 0  source sélectionnée **</string>
         </property>
        </widget>
       </item>

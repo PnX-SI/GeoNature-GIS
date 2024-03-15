@@ -78,31 +78,24 @@ font: 75 10pt &quot;Arial&quot;;</string>
          <height>30</height>
         </size>
        </property>
+       <property name="checkable">
+        <bool>false</bool>
+       </property>
       </widget>
      </item>
     </layout>
    </item>
    <item>
     <widget class="QListWidget" name="lw_keys">
-     <property name="modelColumn">
-      <number>0</number>
+     <property name="alternatingRowColors">
+      <bool>true</bool>
      </property>
-     <property name="currentRow">
-      <number>-1</number>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::MultiSelection</enum>
      </property>
      <property name="sortingEnabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
-     <item>
-      <property name="text">
-       <string>Clés :</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Lister les clés du champ additional_data trouvées (ex: &quot;nature&quot; , &quot;id&quot; , &quot;source&quot;)</string>
-      </property>
-     </item>
     </widget>
    </item>
    <item>
@@ -174,18 +167,7 @@ font: 75 10pt &quot;Arial&quot;;</string>
     </layout>
    </item>
    <item>
-    <widget class="QListWidget" name="lw_values">
-     <item>
-      <property name="text">
-       <string>Valeurs :</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Afficher des valeurs distinctes pour chaque clé (ex: &quot;IGN&quot; , &quot;ID00023654&quot;...)</string>
-      </property>
-     </item>
-    </widget>
+    <widget class="QListWidget" name="lw_values"/>
    </item>
    <item>
     <widget class="QLabel" name="lbl_filter">

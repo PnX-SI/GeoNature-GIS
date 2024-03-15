@@ -47,6 +47,9 @@ class ExportWidget(QDockWidget, form_export):
 
         self.pb_addfilter.clicked.connect(self.openAddFilter)
 
+        self.pb_quit.clicked.connect(self.quitter)
+
+
 
 
     def openSelectExport(self):
@@ -68,3 +71,6 @@ class ExportWidget(QDockWidget, form_export):
     def closeEvent(self, event):
         self.fermeFenetreFonction.emit(["export"])
         event.accept()
+
+    def quitter(self):
+        self.close()
