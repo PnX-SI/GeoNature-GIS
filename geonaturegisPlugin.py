@@ -15,12 +15,12 @@ from qgis.gui import *
 
 import sys, os
 
-from .connexion_widget import *
-from .refgeo_widget import *
-from .export_widget import *
-from .about_widget import *
+from .connexion_dialog import *
+from .refgeo_dialog import *
+from .export_dialog import *
+from .about_dialog import *
 
-import util
+import util_dialog
 
 class pluginGeonatGIS:
     def __init__(self, iface):
@@ -64,7 +64,7 @@ class pluginGeonatGIS:
       #Bouton Aide
       iconHelp = QIcon(os.path.dirname(__file__) + "/icons/help.png")
       self.actionHelp = QAction(iconHelp, "Aide", self.interface.mainWindow())
-      self.actionHelp.triggered.connect(util.openHelp)
+      self.actionHelp.triggered.connect(util_dialog.openHelp)
 
       #Bouton À propos
       iconAbout = QIcon(os.path.dirname(__file__) + "/icons/about.svg")
