@@ -27,7 +27,9 @@ class AddDataFilterWidget(QDialog, form_add_data_filter):
     
     def __init__(self, interface, whost, wport, wbdd, wusername, wpsw, parent=None):
         self.interfaceAddData = interface
-        QWidget.__init__(self)
+        # QWidget.__init__(self)
+        QDialog.__init__(self)
+
         self.setupUi(self) # méthode de Ui_action1_form pour construire les widgets
 
         self.host = whost
@@ -42,8 +44,9 @@ class AddDataFilterWidget(QDialog, form_add_data_filter):
 
         self.pb_loadvalues.clicked.connect(self.loadvaluesexemple)
 
-        self.pb_annuler.clicked.connect(self.cancel)
-
+        # self.pb_annuler.clicked.connect(self.cancel)
+        self.btnBox.accepted.connect(self.accept)
+        self.btnBox.rejected.connect(self.reject)
 
    #---------------------------------------  DEFINITION DES METHODE ---------------------------------------------------------------
         
@@ -72,10 +75,12 @@ class AddDataFilterWidget(QDialog, form_add_data_filter):
                 wquery = QSqlQuery(db)
                 wquery.prepare(wsql)
                 if not wquery.exec_():
-                    QMessageBox.critical(self, u"Impossible de récupérer les clées.", wquery.lastError().text(), QMessageBox.Ok)
+                    QMessageBox.critical(self, u"Impossible de récupérer les clés.", wquery.lastError().text(), QMessageBox.Ok)
                 else:
                     while wquery.next():
-                          self.lstkeys.append(wquery.value(0))
+                        print("wquery.value(0) : ", wquery.value(0))
+                        print("wquery.value(1) : ", wquery.value(1))
+                        self.lstkeys.append(wquery.value(0))
                     self.lw_keys.addItems(self.lstkeys)
     
                 db.close()
@@ -116,5 +121,11 @@ class AddDataFilterWidget(QDialog, form_add_data_filter):
                     db.close()
 
 
-    def cancel(self):
-        self.reject()
+    # def cancel(self):
+    #     self.reject()
+
+    def reject(self):
+        QDialog.reject(self)
+
+    def accept(self):
+        QDialog.accept(self)

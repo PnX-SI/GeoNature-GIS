@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>Form</class>
- <widget class="QWidget" name="Form">
+ <widget class="QDialog" name="Form">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -211,6 +211,9 @@ font: 75 10pt &quot;Arial&quot;;</string>
      </property>
      <property name="showDropIndicator" stdset="0">
       <bool>true</bool>
+     </property>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::SingleSelection</enum>
      </property>
      <property name="gridStyle">
       <enum>Qt::SolidLine</enum>
@@ -451,16 +454,12 @@ font: 75 10pt &quot;Arial&quot;;</string>
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="pb_ok">
-       <property name="text">
-        <string>OK</string>
+      <widget class="QDialogButtonBox" name="btnBox">
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
        </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pb_annuler">
-       <property name="text">
-        <string>Annuler</string>
+       <property name="centerButtons">
+        <bool>true</bool>
        </property>
       </widget>
      </item>

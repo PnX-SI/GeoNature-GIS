@@ -10,11 +10,9 @@ from qgis.core import *
 from qgis.gui import *
 import sys, os
 
-
 from .geonaturegisPlugin import * 
 from .additional_data_filter_dialog import *
 import util_dialog
-
 
 # important pour PyQt5 et gestion du fichier resources.qrc
 sys.path.append(os.path.dirname(__file__))
@@ -27,9 +25,6 @@ from .resources_rc import *
 ui_path = os.path.dirname(os.path.abspath(__file__))
 ui_path = os.path.join(ui_path, "ui")
 form_refgeo, _ = uic.loadUiType(os.path.join(ui_path, "referentiel_geographique_dock.ui"))
-
-
-
 
 class RefGeoWidget(QDockWidget, form_refgeo):
     fermeFenetreFonction = pyqtSignal(list)
@@ -117,7 +112,7 @@ class RefGeoWidget(QDockWidget, form_refgeo):
                 data = uneSelection.data(Qt.UserRole)
                 id_type = data[3]
                 lst_type.append(str(id_type))
-        self.getSource(lst_type)
+            self.getSource(lst_type)
     # 0 - ----------------------------------------------------------------
 
 
@@ -145,7 +140,7 @@ class RefGeoWidget(QDockWidget, form_refgeo):
 
 
     
-# Ajout des valeurs de la sélection du type de zonage
+    # Ajout des valeurs de la sélection du type de zonage
     def getTypeZonage(self):
         db = QSqlDatabase.addDatabase("QPSQL", "geonature")
         db.setHostName(self.host)
@@ -153,8 +148,6 @@ class RefGeoWidget(QDockWidget, form_refgeo):
         db.setDatabaseName(self.bdd)
         db.setUserName(self.username)
         db.setPassword(self.psw)
-
-
 
         if (not db.open()):
             QMessageBox.critical(self, "Erreur", "Impossible de se connecter à la base de données ...", QMessageBox.Ok)
@@ -170,8 +163,7 @@ class RefGeoWidget(QDockWidget, form_refgeo):
             if not wquery.exec_():
                 QMessageBox.critical(self, u"Impossible de récupérer les types de zonage.", wquery.lastError().text(), QMessageBox.Ok)
             else:
-
-                # pour chaque ligne 
+                # pour chaque ligne
                 while wquery.next():
                     # on crée un item qui contient à la fois le texte présenté à l'utilisateur
                     item = QListWidgetItem(f"{wquery.value(0)} - {wquery.value(1)}")
@@ -260,28 +252,37 @@ class RefGeoWidget(QDockWidget, form_refgeo):
         db.setUserName(self.username)
         db.setPassword(self.psw)
 
-        if (not db.open()):
-            QMessageBox.critical(self, "Erreur", "Impossible de se connecter à la base de données ...", QMessageBox.Ok)
+        if len(lst_type) == 0:
+            self.ccb_source.clear()
+            self.maj_lbl_sourceselectcount()
         else:
-            wsql = "SELECT DISTINCT source FROM "
-            wsql += "(SELECT DISTINCT source FROM ref_geo.l_linears "
-            wsql += "UNION SELECT DISTINCT source FROM ref_geo.l_points "
-            wsql += "UNION SELECT DISTINCT source FROM ref_geo.l_areas  "
-            wsql += "WHERE id_type IN (" + ", ".join(lst_type)  + ")) as rq0 "
-            wsql += "ORDER BY source;"
-            wquery = QSqlQuery(db)
-            wquery.prepare(wsql)
-            if not wquery.exec_():
-                QMessageBox.critical(self, u"Impossible de récupérer les types de zonage.", wquery.lastError().text(), QMessageBox.Ok)
+            if (not db.open()):
+                QMessageBox.critical(self, "Erreur", "Impossible de se connecter à la base de données ...", QMessageBox.Ok)
             else:
-                self.ccb_source.clear()
-                while wquery.next():
-                    # if wquery.value(0) == '' :
-                    #     wquery = "Non-renseigné"
-                    # else:
-                    self.ccb_source.addItemWithCheckState(str(wquery.value(0)), False, None)
-                                    
-            db.close()
+                wsql = "SELECT DISTINCT source FROM "
+                wsql += "(SELECT DISTINCT source FROM ref_geo.l_linears "
+                wsql += "UNION SELECT DISTINCT source FROM ref_geo.l_points "
+                wsql += "UNION SELECT DISTINCT source FROM ref_geo.l_areas  "
+                wsql += "WHERE id_type IN (" + ", ".join(lst_type)  + ")) as rq0 "
+                # wsql += "WHERE source IS NOT NULL "
+                wsql += "ORDER BY source;"
+                wquery = QSqlQuery(db)
+                wquery.prepare(wsql)
+                if not wquery.exec_():
+                    # QMessageBox.critical(self, u"Impossible de récupérer les types de zonage.", wquery.lastError().text(), QMessageBox.Ok)
+                    QMessageBox.critical(self, u"Impossible de récupérer les sources.", wquery.lastError().text(), QMessageBox.Ok)
+                else:
+                    self.ccb_source.clear()
+                    while wquery.next():
+                        # print("wquery.value(0) : ", wquery.value(0))
+                        if str(wquery.value(0)) == 'NULL' :
+                            # print("Non-renseigné")
+                            # wquery = "Non-renseigné"
+                            self.ccb_source.addItemWithCheckState("Non-renseigné", False, None)
+                        else:
+                            self.ccb_source.addItemWithCheckState(str(wquery.value(0)), False, None)
+
+                db.close()
 # 0---------------------------------------------------------------------------------
 
 
@@ -337,7 +338,7 @@ class RefGeoWidget(QDockWidget, form_refgeo):
 
     def openAddDataFilter(self):
         connexion = AddDataFilterWidget(self.interfaceAddData, self.host, self.port, self.bdd, self.username, self.psw )
-        connexion.show()
+        # connexion.show()
         result = connexion.exec_()
         if result:
             pass

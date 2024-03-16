@@ -90,7 +90,7 @@ class pluginGeonatGIS:
 
     def openConnexion(self):
         connexion = ConnexionWidget(self.interface, self.psw)
-        connexion.show()
+        # connexion.show()
         result = connexion.exec_()
         if result:
             self.host = connexion.le_host.text()
