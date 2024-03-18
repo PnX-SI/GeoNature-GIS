@@ -1,184 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>window_filter_advanced</class>
- <widget class="QDialog" name="window_filter_advanced">
+ <class>select_zone</class>
+ <widget class="QDialog" name="select_zone">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>556</width>
-    <height>220</height>
+    <width>555</width>
+    <height>324</height>
    </rect>
   </property>
-  <property name="minimumSize">
-   <size>
-    <width>556</width>
-    <height>220</height>
-   </size>
-  </property>
-  <property name="cursor">
-   <cursorShape>PointingHandCursor</cursorShape>
-  </property>
   <property name="windowTitle">
-   <string>Filtre avancé...</string>
+   <string>Sélection d'un zonage</string>
   </property>
   <property name="styleSheet">
    <string notr="true">background-color: rgb(220, 227, 231);</string>
   </property>
+  <property name="modal">
+   <bool>true</bool>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QFormLayout" name="fl_filter_adv">
-     <item row="1" column="1">
-      <widget class="QTableWidget" name="tableWidget">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
+    <layout class="QFormLayout" name="fl_filtre_view">
+     <item row="0" column="0">
+      <widget class="QLabel" name="lbl_filter">
        <property name="font">
         <font>
          <family>Arial</family>
          <pointsize>9</pointsize>
-         <weight>50</weight>
-         <bold>false</bold>
+         <weight>75</weight>
+         <bold>true</bold>
         </font>
        </property>
        <property name="styleSheet">
-        <string notr="true">background-color: rgb(245, 245, 245);</string>
+        <string notr="true">color: rgb(5, 144, 110);</string>
        </property>
-       <property name="showDropIndicator" stdset="0">
-        <bool>true</bool>
+       <property name="text">
+        <string>Filtrer :</string>
        </property>
-       <attribute name="horizontalHeaderVisible">
-        <bool>true</bool>
-       </attribute>
-       <attribute name="horizontalHeaderCascadingSectionResizes">
-        <bool>false</bool>
-       </attribute>
-       <attribute name="horizontalHeaderHighlightSections">
-        <bool>false</bool>
-       </attribute>
-       <attribute name="horizontalHeaderStretchLastSection">
-        <bool>true</bool>
-       </attribute>
-       <attribute name="verticalHeaderVisible">
-        <bool>false</bool>
-       </attribute>
-       <attribute name="verticalHeaderCascadingSectionResizes">
-        <bool>false</bool>
-       </attribute>
-       <attribute name="verticalHeaderStretchLastSection">
-        <bool>false</bool>
-       </attribute>
-       <row>
-        <property name="text">
-         <string>1</string>
-        </property>
-       </row>
-       <row>
-        <property name="text">
-         <string>2</string>
-        </property>
-       </row>
-       <column>
-        <property name="text">
-         <string>Logique</string>
-        </property>
-        <property name="font">
-         <font>
-          <family>Arial</family>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="background">
-         <color>
-          <red>255</red>
-          <green>255</green>
-          <blue>255</blue>
-         </color>
-        </property>
-       </column>
-       <column>
-        <property name="text">
-         <string>Valeur</string>
-        </property>
-        <property name="font">
-         <font>
-          <family>Arial</family>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-       </column>
-       <column>
-        <property name="text">
-         <string>Opérateur</string>
-        </property>
-        <property name="font">
-         <font>
-          <family>Arial</family>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-       </column>
-       <column>
-        <property name="text">
-         <string>Valeur</string>
-        </property>
-        <property name="font">
-         <font>
-          <family>Arial</family>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-       </column>
-       <item row="0" column="0">
-        <property name="text">
-         <string/>
-        </property>
-       </item>
-       <item row="0" column="1">
-        <property name="text">
-         <string>&quot;pop&quot;</string>
-        </property>
-       </item>
-       <item row="0" column="2">
-        <property name="text">
-         <string>&gt;</string>
-        </property>
-       </item>
-       <item row="0" column="3">
-        <property name="text">
-         <string>&quot;120&quot;</string>
-        </property>
-       </item>
-       <item row="1" column="0">
-        <property name="text">
-         <string>ET</string>
-        </property>
-       </item>
-       <item row="1" column="1">
-        <property name="text">
-         <string>&quot;nom_site&quot;</string>
-        </property>
-       </item>
-       <item row="1" column="2">
-        <property name="text">
-         <string>Commence par (Begin with)</string>
-        </property>
-       </item>
-       <item row="1" column="3">
-        <property name="text">
-         <string>&quot;RNR&quot;</string>
-        </property>
-       </item>
       </widget>
      </item>
-     <item row="2" column="1">
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item row="0" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
        <item>
-        <widget class="QPushButton" name="pb_add">
+        <widget class="QLineEdit" name="le_select">
+         <property name="font">
+          <font>
+           <family>Arial</family>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(245, 245, 245);</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pb_rechercher">
          <property name="minimumSize">
           <size>
            <width>85</width>
@@ -194,79 +80,26 @@
          <property name="font">
           <font>
            <family>Arial</family>
-           <weight>50</weight>
-           <bold>false</bold>
-           <kerning>false</kerning>
+           <pointsize>8</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
           </font>
          </property>
          <property name="cursor">
           <cursorShape>PointingHandCursor</cursorShape>
          </property>
          <property name="styleSheet">
-          <string notr="true"/>
+          <string notr="true">background-color: rgb(5, 144, 110); color : white ;</string>
          </property>
          <property name="text">
-          <string>Ajouter</string>
-         </property>
-         <property name="icon">
-          <iconset>
-           <normaloff>img/plus.png</normaloff>img/plus.png</iconset>
+          <string>Rechercher</string>
          </property>
         </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pb_suppr">
-         <property name="minimumSize">
-          <size>
-           <width>95</width>
-           <height>25</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>95</width>
-           <height>25</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Arial</family>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="cursor">
-          <cursorShape>PointingHandCursor</cursorShape>
-         </property>
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
-         <property name="text">
-          <string>Supprimer</string>
-         </property>
-         <property name="icon">
-          <iconset>
-           <normaloff>img/moins.png</normaloff>img/moins.png</iconset>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer name="HS_btn">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
        </item>
       </layout>
      </item>
-     <item row="0" column="1">
-      <widget class="QLabel" name="lbl_filter">
+     <item row="2" column="0">
+      <widget class="QLabel" name="lbl_zone">
        <property name="font">
         <font>
          <family>Arial</family>
@@ -279,24 +112,38 @@
         <string notr="true">color: rgb(5, 144, 110);</string>
        </property>
        <property name="text">
-        <string>Ajouter des filtre(s) :</string>
+        <string>Zonage(s) disponible(s) :</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QListWidget" name="lw_list_zone">
+       <property name="font">
+        <font>
+         <family>Arial</family>
+         <pointsize>9</pointsize>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(245, 245, 245);</string>
+       </property>
+       <property name="selectionMode">
+        <enum>QAbstractItemView::MultiSelection</enum>
        </property>
       </widget>
      </item>
     </layout>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="btn_box">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
+    <widget class="QDialogButtonBox" name="bb_zonefilter">
      <property name="font">
       <font>
        <family>Arial</family>
+       <pointsize>8</pointsize>
       </font>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
      </property>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -311,9 +158,9 @@
  <resources/>
  <connections>
   <connection>
-   <sender>btn_box</sender>
+   <sender>bb_zonefilter</sender>
    <signal>accepted()</signal>
-   <receiver>window_filter_advanced</receiver>
+   <receiver>select_zone</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -327,9 +174,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>btn_box</sender>
+   <sender>bb_zonefilter</sender>
    <signal>rejected()</signal>
-   <receiver>window_filter_advanced</receiver>
+   <receiver>select_zone</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
