@@ -8,9 +8,10 @@ from qgis.core import *
 from qgis.gui import *
 
 import  sys,os
+# import json 
 
 import util_dialog
-
+# import refgeo_dialog
 
 # important pour PyQt5 et gestion du fichier resources.qrc
 sys.path.append(os.path.dirname(__file__))
@@ -24,9 +25,9 @@ form_add_data_filter, _ = uic.loadUiType(os.path.join(ui_path, "additional_data_
 
 class AddDataFilterWidget(QDialog, form_add_data_filter):
 
-    
-    def __init__(self, interface, whost, wport, wbdd, wusername, wpsw, parent=None):
-        self.interfaceAddData = interface
+    dico = {} 
+    def __init__(self, interface, whost, wport, wbdd, wusername, wpsw, typeZone, parent=None):
+        self.interfaceFenetres = interface
         # QWidget.__init__(self)
         QDialog.__init__(self)
 
@@ -38,11 +39,18 @@ class AddDataFilterWidget(QDialog, form_add_data_filter):
         self.username = wusername
         self.psw = wpsw
 
-        self.pb_loadkeys.clicked.connect(self.loadKeysExemple)
+        
+        self.getKeys(typeZone)
 
-        self.lstkeys = []
-
-        self.pb_loadvalues.clicked.connect(self.loadvaluesexemple)
+        self.lw_keys.itemDoubleClicked.connect(self.getValues)
+        # self.lw_values.itemSelected()
+        # self.loadvaluesexemple()
+        # self.cb_logical.textActivated.connect()
+        # self.cb_keys.textActivated.connect()
+        # self.cb_operator.textActivated.connect()
+        # self.le_selectvalue.textChanged.connect()
+        # self.pb_add.clicked.connect()
+        # self.pb_remove.clicked.connect()
 
         # self.pb_annuler.clicked.connect(self.cancel)
         self.btnBox.accepted.connect(self.accept)
@@ -51,12 +59,13 @@ class AddDataFilterWidget(QDialog, form_add_data_filter):
    #---------------------------------------  DEFINITION DES METHODE ---------------------------------------------------------------
         
 
-    def loadKeysExemple(self): # 0  EN COURS DE DEV ------------------------------------------------
+    def getKeys(self, typeZone): # 0  EN COURS DE DEV ------------------------------------------------
 
 # POUR RÉCUPÉRER LES CLÉS DU CHAMP JSONB : 
 #  le champ JSONB se requête comme un dictionnaire 
-           
-
+            self.lw_keys.clear()
+            self.dico.clear
+            
             db = QSqlDatabase.addDatabase("QPSQL", "geonature")
             db.setHostName(self.host)
             db.setPort(self.port)
@@ -68,23 +77,45 @@ class AddDataFilterWidget(QDialog, form_add_data_filter):
                 QMessageBox.critical(self, "Erreur", "Impossible de se connecter à la base de données ...", QMessageBox.Ok)
             else:
 
-                wsql = "SELECT DISTINCT jsonb_object_keys(additional_data) FROM ref_geo.l_areas "
-                wsql +="UNION SELECT DISTINCT jsonb_object_keys(additional_data) FROM ref_geo.l_linears "
-                wsql +="UNION SELECT DISTINCT jsonb_object_keys(additional_data) FROM ref_geo.l_points "
-                wsql +="WHERE additional_data IS NOT NULL; "
+                wsql = "SELECT DISTINCT key, value, id_type FROM "
+                wsql +="(SELECT DISTINCT (jsonb_each_text(additional_data)).key , (jsonb_each_text(additional_data)).value, id_type FROM ref_geo.l_areas "
+                wsql +="UNION SELECT DISTINCT (jsonb_each_text(additional_data)).key , (jsonb_each_text(additional_data)).value, id_type FROM ref_geo.l_linears "
+                wsql +="UNION SELECT DISTINCT (jsonb_each_text(additional_data)).key , (jsonb_each_text(additional_data)).value, id_type FROM ref_geo.l_points) as rq0 "
+                wsql +="WHERE key IS NOT NULL AND value IS NOT NULL AND id_type IN (" + ", ".join(typeZone)  + "); "
                 wquery = QSqlQuery(db)
                 wquery.prepare(wsql)
                 if not wquery.exec_():
                     QMessageBox.critical(self, u"Impossible de récupérer les clés.", wquery.lastError().text(), QMessageBox.Ok)
                 else:
+                    
                     while wquery.next():
-                        print("wquery.value(0) : ", wquery.value(0))
-                        print("wquery.value(1) : ", wquery.value(1))
-                        self.lstkeys.append(wquery.value(0))
-                    self.lw_keys.addItems(self.lstkeys)
-    
+                        # print("wquery.value(0) : ", wquery.value(0))
+                        # print("wquery.value(1) : ", wquery.value(1))                                       
+                        key = (wquery.value(0))
+                        value = (wquery.value(1))
+                        # if key not in self.dico:
+                        #      self.dico[key] = value
+                        self.dico[key] = value
+                    if len(self.dico) > 0:
+                        for key in self.dico.keys():  
+                            self.lw_keys.addItem(str(key))
+                    else:
+                        QMessageBox.information(self, "Information", f"Pas de clés trouvées", QMessageBox.Ok)
+                        # self.lw_keys.addItem("Pas de clés trouvées pour ce type de zonage")                    
                 db.close()
-
+                print(wsql)
+                print(len(self.dico))
+                print(typeZone) #pour débug
+                
+    def getValues(self):
+        self.lw_values.clear() 
+        selected_key = self.lw_keys.selectedItems()[0]
+        if selected_key in self.dico:
+            
+            for value in self.dico[selected_key]: 
+                self.lw_values.addItem(value)
+        else:
+            QMessageBox.information(self, "Information", f"Pas de valeurs trouvées : {selected_key}", QMessageBox.Ok)
 
     def loadvaluesexemple(self): # 0  EN COURS DE DEV ------------------------------------------------
             
@@ -120,11 +151,17 @@ class AddDataFilterWidget(QDialog, form_add_data_filter):
         
                     db.close()
 
+    # def filterconstructor(self):
+        #  selectlogical = 
+        #  selectkey = 
+        #  selectoperator = 
 
-    # def cancel(self):
-    #     self.reject()
 
     def reject(self):
+        self.lw_keys.clear()
+        self.lw_values.clear() 
+        self.dico = {}
+        self.typeZone = []
         QDialog.reject(self)
 
     def accept(self):

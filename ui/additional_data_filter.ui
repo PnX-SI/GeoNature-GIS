@@ -2,20 +2,26 @@
 <ui version="4.0">
  <class>Form</class>
  <widget class="QDialog" name="Form">
+  <property name="windowModality">
+   <enum>Qt::WindowModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>522</width>
-    <height>600</height>
+    <width>734</width>
+    <height>687</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Filtre - Données additionnelles</string>
   </property>
+  <property name="modal">
+   <bool>true</bool>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_3">
+    <layout class="QVBoxLayout" name="verticalLayout_3">
      <property name="bottomMargin">
       <number>10</number>
      </property>
@@ -33,78 +39,31 @@
         <string notr="true">color: rgb(5, 144, 110);</string>
        </property>
        <property name="text">
-        <string>Afficher les clés de l'export : </string>
+        <string>Clés : </string>
        </property>
       </widget>
      </item>
-     <item alignment="Qt::AlignBottom">
-      <widget class="QPushButton" name="pb_loadkeys">
+     <item>
+      <widget class="QListWidget" name="lw_keys">
        <property name="minimumSize">
         <size>
-         <width>200</width>
-         <height>40</height>
+         <width>600</width>
+         <height>130</height>
         </size>
        </property>
-       <property name="maximumSize">
-        <size>
-         <width>200</width>
-         <height>40</height>
-        </size>
+       <property name="alternatingRowColors">
+        <bool>true</bool>
        </property>
-       <property name="font">
-        <font>
-         <family>Arial</family>
-         <pointsize>10</pointsize>
-         <weight>9</weight>
-         <italic>false</italic>
-         <bold>false</bold>
-        </font>
+       <property name="selectionMode">
+        <enum>QAbstractItemView::SingleSelection</enum>
        </property>
-       <property name="styleSheet">
-        <string notr="true">background-color: rgb(5, 144, 110);
-color: rgb(255, 255, 255);
-font: 75 10pt &quot;Arial&quot;;</string>
-       </property>
-       <property name="text">
-        <string> Afficher les clés </string>
-       </property>
-       <property name="icon">
-        <iconset resource="../resources.qrc">
-         <normaloff>:/plugins/Geonature-GIS-main/icons/view.png</normaloff>:/plugins/Geonature-GIS-main/icons/view.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>30</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="checkable">
-        <bool>false</bool>
+       <property name="sortingEnabled">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
-    </layout>
-   </item>
-   <item>
-    <widget class="QListWidget" name="lw_keys">
-     <property name="alternatingRowColors">
-      <bool>true</bool>
-     </property>
-     <property name="selectionMode">
-      <enum>QAbstractItemView::MultiSelection</enum>
-     </property>
-     <property name="sortingEnabled">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <property name="bottomMargin">
-      <number>10</number>
-     </property>
      <item>
-      <widget class="QLabel" name="label">
+      <widget class="QLabel" name="lbl_valueselected">
        <property name="font">
         <font>
          <family>Arial</family>
@@ -117,57 +76,65 @@ font: 75 10pt &quot;Arial&quot;;</string>
         <string notr="true">color: rgb(5, 144, 110);</string>
        </property>
        <property name="text">
-        <string>Afficher des exemples de valeurs :</string>
+        <string>Valeurs de la clé sélectionnée :</string>
        </property>
       </widget>
      </item>
-     <item alignment="Qt::AlignRight|Qt::AlignBottom">
-      <widget class="QPushButton" name="pb_loadvalues">
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QLineEdit" name="le_filtervalue"/>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pb_filtervalue">
+         <property name="minimumSize">
+          <size>
+           <width>150</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Arial</family>
+           <pointsize>9</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color:  rgb(5, 144, 110);
+color: rgb(255, 255, 255);</string>
+         </property>
+         <property name="text">
+          <string>Filtrer les valeurs</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QListWidget" name="lw_values">
        <property name="minimumSize">
         <size>
-         <width>200</width>
-         <height>40</height>
+         <width>600</width>
+         <height>150</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
-         <width>200</width>
-         <height>40</height>
-        </size>
-       </property>
-       <property name="font">
-        <font>
-         <family>Arial</family>
-         <pointsize>10</pointsize>
-         <weight>9</weight>
-         <italic>false</italic>
-         <bold>false</bold>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">background-color: rgb(5, 144, 110);
-color: rgb(255, 255, 255);
-font: 75 10pt &quot;Arial&quot;;</string>
-       </property>
-       <property name="text">
-        <string> Charger des valeurs</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../resources.qrc">
-         <normaloff>:/plugins/Geonature-GIS-main/icons/view.png</normaloff>:/plugins/Geonature-GIS-main/icons/view.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>30</width>
-         <height>30</height>
+         <width>999999</width>
+         <height>16777215</height>
         </size>
        </property>
       </widget>
      </item>
     </layout>
-   </item>
-   <item>
-    <widget class="QListWidget" name="lw_values"/>
    </item>
    <item>
     <widget class="QLabel" name="lbl_filter">
@@ -183,182 +150,223 @@ font: 75 10pt &quot;Arial&quot;;</string>
       <string notr="true">color: rgb(5, 144, 110);</string>
      </property>
      <property name="text">
-      <string>Filtrer :</string>
+      <string>Constructeur de filtre :</string>
      </property>
     </widget>
    </item>
    <item>
-    <widget class="QTableWidget" name="tw_filter">
-     <property name="enabled">
-      <bool>true</bool>
+    <layout class="QGridLayout" name="gridLayout">
+     <property name="bottomMargin">
+      <number>15</number>
      </property>
-     <property name="minimumSize">
-      <size>
-       <width>500</width>
-       <height>150</height>
-      </size>
-     </property>
-     <property name="font">
-      <font>
-       <family>Arial</family>
-       <pointsize>9</pointsize>
-       <weight>50</weight>
-       <bold>false</bold>
-      </font>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color: rgb(245, 245, 245);</string>
-     </property>
-     <property name="showDropIndicator" stdset="0">
-      <bool>true</bool>
-     </property>
-     <property name="selectionMode">
-      <enum>QAbstractItemView::SingleSelection</enum>
-     </property>
-     <property name="gridStyle">
-      <enum>Qt::SolidLine</enum>
-     </property>
-     <property name="wordWrap">
-      <bool>true</bool>
-     </property>
-     <property name="cornerButtonEnabled">
-      <bool>true</bool>
-     </property>
-     <attribute name="horizontalHeaderVisible">
-      <bool>true</bool>
-     </attribute>
-     <attribute name="horizontalHeaderCascadingSectionResizes">
-      <bool>false</bool>
-     </attribute>
-     <attribute name="horizontalHeaderHighlightSections">
-      <bool>false</bool>
-     </attribute>
-     <attribute name="horizontalHeaderStretchLastSection">
-      <bool>true</bool>
-     </attribute>
-     <attribute name="verticalHeaderVisible">
-      <bool>false</bool>
-     </attribute>
-     <attribute name="verticalHeaderCascadingSectionResizes">
-      <bool>false</bool>
-     </attribute>
-     <attribute name="verticalHeaderStretchLastSection">
-      <bool>false</bool>
-     </attribute>
-     <row>
-      <property name="text">
-       <string>1</string>
-      </property>
-     </row>
-     <row>
-      <property name="text">
-       <string>2</string>
-      </property>
-     </row>
-     <column>
-      <property name="text">
-       <string>Logique</string>
-      </property>
-      <property name="font">
-       <font>
-        <family>Arial</family>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="background">
-       <color>
-        <red>255</red>
-        <green>255</green>
-        <blue>255</blue>
-       </color>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Clé</string>
-      </property>
-      <property name="font">
-       <font>
-        <family>Arial</family>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Opérateur</string>
-      </property>
-      <property name="font">
-       <font>
-        <family>Arial</family>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Valeur</string>
-      </property>
-      <property name="font">
-       <font>
-        <family>Arial</family>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-     </column>
-     <item row="0" column="0">
-      <property name="text">
-       <string/>
-      </property>
+     <item row="0" column="0" alignment="Qt::AlignHCenter">
+      <widget class="QLabel" name="lbl_logical">
+       <property name="font">
+        <font>
+         <family>Arial</family>
+         <pointsize>8</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>Logique</string>
+       </property>
+      </widget>
      </item>
-     <item row="0" column="1">
-      <property name="text">
-       <string>&quot;nature&quot;</string>
-      </property>
-     </item>
-     <item row="0" column="2">
-      <property name="text">
-       <string>=</string>
-      </property>
-     </item>
-     <item row="0" column="3">
-      <property name="text">
-       <string>&quot;xxx&quot;</string>
-      </property>
-     </item>
-     <item row="1" column="0">
-      <property name="text">
-       <string>ET</string>
-      </property>
+     <item row="0" column="2" alignment="Qt::AlignHCenter">
+      <widget class="QLabel" name="lbl_operator">
+       <property name="font">
+        <font>
+         <family>Arial</family>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>Opérateur</string>
+       </property>
+      </widget>
      </item>
      <item row="1" column="1">
-      <property name="text">
-       <string>&quot;source&quot;</string>
-      </property>
+      <widget class="QComboBox" name="cb_keys">
+       <property name="minimumSize">
+        <size>
+         <width>200</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>500</width>
+         <height>30</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1" alignment="Qt::AlignHCenter">
+      <widget class="QLabel" name="lbl_key">
+       <property name="font">
+        <font>
+         <family>Arial</family>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>Clé</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="3" alignment="Qt::AlignHCenter">
+      <widget class="QLabel" name="lbl_value">
+       <property name="font">
+        <font>
+         <family>Arial</family>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>Valeur</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="4">
+      <widget class="QPushButton" name="pb_delete">
+       <property name="minimumSize">
+        <size>
+         <width>130</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>150</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <family>Arial</family>
+         <pointsize>10</pointsize>
+         <weight>50</weight>
+         <bold>false</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string> Supprimer</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../resources.qrc">
+         <normaloff>:/plugins/Geonature-GIS-main/icons/moins.png</normaloff>:/plugins/Geonature-GIS-main/icons/moins.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QComboBox" name="cb_logical">
+       <property name="maximumSize">
+        <size>
+         <width>100</width>
+         <height>30</height>
+        </size>
+       </property>
+       <item>
+        <property name="text">
+         <string/>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>ET</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>OU</string>
+        </property>
+       </item>
+      </widget>
      </item>
      <item row="1" column="2">
-      <property name="text">
-       <string>Commence par (Begin with)</string>
-      </property>
+      <widget class="QComboBox" name="cb_operator">
+       <property name="maximumSize">
+        <size>
+         <width>150</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <item>
+        <property name="text">
+         <string>=</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>&gt;=</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>&gt;</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>&lt;</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>&lt;=</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Commence par (Begin with)</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>!=</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>New Item</string>
+        </property>
+       </item>
+      </widget>
      </item>
-     <item row="1" column="3">
-      <property name="text">
-       <string>&quot;RN&quot;</string>
-      </property>
+     <item row="2" column="0" colspan="4" alignment="Qt::AlignHCenter">
+      <widget class="QLabel" name="lbl_queryviz">
+       <property name="minimumSize">
+        <size>
+         <width>20</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <family>Arial</family>
+         <pointsize>9</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(5, 144, 110);</string>
+       </property>
+       <property name="text">
+        <string>Visualisation de la requête :</string>
+       </property>
+      </widget>
      </item>
-    </widget>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_4">
-     <property name="bottomMargin">
-      <number>10</number>
-     </property>
-     <item>
-      <widget class="QPushButton" name="pushButton_2">
+     <item row="1" column="4">
+      <widget class="QPushButton" name="pb_add">
        <property name="minimumSize">
         <size>
          <width>130</width>
@@ -389,49 +397,18 @@ font: 75 10pt &quot;Arial&quot;;</string>
        </property>
       </widget>
      </item>
-     <item>
-      <widget class="QPushButton" name="pushButton">
+     <item row="3" column="0" colspan="4">
+      <widget class="QListView" name="lw_queryresult"/>
+     </item>
+     <item row="1" column="3">
+      <widget class="QLineEdit" name="le_selectvalue">
        <property name="minimumSize">
-        <size>
-         <width>130</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="maximumSize">
         <size>
          <width>150</width>
          <height>30</height>
         </size>
        </property>
-       <property name="font">
-        <font>
-         <family>Arial</family>
-         <pointsize>10</pointsize>
-         <weight>50</weight>
-         <bold>false</bold>
-        </font>
-       </property>
-       <property name="text">
-        <string> Supprimer</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../resources.qrc">
-         <normaloff>:/plugins/Geonature-GIS-main/icons/moins.png</normaloff>:/plugins/Geonature-GIS-main/icons/moins.png</iconset>
-       </property>
       </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer_2">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
      </item>
     </layout>
    </item>
