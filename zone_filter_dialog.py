@@ -87,7 +87,7 @@ class ZoneFilterWidget(QDialog, form_filter_zonage):
                         item = QListWidgetItem(f"{wquery.value(0)}")
                         # et les données associées
                         data = (wquery.value(0))
-                        item.setData(Qt.UserRole, data)
+                        item.setData(256, data)
                         self.lw_list_zone.addItem(item)
 
                 db.close()
@@ -113,7 +113,7 @@ class ZoneFilterWidget(QDialog, form_filter_zonage):
                         item = QListWidgetItem(f"{wquery.value(0)}")
                         # et les données associées
                         data = (wquery.value(0))
-                        item.setData(Qt.UserRole, data)
+                        item.setData(256, data)
                         self.lw_list_zone.addItem(item)
 
 
@@ -131,27 +131,17 @@ class ZoneFilterWidget(QDialog, form_filter_zonage):
 
 
 
-
-    def getResultZone(self):
-        
-        if len(self.lw_list_zone.selectedItems()) >=1 :
-        # récupération des zonages sélectionnés de la QListWidget "lw_list_zone"
-            for uneSelection in self.lw_list_zone.selectedItems():
-                data = uneSelection.data(Qt.UserRole)
-                result = data
-                self.resultZone.append(str(result))
-            print(self.resultZone)
-
-            return self.resultZone
-
-
-
-
     def reject(self):
         QDialog.reject(self)
 
 
 
     def accept(self):
-        self.getResultZone()
+       
+        for uneSelection in self.lw_list_zone.selectedItems():
+            data = uneSelection.data(256)
+            result = data
+            self.resultZone.append(str(result))
+        print(self.resultZone)
+        
         QDialog.accept(self)

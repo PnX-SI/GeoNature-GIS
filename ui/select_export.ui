@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>544</width>
+    <width>801</width>
     <height>315</height>
    </rect>
   </property>
@@ -39,6 +39,18 @@
      </item>
      <item row="2" column="1">
       <widget class="QListWidget" name="lw_list_view">
+       <property name="minimumSize">
+        <size>
+         <width>600</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>9999999</width>
+         <height>16777215</height>
+        </size>
+       </property>
        <property name="font">
         <font>
          <family>Arial</family>
@@ -48,56 +60,6 @@
        <property name="styleSheet">
         <string notr="true">background-color: rgb(245, 245, 245);</string>
        </property>
-       <item>
-        <property name="text">
-         <string>310 - Cartographie des habitats terrestres (Regroupée)</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>284 - Cartographie des habitats terrestres (SINP)</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>311 - Relevés phytosociologiques, attribués aux cartographies des habitats terrestres</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>235 - Passereaux chanteurs</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>1 - Synthese SINP</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>200 - Amphibiens (Points d'écoute) - Données</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>157 - Amphicapt | RNBH</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>59 - Coques Benthos | RNBH</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>211 - RNF Habitats benthiques (Biométrie)</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>62 - Benthos RNF (Biométrie | RNLDN</string>
-        </property>
-       </item>
       </widget>
      </item>
      <item row="2" column="0">
@@ -145,7 +107,10 @@
         </font>
        </property>
        <property name="text">
-        <string>[INCLUS TOUS LES ESPACES PROTEGES CONCERNES]</string>
+        <string/>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
        </property>
       </widget>
      </item>

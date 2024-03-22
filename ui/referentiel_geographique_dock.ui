@@ -121,6 +121,9 @@
       </item>
       <item row="2" column="1" alignment="Qt::AlignHCenter">
        <widget class="QPushButton" name="pb_filterzonage">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="minimumSize">
          <size>
           <width>200</width>
@@ -437,6 +440,9 @@
     </item>
     <item alignment="Qt::AlignHCenter">
      <widget class="QPushButton" name="pb_additionalFilter">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="minimumSize">
        <size>
         <width>300</width>

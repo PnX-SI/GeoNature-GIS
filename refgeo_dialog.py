@@ -2,12 +2,14 @@
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from PyQt5 import *
+#from PyQt5 import *
+from PyQt5 import uic
 from PyQt5.uic import *
 from PyQt5.QtSql import *
 
 from qgis.core import *
 from qgis.gui import *
+
 import sys, os
 
 from .geonaturegisPlugin import * 
@@ -41,6 +43,9 @@ class RefGeoWidget(QDockWidget, form_refgeo):
         self.bdd = wbdd
         self.username = wusername
         self.psw = wpsw
+
+
+        self.filtre_additionnel = ""
 # ----------------------------- ------------------ CONNEXION DES WIDGET --------------------------------------------------------
 
         # Fonction réinitialisation des paramètres des filtes 
@@ -80,6 +85,14 @@ class RefGeoWidget(QDockWidget, form_refgeo):
         #  Pour Instancier les valeurs de la QcheckableComboBox (ccb_source) concernant les sources en fonction des valeurs via dans lw_source
         self.lw_zonage.itemSelectionChanged.connect(self.selection_typeZonage)
 
+        self.rdb_no.toggled.connect(self.enableStatut)
+        self.rdb_yes.toggled.connect(self.enableStatut)
+        self.rdb_na.toggled.connect(self.enableStatut)
+
+
+        # Fonction d'execution des filtre
+        self.pb_runquery.clicked.connect(self.filterExecuter)
+
 
         # Fermer la fenêtre
         self.pb_quit.clicked.connect(self.quitter)
@@ -89,55 +102,94 @@ class RefGeoWidget(QDockWidget, form_refgeo):
 #  Pour Instancier la liste qui vient alimenter le QlistWidget (lw_zonage) concernant le type de zonage 
         self.typeZone = []
         self.table = []
-        # self.lstZonage = []
+        self.source = []
+        self.connexionZonage = []
+        self.connexionAddFilter = []
+        self.enable = ""
         self.getTypeZonage()
 
-#  Pour Instancier les valeurs de la QcheckableComboBox (ccb_source) concernant les sources
-        # self.lw_zonage.selectedItems(self.selection_typeZonage)
 
 # ------------------------------------------------ PARAMETRES AVANCES ----------------------------------------------------------------
 # 0 - EN COURS - Ajout des valeurs de la sélection de l'état du champ "enable" (géométrie active dans géonature)
 #  pour filtrer sur le champ "enable" (Géométrie active dans Géonature) avec les radio boutons  
+    def enableStatut(self):
 
         if self.rdb_no.isChecked() == True:
-           enable = "enable IS true"
-
+            self.enable = "enable IS NOT true"
+           
         elif self.rdb_yes.isChecked() == True : 
-            enable = "enable IS NOT true"
+            self.enable = "enable IS true"
 
         elif self.rdb_na.isChecked() == True :
-            enable = ""
+            self.enable = ""
 
 
 # ----------------------------- ------------------ DEFINITION DES METHODES --------------------------------------------------------
    
-    # 0 - EN COURS DE DEV ----------------------------------------
+
     def selection_typeZonage(self):  # Filtrer les sources en fonction du/des types de zonages sélectionnés 
         # typeZone = []
         
         if len(self.lw_zonage.selectedItems()) >=1 :
             self.typeZone.clear()
+            self.table.clear()
         # récupération des types de zonages sélectionnés de la QListWidget "lw_zonage"
             for uneSelection in self.lw_zonage.selectedItems():
-                #print(uneSelection.data(Qt.UserRole))
-                data = uneSelection.data(Qt.UserRole)
+                #print(uneSelection.data(256))
+                data = uneSelection.data(256) #256 = constante renvoyée par Qt.UserRole (bug avec Qt.UserRole sur certains pc)
                 nomtable = data[2]
                 id_type = data[3]
+
                 self.typeZone.append(str(id_type))  
-                self.table.append(str(nomtable))            
+                self.table.append(str(nomtable))    
+
             self.getSource(self.typeZone)
+            self.selection_table()
             return self.typeZone, self.table
+    
+         #  - ----------------------------------------------------------------        
+        
+    def selection_table(self):  # Filtrer les sources en fonction du/des types de zonages sélectionnés 
+
+        self.tableAreas = ""
+        self.tableLinears = ""
+        self.tablePoints = ""      
+        
+        for i in self.table:
+            
+            self.unique = i
+            print(self.unique)
+            
+
+            if self.unique == "l_areas" :
+                self.tableAreas = self.unique
+            elif self.unique == "l_linears":
+                self.tableLinears = self.unique
+            elif self.unique == "l_points":
+                self.tablePoints = self.unique
+     
+        # print(self.table)
+        return self.tableAreas, self.tableLinears, self.tablePoints
+             
+    #  - ----------------------------------------------------------------
+        
+
+
+    def selection_source(self):  # Pour récupérer la/les sources sélectionnée
+
+        self.source = str(self.ccb_source.checkedItems())
+       
+        return self.source
              
     # 0 - ----------------------------------------------------------------
-
 
     def test_selection(self):
         # typeZone = []
         # # récupération des zonages sélectionnés de la QListWidget "lw_zonage"
         # for uneSelection in self.lw_zonage.selectedItems():
         #     # print(uneSelection.text() + " AND")
-        #     print(uneSelection.data(Qt.UserRole))
-        #     data = uneSelection.data(Qt.UserRole)
+        #     print(uneSelection.data(256))
+        #     data = uneSelection.data(256)
         #     id_type = data[3]
         #     typeZone.append(str(id_type))
         #     return id_type
@@ -145,9 +197,26 @@ class RefGeoWidget(QDockWidget, form_refgeo):
         # print(f"typeZone : {id_type}")
 
         # récupération des sources cochées de la QgsCheckableComboBox "ccb_source"
-        for uneSelection in self.ccb_source.checkedItems():
-            print(uneSelection + " AND")
+        selectedsource = []
+        item = self.ccb_source.checkedItems()
+        selectedsource.append(item)
 
+        # selected_items = []
+        # for item in self.ccb_source.checkedItems():
+        #     selected_items.append(item.text())
+
+        # Access the list of checked items
+        # print(selected_items)
+        # for i in self.ccb_source.checkedItems():
+        #     selectedsource.append(self.ccb_source.itemText(i))
+        #     # print(uneSelection + " AND")
+        print(selectedsource)
+        # listSelection = []
+
+        # for uneSelection in self.ccb_source.checkedItems():
+        #     uneSelection = uneSelection.text()
+        #     listSelection.append(uneSelection)
+        # print(listSelection)
         # récupération de toutes les sources de "ccb_source" si aucune n'est cochée
         if len(self.ccb_source.checkedItems()) == 0:
             lst_element = []
@@ -170,9 +239,9 @@ class RefGeoWidget(QDockWidget, form_refgeo):
             QMessageBox.critical(self, "Erreur", "Impossible de se connecter à la base de données ...", QMessageBox.Ok)
         else:
             wsql = "SELECT DISTINCT type_name, type_obj, nom_table, id_type FROM  "
-            wsql += "(SELECT DISTINCT type_name, 'surface' as type_obj, 'ref_geo.bib_areas_types' as nom_table, id_type FROM ref_geo.bib_areas_types UNION "
-            wsql +="SELECT DISTINCT type_name, 'ligne' as type_obj, 'ref_geo.bib_linears_types' as nom_table, id_type FROM ref_geo.bib_linears_types UNION "
-            wsql +="SELECT DISTINCT type_name, 'point' as type_obj, 'ref_geo.bib_points_types' as nom_table, id_type FROM ref_geo.bib_points_types) as rq0 " 
+            wsql += "(SELECT DISTINCT type_name, 'surface' as type_obj, 'l_areas' as nom_table, id_type FROM ref_geo.bib_areas_types UNION "
+            wsql +="SELECT DISTINCT type_name, 'ligne' as type_obj, 'l_linears' as nom_table, id_type FROM ref_geo.bib_linears_types UNION "
+            wsql +="SELECT DISTINCT type_name, 'point' as type_obj, 'l_points' as nom_table, id_type FROM ref_geo.bib_points_types) as rq0 " 
             wsql += "WHERE type_name IS NOT NULL "
             wsql += "ORDER BY type_name, type_obj;"
             wquery = QSqlQuery(db)
@@ -186,76 +255,13 @@ class RefGeoWidget(QDockWidget, form_refgeo):
                     item = QListWidgetItem(f"{wquery.value(0)} - {wquery.value(1)}")
                     # et les données associées
                     data = (wquery.value(0), wquery.value(1), wquery.value(2), wquery.value(3))
-                    item.setData(Qt.UserRole, data)
+                    # item.setData(256, data)
+                    item.setData(256, data) #256 = constante renvoyée par Qt.UserRole (bug avec Qt.UserRole sur certains pc)
                     self.lw_zonage.addItem(item)
 
             db.close()
 
-                                                            # OU
-            
-# ---------------  METHODE TABLE PAR TABLE : ------------
-
-    # def getTypeZonage(self):
-    #     db = QSqlDatabase.addDatabase("QPSQL", "geonature")
-    #     db.setHostName(self.host)
-    #     db.setPort(self.port)
-    #     db.setDatabaseName(self.bdd)
-    #     db.setUserName(self.username)
-    #     db.setPassword(self.psw)
-
-    #     if (not db.open()):
-    #         QMessageBox.critical(self, "Erreur", "Impossible de se connecter à la base de données ...", QMessageBox.Ok)
-    #     else:
-    #         lstZonageAreas = []
-    #         wsql1 = "SELECT DISTINCT type_name, 'Surface(s)' as type_obj, 'ref_geo.bib_areas_types' as nom_table, id_type "
-    #         wsql1 += "FROM ref_geo.bib_areas_types " 
-    #         wsql1 += "WHERE type_name IS NOT NULL "
-    #         wsql1 += "ORDER BY type_name, type_obj;"
-    #         wqueryAreas = QSqlQuery(db)
-    #         wqueryAreas.prepare(wsql1)
-    #         if not wqueryAreas.exec_():
-    #             QMessageBox.critical(self, u"Impossible de récupérer les types de zonage.", wqueryAreas.lastError().text(), QMessageBox.Ok)
-    #         else:
-    #             while wqueryAreas.next():
-    #                 lstZonageAreas.append((wqueryAreas.value(0), wqueryAreas.value(1), wqueryAreas.value(2), wqueryAreas.value(3)))
-    #             for i in lstZonageAreas:
-    #                 self.lw_zonage.addItem(f"{i[0]} - {i[1]}")
-
-
-    #         lstZonageLinears = []
-    #         wsql2 = "SELECT DISTINCT type_name, 'Ligne(s)' as type_obj, 'ref_geo.bib_areas_types' as nom_table, id_type "
-    #         wsql2 += "FROM ref_geo.bib_linears_types "
-    #         wsql2 += "WHERE type_name IS NOT NULL "
-    #         wsql2 += "ORDER BY type_name, type_obj;"
-    #         wqueryLinears = QSqlQuery(db)
-    #         wqueryLinears.prepare(wsql2)
-    #         if not wqueryLinears.exec_():
-    #             QMessageBox.critical(self, u"Impossible de récupérer les types de zonage.", wqueryLinears.lastError().text(), QMessageBox.Ok)
-    #         else:
-    #             while wqueryLinears.next():
-    #                 lstZonageLinears.append((wqueryLinears.value(0), wqueryLinears.value(1), wqueryLinears.value(2), wqueryLinears.value(3)))
-    #             for i in lstZonageLinears:
-    #                 self.lw_zonage.addItem(f"{i[0]} - {i[1]}")
-
-
-    #         lstZonagePoints = []
-    #         wsql3 = "SELECT DISTINCT type_name, 'Point(s)' as type_obj, 'ref_geo.bib_areas_types' as nom_table, id_type "
-    #         wsql3 += "FROM ref_geo.bib_points_types " 
-    #         wsql3 += "WHERE type_name IS NOT NULL "
-    #         wsql3 += "ORDER BY type_name, type_obj;"
-    #         wqueryPoints = QSqlQuery(db)
-    #         wqueryPoints.prepare(wsql3)
-    #         if not wqueryPoints.exec_():
-    #             QMessageBox.critical(self, u"Impossible de récupérer les types de zonage.", wqueryPoints.lastError().text(), QMessageBox.Ok)
-    #         else:
-    #             while wqueryPoints.next():
-    #                 lstZonagePoints.append((wqueryPoints.value(0), wqueryPoints.value(1), wqueryPoints.value(2), wqueryPoints.value(3)))
-    #             for i in lstZonagePoints:
-    #                 self.lw_zonage.addItem(f"{i[0]} - {i[1]}")
-
-
-
-    #         db.close()
+                                                   
 
 
 # 0 - EN COURS DE DEV --------------------------------------------------------------------------------
@@ -331,6 +337,8 @@ class RefGeoWidget(QDockWidget, form_refgeo):
         #Zonage
         self.lw_zonage.clearSelection()
         self.typeZone = []
+        self.connexionZonage = []
+
         #Source
         self.ccb_source.deselectAllOptions()
 
@@ -338,7 +346,7 @@ class RefGeoWidget(QDockWidget, form_refgeo):
         self.rdb_na.setChecked(True)
 
         #Filtre additionel
-
+        self.connexionAddFilter = []
 
 
     def lockZoneFilter(self):
@@ -349,12 +357,14 @@ class RefGeoWidget(QDockWidget, form_refgeo):
             self.pb_filterzonage.setEnabled(False)
             self.pb_filterzonage.setStyleSheet("QPushButton:disabled { color: gray }")
 
-    def openZoneFilter(self,):
-            typeZonage = self.selection_typeZonage()
-            connexion = ZoneFilterWidget(self.interfaceFenetres, self.host, self.port, self.bdd, self.username, self.psw, typeZonage)
-            result = connexion.exec_()
-            if result:
-                pass
+    def openZoneFilter(self):
+        typeZonage = self.typeZone
+        self.connexionZonage = ZoneFilterWidget(self.interfaceFenetres, self.host, self.port, self.bdd, self.username, self.psw, typeZonage)
+        result = self.connexionZonage.exec_()
+        if result:
+            return self.connexionZonage.resultZone
+
+
 
     def lockAddDataFilter(self):
         if len(self.lw_zonage.selectedItems()) > 0:
@@ -367,14 +377,13 @@ class RefGeoWidget(QDockWidget, form_refgeo):
 
 
     def openAddDataFilter(self):
-        typeZone = self.selection_typeZonage()
-        connexion = AddDataFilterWidget(self.interfaceFenetres, self.host, self.port, self.bdd, self.username, self.psw, typeZone )
-        # connexion.show()
-        result = connexion.exec_()
+        typeZone = self.typeZone
+        self.connexionAddFilter = AddDataFilterWidget(self.interfaceFenetres, self.host, self.port, self.bdd, self.username, self.psw, typeZone )
+        result = self.connexionAddFilter.exec_()
         if result:
-            pass
+            print(self.connexionAddFilter.adf_resultat)
 
-    def filterExetuter(self):
+    def filterExecuter(self):
         # db = QSqlDatabase.addDatabase("QPSQL", "geonature")
         # db.setHostName(self.host)
         # db.setPort(self.port)
@@ -382,16 +391,71 @@ class RefGeoWidget(QDockWidget, form_refgeo):
         # db.setUserName(self.username)
         # db.setPassword(self.psw)
 
-        # self.typeZone = typeZone
 
-        # self.source = source
-        # self.addfiler = addfiler
+        wuri = QgsDataSourceUri()
+
+        # set host name, port, database name, username and password
+        # wuri.setConnection("162.19.89.37", "5432", "geonature2db", "lupsig2024", "fdmMP8rYr!ebCQLy")D# FOR TESTING ONLY - TO BE DELETE
+        wuri.setConnection("localhost", "5432", "postgres" , "postgres", "123456")# FOR TESTING ONLY - TO BE DELETE -- FONCTIONNE
+        # wuri.setDataSource("eval", "zh", "geom") ------- FONCTIONNE BDD LOCALE --------
+        
+        if self.tableAreas != "" :
+
+              # ------------------ FONCTIONNE --------------------------------
+            wuri.setDataSource("eval", "zh", "geom")
+
+            vlayer = QgsVectorLayer(wuri.uri(), "layer name you like", "postgres")
+            if vlayer.isValid():
+                print("vlayer valide")
+                QgsProject.instance().addMapLayer(vlayer)
+            else:
+                print("vlayer non valid")
+
+            # if self.connexionZonage != []:
+            # print("TEST -------------------------------------------")
+            # print("passe par " + self.tableAreas)
+            # print(self.typeZone)
+            # print(self.connexionZonage.resultZone)
+            # print(self.source)
+            # print(self.enable)
+            # print(self.connexionAddFilter.adf_resultat)
+
+                # set database schema, table name, geometry column and optionally
+                # subset (WHERE clause)
+            # sql = "(SELECT * FROM ref_geo.l_areas WHERE id_type=26 AND geom IS NOT NULL)"
+            # uri.setDataSource("", sql, "geom", "", "id_areas")
+
+            # wuri.setDataSource("ref_geo", "sql", "geom", "id_type = " + ", ".join(self.typeZone))
+            # wuri.setDataSource("ref_geo", "l_areas", "geom", "geom IS NOT NULL AND l_areas.id_type = 26")      
+                
+                # une_couche_vectorielle = QgsVectorLayer(uri.uri(), "comtest", "postgres")
+            # if self.connexionAddFilter!= []:
+
+                # print(uri.setDataSource)
 
 
-        print(self.typeZone)
+        if self.tableLinears != "" :
+            print("TEST -------------------------------------------")
+            print("passe par " + self.tableLinears)
+            print(self.typeZone)
+            print(self.connexionZonage.resultZone)
+            print(self.source)
+            print(self.enable)
+            print(self.connexionAddFilter.adf_resultat)
 
 
-        print(ZoneFilterWidget.resultZone)
+
+        if self.tablePoints != "" :
+            print("TEST -------------------------------------------")
+            print("passe par " + self.tablePoints)
+            print(self.typeZone)
+            print(self.connexionZonage.resultZone)
+            print(self.source)
+            print(self.enable)
+            print(self.connexionAddFilter.adf_resultat)
+        
+
+        # print(self.connexionAddFilter.adf_resultat)
 
 
         # if (not db.open()):
@@ -407,7 +471,31 @@ class RefGeoWidget(QDockWidget, form_refgeo):
         #     wquery = QSqlQuery(db)
         #     wquery.prepare(wsql)
 
+    def loadInQGIS(self) :
 
+        QgsProject.instance().addMapLayer(vlayer, True)
+        # vlayer = iface.addVectorLayer(path_to_airports_layer, "Airports layer", "ogr")
+        # if not vlayer:
+        #     print("Layer failed to load!")
+
+        # # The format is:
+        # # vlayer = QgsVectorLayer(data_source, layer_name, provider_name)
+
+        # vlayer = QgsVectorLayer(path_to_airports_layer, "Airports layer", "ogr")
+        # if not vlayer.isValid():
+        #     print("Layer failed to load!")
+        # else:
+        #     QgsProject.instance().addMapLayer(vlayer)
+
+
+        # uri = QgsDataSourceUri()
+        # # set host name, port, database name, username and password
+        # uri.setConnection("localhost", "5432", "dbname", "johny", "xxx")
+        # # set database schema, table name, geometry column and optionally
+        # # subset (WHERE clause)
+        # uri.setDataSource("public", "roads", "the_geom", "cityid = 2643", "primary_key_field")
+
+        # vlayer = QgsVectorLayer(uri.uri(), "layer name you like", "postgres")
 
 
     def closeEvent(self, event):

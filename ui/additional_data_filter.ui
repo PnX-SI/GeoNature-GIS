@@ -83,36 +83,26 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
-        <widget class="QLineEdit" name="le_filtervalue"/>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pb_filtervalue">
-         <property name="minimumSize">
-          <size>
-           <width>150</width>
-           <height>30</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>100</width>
-           <height>30</height>
-          </size>
-         </property>
+        <widget class="QLabel" name="label">
          <property name="font">
           <font>
            <family>Arial</family>
-           <pointsize>9</pointsize>
            <weight>75</weight>
            <bold>true</bold>
           </font>
          </property>
-         <property name="styleSheet">
-          <string notr="true">background-color:  rgb(5, 144, 110);
-color: rgb(255, 255, 255);</string>
-         </property>
          <property name="text">
-          <string>Filtrer les valeurs</string>
+          <string>Filtrer la liste de valeurs :</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="le_filtervalue">
+         <property name="maximumSize">
+          <size>
+           <width>500</width>
+           <height>16777215</height>
+          </size>
          </property>
         </widget>
        </item>
@@ -188,22 +178,6 @@ color: rgb(255, 255, 255);</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="1">
-      <widget class="QComboBox" name="cb_keys">
-       <property name="minimumSize">
-        <size>
-         <width>200</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>500</width>
-         <height>30</height>
-        </size>
-       </property>
-      </widget>
-     </item>
      <item row="0" column="1" alignment="Qt::AlignHCenter">
       <widget class="QLabel" name="lbl_key">
        <property name="font">
@@ -233,7 +207,7 @@ color: rgb(255, 255, 255);</string>
       </widget>
      </item>
      <item row="3" column="4">
-      <widget class="QPushButton" name="pb_delete">
+      <widget class="QPushButton" name="pb_remove">
        <property name="minimumSize">
         <size>
          <width>130</width>
@@ -273,11 +247,6 @@ color: rgb(255, 255, 255);</string>
        </property>
        <item>
         <property name="text">
-         <string/>
-        </property>
-       </item>
-       <item>
-        <property name="text">
          <string>ET</string>
         </property>
        </item>
@@ -301,12 +270,12 @@ color: rgb(255, 255, 255);</string>
        </property>
        <item>
         <property name="text">
-         <string>=</string>
+         <string>EGAL</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>&gt;=</string>
+         <string>PAS EGAL</string>
         </property>
        </item>
        <item>
@@ -321,22 +290,27 @@ color: rgb(255, 255, 255);</string>
        </item>
        <item>
         <property name="text">
+         <string>&gt;=</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
          <string>&lt;=</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>Commence par (Begin with)</string>
+         <string>COMMENCE PAR</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>!=</string>
+         <string>FINI PAR</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>New Item</string>
+         <string>CONTIENT</string>
         </property>
        </item>
       </widget>
@@ -397,9 +371,6 @@ color: rgb(255, 255, 255);</string>
        </property>
       </widget>
      </item>
-     <item row="3" column="0" colspan="4">
-      <widget class="QListView" name="lw_queryresult"/>
-     </item>
      <item row="1" column="3">
       <widget class="QLineEdit" name="le_selectvalue">
        <property name="minimumSize">
@@ -409,6 +380,19 @@ color: rgb(255, 255, 255);</string>
         </size>
        </property>
       </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="le_selectkey">
+       <property name="minimumSize">
+        <size>
+         <width>150</width>
+         <height>30</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0" colspan="4">
+      <widget class="QListWidget" name="lw_queryresult"/>
      </item>
     </layout>
    </item>

@@ -26,6 +26,7 @@ form_add_data_filter, _ = uic.loadUiType(os.path.join(ui_path, "additional_data_
 class AddDataFilterWidget(QDialog, form_add_data_filter):
 
     dico = {} 
+    adf_resultat = []
     def __init__(self, interface, whost, wport, wbdd, wusername, wpsw, typeZone, parent=None):
         self.interfaceFenetres = interface
         # QWidget.__init__(self)
@@ -39,18 +40,27 @@ class AddDataFilterWidget(QDialog, form_add_data_filter):
         self.username = wusername
         self.psw = wpsw
 
-        
+        print(typeZone)
         self.getKeys(typeZone)
 
-        self.lw_keys.itemDoubleClicked.connect(self.getValues)
+        self.lw_keys.clicked.connect(self.getValues)
+        # Connexion du signal du QPushButton (pb_filtervalue) à la fonction `filtrer_valeurs`
+        # self.pb_filtervalue.clicked.connect(self.filtrer_valeurs)
+        self.le_filtervalue.textChanged.connect(self.filtrer_valeurs)
         # self.lw_values.itemSelected()
         # self.loadvaluesexemple()
         # self.cb_logical.textActivated.connect()
         # self.cb_keys.textActivated.connect()
+        
+
         # self.cb_operator.textActivated.connect()
-        # self.le_selectvalue.textChanged.connect()
-        # self.pb_add.clicked.connect()
-        # self.pb_remove.clicked.connect()
+        # self.le_selectvalue..connect()
+        self.lw_values.itemDoubleClicked.connect(self.valeurVersLineEdit)
+
+        self.pb_add.clicked.connect(self.addQuery)
+        self.pb_remove.clicked.connect(self.removeQuery)
+
+
 
         # self.pb_annuler.clicked.connect(self.cancel)
         self.btnBox.accepted.connect(self.accept)
@@ -63,6 +73,7 @@ class AddDataFilterWidget(QDialog, form_add_data_filter):
 
 # POUR RÉCUPÉRER LES CLÉS DU CHAMP JSONB : 
 #  le champ JSONB se requête comme un dictionnaire 
+            self.adf_resultat = []
             self.lw_keys.clear()
             self.dico.clear
             
@@ -77,10 +88,10 @@ class AddDataFilterWidget(QDialog, form_add_data_filter):
                 QMessageBox.critical(self, "Erreur", "Impossible de se connecter à la base de données ...", QMessageBox.Ok)
             else:
 
-                wsql = "SELECT DISTINCT key, value, id_type FROM "
-                wsql +="(SELECT DISTINCT (jsonb_each_text(additional_data)).key , (jsonb_each_text(additional_data)).value, id_type FROM ref_geo.l_areas "
-                wsql +="UNION SELECT DISTINCT (jsonb_each_text(additional_data)).key , (jsonb_each_text(additional_data)).value, id_type FROM ref_geo.l_linears "
-                wsql +="UNION SELECT DISTINCT (jsonb_each_text(additional_data)).key , (jsonb_each_text(additional_data)).value, id_type FROM ref_geo.l_points) as rq0 "
+                wsql = "SELECT DISTINCT  key, value, id_type, nom_table FROM "
+                wsql +="(SELECT DISTINCT 'l_areas' as nom_table, (jsonb_each_text(additional_data)).key , (jsonb_each_text(additional_data)).value, id_type FROM ref_geo.l_areas "
+                wsql +="UNION SELECT DISTINCT 'l_linears' as nom_table,(jsonb_each_text(additional_data)).key , (jsonb_each_text(additional_data)).value, id_type FROM ref_geo.l_linears "
+                wsql +="UNION SELECT DISTINCT 'l_points' as nom_table,(jsonb_each_text(additional_data)).key , (jsonb_each_text(additional_data)).value, id_type FROM ref_geo.l_points) as rq0 "
                 wsql +="WHERE key IS NOT NULL AND value IS NOT NULL AND id_type IN (" + ", ".join(typeZone)  + "); "
                 wquery = QSqlQuery(db)
                 wquery.prepare(wsql)
@@ -93,69 +104,112 @@ class AddDataFilterWidget(QDialog, form_add_data_filter):
                         # print("wquery.value(1) : ", wquery.value(1))                                       
                         key = (wquery.value(0))
                         value = (wquery.value(1))
-                        # if key not in self.dico:
-                        #      self.dico[key] = value
-                        self.dico[key] = value
+                        if key not in self.dico:
+                            self.dico[key] = [value]
+                        else:
+                            self.dico[key].append(value)
+
                     if len(self.dico) > 0:
                         for key in self.dico.keys():  
                             self.lw_keys.addItem(str(key))
                     else:
-                        QMessageBox.information(self, "Information", f"Pas de clés trouvées", QMessageBox.Ok)
-                        # self.lw_keys.addItem("Pas de clés trouvées pour ce type de zonage")                    
+                        QMessageBox.information(self, "Information", "Pas de données additionnelles trouvées ", QMessageBox.Ok)
+                  
                 db.close()
-                print(wsql)
-                print(len(self.dico))
-                print(typeZone) #pour débug
+                self.lw_keys.sortItems(Qt.AscendingOrder)
                 
     def getValues(self):
         self.lw_values.clear() 
-        selected_key = self.lw_keys.selectedItems()[0]
+        selected_key = self.lw_keys.selectedItems()[0].text()
+        # print(selected_key)
+        # print(selected_key[0].text())
         if selected_key in self.dico:
             
             for value in self.dico[selected_key]: 
                 self.lw_values.addItem(value)
         else:
-            QMessageBox.information(self, "Information", f"Pas de valeurs trouvées : {selected_key}", QMessageBox.Ok)
-
-    def loadvaluesexemple(self): # 0  EN COURS DE DEV ------------------------------------------------
-            
-# POUR RÉCUPÉRER DES EXEMPLES DE VALEURS DU CHAMP JSONB : 
-#  le champ JSONB se requête comme un dictionnaire 
-           
-            db = QSqlDatabase.addDatabase("QPSQL", "geonature")
-            db.setHostName(self.host)
-            db.setPort(self.port)
-            db.setDatabaseName(self.bdd)
-            db.setUserName(self.username)
-            db.setPassword(self.psw)
-
-            if (not db.open()):
-                QMessageBox.critical(self, "Erreur", "Impossible de se connecter à la base de données ...", QMessageBox.Ok)
-            else:
-                # for i in self.lstkeys:
-                    lstvalues = []
-              
-                    wsql = "SELECT DISTINCT jsonb_each_text(additional_data) FROM ref_geo.l_areas "
-                    wsql +="UNION SELECT DISTINCT jsonb_each_text(additional_data) FROM ref_geo.l_linears "
-                    wsql +="UNION SELECT DISTINCT jsonb_each_text(additional_data) FROM ref_geo.l_points "
-                    wsql +="WHERE additional_data IS NOT NULL "
-                    wsql +="LIMIT 100;"
-                    wquery = QSqlQuery(db)
-                    wquery.prepare(wsql)
-                    if not wquery.exec_():
-                        QMessageBox.critical(self, u"Impossible de récupérer les valeurs.", wquery.lastError().text(), QMessageBox.Ok)
-                    else:
-                        while wquery.next():
-                            lstvalues.append(wquery.value(0))
-                        self.lw_values.addItems(lstvalues)
+            QMessageBox.information(self, "Information", f"Pas de valeurs trouvées pour : {selected_key}", QMessageBox.Ok)
+        self.lw_values.sortItems(Qt.AscendingOrder)
+        self.le_selectkey.setText(selected_key)
         
-                    db.close()
 
-    # def filterconstructor(self):
-        #  selectlogical = 
-        #  selectkey = 
-        #  selectoperator = 
+    def filtrer_valeurs(self):
+         # Obtenir la valeur du QLineEdit (le_filtervalue)
+        valeur_recherche = self.le_filtervalue.text().lower()
+        # Filtrer les valeurs de la QListWidget (lw_values)
+        if valeur_recherche:
+            for i in range(self.lw_values.count()): # On parcour les valeurs de lw_values
+                item = self.lw_values.item(i)
+                if valeur_recherche in item.text().lower(): # Si dans le text des valeurs de lw_values on identifie la chaine de caractere valeur_recherche
+                    item.setHidden(False) # On ne cache pas la valeur
+                else:
+                    item.setHidden(True) # Sinon on la cache
+        else:
+            # Si il n'y a pas de valeur_recherche
+            for i in range(self.lw_values.count()):
+                self.lw_values.item(i).setHidden(False) # on affiche toutes les valeurs
+        self.lw_values.sortItems(Qt.AscendingOrder)
+  
 
+    def valeurVersLineEdit(self, item):
+        self.le_selectvalue.setText(item.text())
+
+    def addQuery(self):
+
+        # Traduction des Arguments Logiques 
+
+        if self.lw_queryresult.count() == 0 : # Si c'est la premiere ligne de requête de la liste on force un "AND"
+            logical = " AND "
+
+        else:
+            logical = self.cb_logical.currentText()
+            if self.cb_logical.currentText() == "ET":
+                logical =" AND "
+            elif self.cb_logical.currentText() == "OU":
+                logical =" OR "
+
+            # print(self.cb_logical.currentText())
+            # print(logical)
+            
+        key = self.le_selectkey.text()
+         # if self.cb_operator.currentText() 
+        value = self.le_selectvalue.text()
+
+        # Traduction des Opérateurs 
+        operator_value = ""
+
+        if self.cb_operator.currentText() == "COMMENCE PAR":
+            operator_value =f" ILIKE '{value}%' "
+        elif self.cb_operator.currentText() == "CONTIENT":
+            operator_value = f" ILIKE '%{value}%' "
+        elif self.cb_operator.currentText() == "FINI PAR":
+            operator_value = f" ILIKE '%{value}' "
+        elif self.cb_operator.currentText() == "PAS EGAL":
+            operator_value = f" != {value} "
+        elif self.cb_operator.currentText() == "EGAL":
+            operator_value = f" = {value} "
+        elif self.cb_operator.currentText() == ">":
+            operator_value = f" > {value} "
+        elif self.cb_operator.currentText() == "<":
+            operator_value = f" < {value} "
+        elif self.cb_operator.currentText() == ">=":
+            operator_value = f" >= {value} "
+        elif self.cb_operator.currentText() == "<=":
+            operator_value = f" <= {value} "
+
+
+        # print(self.cb_operator.currentText())
+        # print(operator_value)
+    
+        query = f"{logical} {key} {operator_value}"
+        item = QListWidgetItem(query)
+        self.lw_queryresult.addItem(item)
+         
+    def removeQuery(self):
+        selected_items = self.lw_queryresult.selectedItems()
+        if selected_items:
+            for item in selected_items:
+                self.lw_queryresult.takeItem(self.lw_queryresult.row(item))
 
     def reject(self):
         self.lw_keys.clear()
@@ -165,4 +219,7 @@ class AddDataFilterWidget(QDialog, form_add_data_filter):
         QDialog.reject(self)
 
     def accept(self):
+        for i in range(self.lw_queryresult.count()):
+            self.adf_resultat.append(self.lw_queryresult.item(i).text())
+        print(self.adf_resultat)
         QDialog.accept(self)
