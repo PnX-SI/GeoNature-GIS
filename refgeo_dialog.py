@@ -238,12 +238,19 @@ class RefGeoWidget(QDockWidget, form_refgeo):
         if (not db.open()):
             QMessageBox.critical(self, "Erreur", "Impossible de se connecter à la base de données ...", QMessageBox.Ok)
         else:
-            wsql = "SELECT DISTINCT type_name, type_obj, nom_table, id_type FROM  "
-            wsql += "(SELECT DISTINCT type_name, 'surface' as type_obj, 'l_areas' as nom_table, id_type FROM ref_geo.bib_areas_types UNION "
-            wsql +="SELECT DISTINCT type_name, 'ligne' as type_obj, 'l_linears' as nom_table, id_type FROM ref_geo.bib_linears_types UNION "
-            wsql +="SELECT DISTINCT type_name, 'point' as type_obj, 'l_points' as nom_table, id_type FROM ref_geo.bib_points_types) as rq0 " 
-            wsql += "WHERE type_name IS NOT NULL "
-            wsql += "ORDER BY type_name, type_obj;"
+            wsql = "WITH ref_geo_types AS "
+            wsql += "	(SELECT DISTINCT type_name, 'surface' as type_obj, 'l_areas' as nom_table, id_type FROM ref_geo.bib_areas_types UNION "
+            wsql += " 	 SELECT DISTINCT type_name, 'ligne' as type_obj, 'l_linears' as nom_table, id_type FROM ref_geo.bib_linears_types UNION "
+            wsql += " 	 SELECT DISTINCT type_name, 'point' as type_obj, 'l_points' as nom_table, id_type FROM ref_geo.bib_points_types), "
+            wsql += "	count_ref_geo_types AS "
+            wsql += "	(SELECT COUNT(id_area), 'surface' as type_obj, id_type FROM ref_geo.l_areas GROUP BY id_type HAVING COUNT(id_area) > 0 UNION "
+            wsql += "	 SELECT COUNT(id_linear), 'ligne' as type_obj, id_type FROM ref_geo.l_linears GROUP BY id_type HAVING COUNT(id_linear) > 0 UNION "
+            wsql += "	 SELECT COUNT(id_point), 'point' as type_obj, id_type FROM ref_geo.l_points GROUP BY id_type HAVING COUNT(id_point) > 0) "
+            wsql += "SELECT DISTINCT rgt.type_name, rgt.type_obj, rgt.nom_table, rgt.id_type "
+            wsql += "FROM ref_geo_types rgt "
+            wsql += "JOIN count_ref_geo_types crgt ON crgt.id_type = rgt.id_type AND crgt.type_obj = rgt.type_obj "
+            wsql += "WHERE rgt.type_name IS NOT NULL "
+            wsql += "ORDER BY rgt.type_name, rgt.type_obj;"
             wquery = QSqlQuery(db)
             wquery.prepare(wsql)
             if not wquery.exec_():
