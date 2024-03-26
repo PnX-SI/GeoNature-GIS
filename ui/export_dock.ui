@@ -190,7 +190,7 @@
       <item>
        <widget class="QLabel" name="lbl_viewname">
         <property name="text">
-         <string>Synthese SINP</string>
+         <string/>
         </property>
         <property name="indent">
          <number>30</number>
@@ -224,7 +224,7 @@
       <item>
        <widget class="QLabel" name="lbl_viewdescription">
         <property name="text">
-         <string>Export des données de la synthèse au standard SINP</string>
+         <string/>
         </property>
         <property name="indent">
          <number>30</number>
@@ -407,30 +407,18 @@ color: rgb(255, 255, 255);
       <property name="minimumSize">
        <size>
         <width>500</width>
-        <height>80</height>
+        <height>70</height>
        </size>
       </property>
       <property name="maximumSize">
        <size>
         <width>16777215</width>
-        <height>100</height>
+        <height>70</height>
        </size>
       </property>
-      <item>
-       <property name="text">
-        <string>Point (42)</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Polygone (3)</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Ligne (1)</string>
-       </property>
-      </item>
+      <property name="selectionMode">
+       <enum>QAbstractItemView::MultiSelection</enum>
+      </property>
      </widget>
     </item>
     <item alignment="Qt::AlignHCenter">
@@ -590,7 +578,11 @@ color: rgb(255, 255, 255);
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QgsFileWidget" name="qfw_folder"/>
+       <widget class="QgsFileWidget" name="qfw_folder">
+        <property name="storageMode">
+         <enum>QgsFileWidget::GetDirectory</enum>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>

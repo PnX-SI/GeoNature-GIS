@@ -36,7 +36,7 @@ class ConnexionWidget(QDialog, form_connect):
         self.le_port.setText(s.value("geonature/config/port", "5432"))
         self.le_bdd.setText(s.value("geonature/config/bdd", ""))
         self.le_username.setText(s.value("geonature/config/username", ""))
-        self.le_psw.setText(self.psw)
+        self.ple_psw.setText(self.psw)
 
     def majParametre(self):
         s = QSettings()
@@ -44,7 +44,7 @@ class ConnexionWidget(QDialog, form_connect):
         s.setValue("geonature/config/port", self.le_port.text())
         s.setValue("geonature/config/bdd", self.le_bdd.text())
         s.setValue("geonature/config/username", self.le_username.text())
-        self.psw = self.le_psw.text()
+        self.psw = self.ple_psw.text()
 
     def testCnxOk(self):
         ret = True
@@ -54,7 +54,7 @@ class ConnexionWidget(QDialog, form_connect):
         db.setPort(int(self.le_port.text()))
         db.setDatabaseName(self.le_bdd.text())
         db.setUserName(self.le_username.text())
-        db.setPassword(self.le_psw.text())
+        db.setPassword(self.ple_psw.text())
 
         if (not db.open()):
             ret = False

@@ -71,6 +71,7 @@ class RefGeoWidget(QDockWidget, form_refgeo):
 
         # Fonction pour mettre à jour le nombre de sources sélectionnées quand une case est cocher ou décocher dans ccb_source
         self.lw_zonage.itemSelectionChanged.connect(self.maj_lbl_zonageparam)  # Ajout du signal
+    
 
         # Fonction de connexion à la fenêtre additional_data_filter_dialog
         self.pb_additionalFilter.clicked.connect(self.openAddDataFilter)
@@ -94,7 +95,6 @@ class RefGeoWidget(QDockWidget, form_refgeo):
 #  Pour Instancier la liste qui vient alimenter le QlistWidget (lw_zonage) concernant le type de zonage 
         self.typeZone = []
         self.table = []
-        self.idNomTypeZone = {}
         self.source = []
         self.connexionZonage = []
         self.connexionAddFilter = []
@@ -132,19 +132,12 @@ class RefGeoWidget(QDockWidget, form_refgeo):
         if len(self.lw_zonage.selectedItems()) >=1 :
             self.typeZone.clear()
             self.table.clear()
-            self.idNomTypeZone.clear()
         # récupération des types de zonages sélectionnés de la QListWidget "lw_zonage"
             for uneSelection in self.lw_zonage.selectedItems():
                 #print(uneSelection.data(256))
                 data = uneSelection.data(256) #256 = constante renvoyée par Qt.UserRole (bug avec Qt.UserRole sur certains pc)
-                self.nomtypezone = data[0]
                 nomtable = data[2]
                 id_type = data[3]
-                # nomtypezone = {str(data[3]):data[0]}
-
-                value = [ self.nomtypezone, nomtable]
-                self.idNomTypeZone[str(id_type)] = value
-
                 if nomtable == "l_areas" :
                     self.tableAreas = "l_areas"
                 elif nomtable == "l_linears" :
@@ -153,20 +146,14 @@ class RefGeoWidget(QDockWidget, form_refgeo):
                     self.tablePoints = "l_points"  
 
                 self.typeZone.append(str(id_type))  
-                self.table.append(str(nomtable))   
-                # self.idNomTypeZone.update(nomtypezone) 
-
-            print(self.idNomTypeZone)
+                self.table.append(str(nomtable))    
 
             self.getSource(self.typeZone)
             # self.selection_table()
             return self.typeZone, self.table, self.tableAreas, self.tableLinears, self.tablePoints
-         
-   
-             
-    #  - ----------------------------------------------------------------
+    
+    #  - ----------------------------------------------------------------        
         
-
 
     def selection_source(self):  # Pour récupérer la/les sources sélectionnée
 
@@ -174,6 +161,7 @@ class RefGeoWidget(QDockWidget, form_refgeo):
        
         return self.source
              
+    # 0 - ----------------------------------------------------------------
     
     # Ajout des valeurs de la sélection du type de zonage
     def getTypeZonage(self):
@@ -305,7 +293,6 @@ class RefGeoWidget(QDockWidget, form_refgeo):
 
         #Filtre additionel
         self.connexionAddFilter = []
-        self.lbl_filterparam.setText("")
 
         #Type de géométrie trouvée
         self.lw_typegeomresult.clear()
@@ -347,7 +334,7 @@ class RefGeoWidget(QDockWidget, form_refgeo):
 
     def maj_lbl_filterparam(self):   
         filtre = " ".join(self.connexionAddFilter.adf_resultat)
-        self.lbl_filterparam.setText(f"Filtre: {filtre}")
+        self.lbl_filterparam.setText(f"WHERE {filtre}")
 
 
 
@@ -396,220 +383,97 @@ class RefGeoWidget(QDockWidget, form_refgeo):
         # # set host name, port, database name, username and password
         wuri.setConnection(self.host, str(self.port), self.bdd , self.username, self.psw)
 
-        for selection in self.lw_zonage.selectedItems() :
-            # if self.tableAreas != "" :
-            # for i in self.idNomTypeZone[0]:
-            #     if 'surface' in self.idNomTypeZone[i] == True:
-                
-        #     if self.idNomTypeZone["id_type"] == "l_areas":
-        # if self.idNomTypeZone.value[1] == "l_areas":
+
+        if self.tableAreas != "" :
             print("IT'S A POLYGON LAYER !")
-            
-            for id_type, self.name  in self.idNomTypeZone.items():
-                print(self.name)
+            nbPolygonLayer = 0
+            for i in(self.typeZone):
                 # print(i)
                 # print(self.source)
-                wuri.setDataSource("ref_geo", "l_areas", "geom", "geom IS NOT NULL AND id_type = " + id_type + " " + self.enable + self.querywhere)
+                wuri.setDataSource("ref_geo", "l_areas", "geom", "geom IS NOT NULL AND id_type = " + i + " " + self.enable + self.querywhere)
                 # print("ref_geo", "l_areas", "geom", "geom IS NOT NULL AND id_type = " + i + " AND source = " + " OR ".join(self.source) + " " + self.enable)            
 
-                self.vlayer = QgsVectorLayer(wuri.uri(), self.name[0], "postgres")
+                vlayer = QgsVectorLayer(wuri.uri(), i, "postgres")
                 if vlayer.isValid():
                     print("vlayer valide")
-                    QgsProject.instance().addMapLayer(self.vlayer, False)
-                    self.lw_typegeomresult.addItem(self.name[0] + " (" + str(vlayer.featureCount()) +")")
+                    QgsProject.instance().addMapLayer(vlayer)
+                    nbPolygonLayer += 1 
                 else:
                     print("vlayer non valid")
 
-                
-
-            if self.idNomTypeZone.value[1] == "l_linears":
-            # if self.tableLinears != "" :
-                print("IT'S A LINE LAYER !")
-                for id_type, self.name  in self.idNomTypeZone.items():
-                    # vérifier que le type zone ne soit pas pris 2 fois ------------------- 
-                    # print(i)
-                    # print(self.source)
-                    wuri.setDataSource("ref_geo", "l_linears", "geom", "geom IS NOT NULL AND id_type = " + id_type + " " + self.enable + self.querywhere)
-                    # print("ref_geo", "l_areas", "geom", "geom IS NOT NULL AND id_type = " + i + " AND source = " + " OR ".join(self.source) + " " + self.enable)            
-
-                    self.vlayer = QgsVectorLayer(wuri.uri(), self.name[0], "postgres")
-                    if vlayer.isValid():
-                        print("vlayer valide")
-                        QgsProject.instance().addMapLayer(self.vlayer, False)
-                        self.lw_typegeomresult.addItem(self.name[0] + " (" + str(vlayer.featureCount()) +")")
-                    else:
-                        print("vlayer non valid")
+            self.lw_typegeomresult.addItem("Polygone (" + str(nbPolygonLayer) + ")")
 
 
-            if self.idNomTypeZone.value[1] == "l_points":
-            # if self.tablePoints != "" :
-                print("IT'S A POINT LAYER !")
-                for id_type, self.name  in self.idNomTypeZone.items():
-                    # print(i)
-                    # print(self.source)
-                    wuri.setDataSource("ref_geo", "l_points", "geom", "geom IS NOT NULL AND id_type = " + id_type + " " + self.enable + self.querywhere)
-                    # print("ref_geo", "l_areas", "geom", "geom IS NOT NULL AND id_type = " + i + " AND source = " + " OR ".join(self.source) + " " + self.enable)            
+        if self.tableLinears != "" :
+            print("IT'S A LINE LAYER !")
+            nbLineLayer = 0
+            for i in(self.typeZone):
+                # vérifier que le type zone ne soit pas pris 2 fois ------------------- 
+                # print(i)
+                # print(self.source)
+                wuri.setDataSource("ref_geo", "l_linears", "geom", "geom IS NOT NULL AND id_type = " + i + " " + self.enable + self.querywhere)
+                # print("ref_geo", "l_areas", "geom", "geom IS NOT NULL AND id_type = " + i + " AND source = " + " OR ".join(self.source) + " " + self.enable)            
 
-                    self.vlayer = QgsVectorLayer(wuri.uri(), self.name[0], "postgres")
-                    if vlayer.isValid():
-                        print("vlayer valide")
-                        QgsProject.instance().addMapLayer(self.vlayer, False)
-                        self.lw_typegeomresult.addItem(self.name[0] + " (" + str(vlayer.featureCount()) +")")
-                    else:
-                        print("vlayer non valid")
-                
+                vlayer = QgsVectorLayer(wuri.uri(), i, "postgres")
+                if vlayer.isValid():
+                    print("vlayer valide")
+                    QgsProject.instance().addMapLayer(vlayer)
+                    nbLineLayer += 1 
+                else:
+                    print("vlayer non valid")
+
+            self.lw_typegeomresult.addItem("Line (" + str(nbLineLayer) + ")")
+
+
+        if self.tablePoints != "" :
+            print("IT'S A POINT LAYER !")
+            nbPointLayer = 0
+            for i in(self.typeZone):
+                # print(i)
+                # print(self.source)
+                wuri.setDataSource("ref_geo", "l_points", "geom", "geom IS NOT NULL AND id_type = " + i + " " + self.enable + self.querywhere)
+                # print("ref_geo", "l_areas", "geom", "geom IS NOT NULL AND id_type = " + i + " AND source = " + " OR ".join(self.source) + " " + self.enable)            
+
+                vlayer = QgsVectorLayer(wuri.uri(), i, "postgres")
+                if vlayer.isValid():
+                    print("vlayer valide")
+                    QgsProject.instance().addMapLayer(vlayer)
+                    nbPointLayer += 1
+                else:
+                    print("vlayer non valid")
             
+            self.lw_typegeomresult.addItem("Point (" + str(nbPointLayer) + ")")
+        
 
 
 
     def loadInQGIS(self) :
 
-        for selection in self.lw_typegeomresult.selectedItems():
-            root = QgsProject.instance().layerTreeRoot()
-            noeudCouche0 = QgsLayerTreeLayer(self.vlayer)
-            root.insertChildNode(0, noeudCouche0)
-            # Zommer sur la couche ajoutée
-            iface = qgis.utils.iface
-            canvas = iface.mapCanvas()
-            layer = QgsProject.instance().mapLayersByName(self.self.name[0])[0]
-            canvas.setExtent(layer.extent())
-            canvas.refresh()
-       
+        QgsProject.instance().addMapLayer(vlayer, True)
+        # vlayer = iface.addVectorLayer(path_to_airports_layer, "Airports layer", "ogr")
+        # if not vlayer:
+        #     print("Layer failed to load!")
 
-    def exporter(self): # TO DO : EXPORTER AU DIFFERENT FORMATS
+        # # The format is:
+        # # vlayer = QgsVectorLayer(data_source, layer_name, provider_name)
 
-        # ------------------  VOIR POUR NE SELECTIONNER QUE LE DOSSIER D EXPORT ----------------------------------------------  
-        # LE NOM DU FICHIER SERA PAR DEFAUT : f"{self.nomtypezone}_{self.srid}" voir eventuellement rajouter le type de GEOM en plus
-        
-        # On récupère le chemin renseigné par l'utilisateur par qfw_folder
-        output_dir = self.qfw_folder.filePath()
-        print(output_dir)
-
-        # On récupère le Format choisi par l'utilisateur dans la combobox cb_expformat
-        selection_format = self.cb_expformat.currentText()
-
-        if selection_format == "GeoJSON":
-            # for selection in self.lw_typegeomresult.selectedItems() :
-            # layer = self.vlayer
-            layer = QgsProject.instance().mapLayersByName(f"{self.nomtypezone}_")[0]# rajouter le type de GEOM en plus + ne fonctionne que si couche dans arbre de couche 
-            self.nomtypezone = self.nomtypezone.replace("|","")
-            self.nomtypezone = self.nomtypezone.replace(" ","_")
-            self.nomtypezone = self.nomtypezone.replace(":","")
-            self.nomtypezone = self.nomtypezone.replace("*","")
-            self.nomtypezone = self.nomtypezone.replace("[","")
-            self.nomtypezone = self.nomtypezone.replace("]","")
-            print(self.nomtypezone)
-            # FOR TESTING -------------- TBD
-            # output_file = "C:/FUTURE_D/LPSIG/04-PROJETS/02-PROJETS_TUTORES/PLUGIN QGIS LPO/06-PLUGIN/test_export/test.geojson"
-            output_file = f"{self.nomtypezone}_{self.srid}.geojson"
-            # output_file = "test.geojson"
-            path_file = os.path.join(output_dir,output_file)
-            path_file = path_file.replace("\\","/")
-            print("path:", path_file)
-             
-            if os.path.exists(path_file):
-                os.remove(path_file)
-
-            unCrs = QgsCoordinateReferenceSystem(self.srid, QgsCoordinateReferenceSystem.EpsgCrsId)
-            print(unCrs)
-            error, message = QgsVectorFileWriter.writeAsVectorFormat(layer, path_file, "utf-8", unCrs, 'GeoJSON') 
-            if error > 1 :
-                print("error:", error)
-                print("message:", message)
-                QMessageBox.critical(self, "Attention", "Problème dans l'exportation", QMessageBox.Ok)
-            else:
-                print("L'exportation a été effectuée avec succès")
-            # A FAIRE - RECUPERER LA METHODE QUI DONNE L INFORMATION DE LA BONNE ECRITURE DU FICHIER
-                QMessageBox.information(self, "Information", "L'exportation a été effectuée avec succès!", QMessageBox.Ok)
+        # vlayer = QgsVectorLayer(path_to_airports_layer, "Airports layer", "ogr")
+        # if not vlayer.isValid():
+        #     print("Layer failed to load!")
+        # else:
+        #     QgsProject.instance().addMapLayer(vlayer)
 
 
-        elif selection_format == "GeoPackage":
-             # layer = self.vlayer
-            layer = QgsProject.instance().mapLayersByName(f"{self.nomtypezone}_{self.srid}")[0]# rajouter le type de GEOM en plus + ne fonctionne que si couche dans arbre de couche 
-            self.nomtypezone = self.nomtypezone.replace("|","")
-            self.nomtypezone = self.nomtypezone.replace(" ","_")
-            print(self.nomtypezone)
-            # FOR TESTING -------------- TBD
-            # output_file = "C:/FUTURE_D/LPSIG/04-PROJETS/02-PROJETS_TUTORES/PLUGIN QGIS LPO/06-PLUGIN/test_export/test.geojson"
-            output_file = f"{self.nomtypezone}_{self.srid}.gpkg"
-            # output_file = "test.geojson"
-            path_file = os.path.join(output_dir,output_file)
-            path_file = path_file.replace("\\","/")
-            print("path:", path_file)
-            if os.path.exists(path_file):
-                    os.remove(path_file)
+        # uri = QgsDataSourceUri()
+        # # set host name, port, database name, username and password
+        # uri.setConnection("localhost", "5432", "dbname", "johny", "xxx")
+        # # set database schema, table name, geometry column and optionally
+        # # subset (WHERE clause)
+        # uri.setDataSource("public", "roads", "the_geom", "cityid = 2643", "primary_key_field")
 
-            unCrs = QgsCoordinateReferenceSystem(self.srid, QgsCoordinateReferenceSystem.EpsgCrsId)
-            print(unCrs)
-            error, message = QgsVectorFileWriter.writeAsVectorFormat(layer, path_file, "utf-8", unCrs, 'GeoPackage') 
-            if error > 1 :
-                print("error:", error)
-                print("message:", message)
-                QMessageBox.critical(self, "Attention", "Problème dans l'exportation", QMessageBox.Ok)
-            else:
-                print("L'exportation a été effectuée avec succès")
-            # A FAIRE - RECUPERER LA METHODE QUI DONNE L INFORMATION DE LA BONNE ECRITURE DU FICHIER
-                QMessageBox.information(self, "Information", "L'exportation a été effectuée avec succès!", QMessageBox.Ok)
+        # vlayer = QgsVectorLayer(uri.uri(), "layer name you like", "postgres")
 
 
-        elif selection_format == "CSV":
-             # layer = self.vlayer
-            layer = QgsProject.instance().mapLayersByName(f"{self.nomtypezone}_{self.srid}")[0]# rajouter le type de GEOM en plus + ne fonctionne que si couche dans arbre de couche 
-            self.nomtypezone = self.nomtypezone.replace("|","")
-            self.nomtypezone = self.nomtypezone.replace(" ","_")
-            print(self.nomtypezone)
-            # FOR TESTING -------------- TBD
-            # output_file = "C:/FUTURE_D/LPSIG/04-PROJETS/02-PROJETS_TUTORES/PLUGIN QGIS LPO/06-PLUGIN/test_export/test.geojson"
-            output_file = f"{self.nomtypezone}_{self.srid}.csv"
-            # output_file = "test.geojson"
-            path_file = os.path.join(output_dir,output_file)
-            path_file = path_file.replace("\\","/")
-            print("path:", path_file)
-            if os.path.exists(path_file):
-                os.remove(path_file)
-
-            unCrs = QgsCoordinateReferenceSystem(self.srid, QgsCoordinateReferenceSystem.EpsgCrsId)
-            print(unCrs)
-            error, message = QgsVectorFileWriter.writeAsVectorFormat(layer, path_file, "utf-8", unCrs, 'csv') 
-            if error > 1 :
-                print("error:", error)
-                print("message:", message)
-                QMessageBox.critical(self, "Attention", "Problème dans l'exportation", QMessageBox.Ok)
-            else:
-                print("L'exportation a été effectuée avec succès")
-            # A FAIRE - RECUPERER LA METHODE QUI DONNE L INFORMATION DE LA BONNE ECRITURE DU FICHIER
-                QMessageBox.information(self, "Information", "L'exportation a été effectuée avec succès!", QMessageBox.Ok)
-
-        elif selection_format == "XLSX":
-              # layer = self.vlayer
-            layer = QgsProject.instance().mapLayersByName(f"{self.nomtypezone}_{self.srid}")[0]# rajouter le type de GEOM en plus + ne fonctionne que si couche dans arbre de couche 
-            self.nomtypezone = self.nomtypezone.replace("|","")
-            self.nomtypezone = self.nomtypezone.replace(" ","_")
-            print(self.nomtypezone)
-            # FOR TESTING -------------- TBD
-            # output_file = "C:/FUTURE_D/LPSIG/04-PROJETS/02-PROJETS_TUTORES/PLUGIN QGIS LPO/06-PLUGIN/test_export/test.geojson"
-            output_file = f"{self.nomtypezone}_{self.srid}.xlsx"
-            # output_file = "test.geojson"
-            path_file = os.path.join(output_dir,output_file)
-            path_file = path_file.replace("\\","/")
-            print("path:", path_file)
-            print("path:", path_file)
-            if os.path.exists(path_file):
-                os.remove(path_file)
-
-            unCrs = QgsCoordinateReferenceSystem(self.srid, QgsCoordinateReferenceSystem.EpsgCrsId)
-            print(unCrs)
-            error, message = QgsVectorFileWriter.writeAsVectorFormat(layer, path_file, "utf-8", unCrs, 'xlsx') 
-            if error > 1 :
-                print("error:", error)
-                print("message:", message)
-                QMessageBox.critical(self, "Attention", "Problème dans l'exportation", QMessageBox.Ok)
-            else:
-                print("L'exportation a été effectuée avec succès")
-            # A FAIRE - RECUPERER LA METHODE QUI DONNE L INFORMATION DE LA BONNE ECRITURE DU FICHIER
-                QMessageBox.information(self, "Information", "L'exportation a été effectuée avec succès!", QMessageBox.Ok)
-
- 
     def closeEvent(self, event):
         self.fermeFenetreFonction.emit(["refgeo"])
         event.accept()

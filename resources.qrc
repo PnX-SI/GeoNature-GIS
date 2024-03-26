@@ -1,20 +1,26 @@
 <RCC>
-    <qresource prefix="/plugins/Geonature-GIS-main" >
-        <file>icon.png</file>
-        <file>icons/about.svg</file>
-        <file>icons/connexion.svg</file>
-        <file>icons/executer_traitement.png</file>
-        <file>icons/export_g.png</file>
-        <file>icons/export_w.png</file>
-        <file>icons/GeoNature.png</file>
-        <file>icons/geonaturegis_full_logo.png</file>
-        <file>icons/help.png</file>
-        <file>icons/moins.png</file>
-        <file>icons/plus.png</file>
-        <file>icons/refgeo.png</file>
-        <file>icons/refresh.png</file>
-        <file>icons/RFG.png</file>
-        <file>icons/select_export.png</file>
-        <file>icons/view.png</file>
-    </qresource>
+  <qresource prefix="/plugins/Geonature-GIS-main">
+    <file>icons/check.png</file>
+    <file>icons/filter.png</file>
+    <file>icons/lpo.jpeg</file>
+    <file>icons/lupsig.png</file>
+    <file>icons/plusfilter.png</file>
+    <file>icons/uncheck.png</file>
+    <file>icon.png</file>
+    <file>icons/about.svg</file>
+    <file>icons/connexion.svg</file>
+    <file>icons/executer_traitement.png</file>
+    <file>icons/export_g.png</file>
+    <file>icons/export_w.png</file>
+    <file>icons/GeoNature.png</file>
+    <file>icons/geonaturegis_full_logo.png</file>
+    <file>icons/help.png</file>
+    <file>icons/moins.png</file>
+    <file>icons/plus.png</file>
+    <file>icons/refgeo.png</file>
+    <file>icons/refresh.png</file>
+    <file>icons/RFG.png</file>
+    <file>icons/select_export.png</file>
+    <file>icons/view.png</file>
+  </qresource>
 </RCC>

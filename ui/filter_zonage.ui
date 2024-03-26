@@ -135,7 +135,7 @@
     </layout>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="bb_zonefilter">
+    <widget class="QDialogButtonBox" name="btnBox">
      <property name="font">
       <font>
        <family>Arial</family>
@@ -158,7 +158,7 @@
  <resources/>
  <connections>
   <connection>
-   <sender>bb_zonefilter</sender>
+   <sender>btnBox</sender>
    <signal>accepted()</signal>
    <receiver>select_zone</receiver>
    <slot>accept()</slot>
@@ -174,7 +174,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>bb_zonefilter</sender>
+   <sender>btnBox</sender>
    <signal>rejected()</signal>
    <receiver>select_zone</receiver>
    <slot>reject()</slot>

@@ -32,12 +32,13 @@ class SelectExportWidget(QDialog, form_select_export):
         self.username = wusername
         self.psw = wpsw
 
-        self.selected_view_name = []  
-        self.selected_view_path = []
+        self.selected_export_name = []  
+        self.selected_view_schema = []
+        self.selected_view_name = []
         self.geom_field = []
         self.srid = []
         self.description = []
-
+        self.pk_column =[]
 
         self.filterText = ""
         self.pb_rechercher.clicked.connect(self.filtreRechercher)
@@ -45,7 +46,9 @@ class SelectExportWidget(QDialog, form_select_export):
         self.lw_list_view.itemSelectionChanged.connect(self.maj_lbl_descript_detail)  # Ajout du signal
         
         self.getExports(self.filterText)
-   
+
+        self.btnBox.accepted.connect(self.accept)
+        self.btnBox.rejected.connect(self.reject)
  
 
     def getExports(self, filterText):
@@ -62,7 +65,7 @@ class SelectExportWidget(QDialog, form_select_export):
         if (not db.open()):
             QMessageBox.critical(self, "Erreur", "Impossible de se connecter à la base de données ...", QMessageBox.Ok)
         else:
-                wsql =  "SELECT t_exports.id||' - '||t_exports.label as id_label, t_exports.desc , t_exports.schema_name||'.'||t_exports.view_name, geometry_field , geometry_srid "
+                wsql =  "SELECT t_exports.id||' - '||t_exports.label as id_label, t_exports.desc , t_exports.schema_name, t_exports.view_name, geometry_field , geometry_srid, view_pk_column "
                 wsql += "FROM gn_exports.t_exports "
                 wsql += "WHERE  t_exports.id||' - '||t_exports.label ILIKE '%" + filterText + "%' "
                 # wsql += "ORDER BY id_label;"
@@ -78,7 +81,7 @@ class SelectExportWidget(QDialog, form_select_export):
                         # on crée un item qui contient à la fois le texte présenté à l'utilisateur
                         item = QListWidgetItem(f"{wquery.value(0)}")
                         # et les données associées
-                        data = (wquery.value(0), wquery.value(1), wquery.value(2), wquery.value(3), wquery.value(4))
+                        data = (wquery.value(0), wquery.value(1), wquery.value(2), wquery.value(3), wquery.value(4), wquery.value(5), wquery.value(6))
                         item.setData(Qt.UserRole, data) #256 = constante renvoyée par Qt.UserRole (bug avec Qt.UserRole sur certains pc)
                         self.lw_list_view.addItem(item)
                 
@@ -105,6 +108,14 @@ class SelectExportWidget(QDialog, form_select_export):
         self.le_select.clear() 
         self.lw_list_view.clear()
         self.selected_view_path = ""
+        
+        self.selected_export_name = []  
+        self.selected_view_schema = []
+        self.selected_view_name = []
+        self.geom_field = []
+        self.srid = []
+        self.description = []
+        self.pk_column =[]
         QDialog.reject(self)
 
 
@@ -121,20 +132,23 @@ class SelectExportWidget(QDialog, form_select_export):
                 # print(data)
                 # print(selection.data(256))
 
-                self.selected_view_name.append(data[0])
+                self.selected_export_name.append(data[0])
                 self.description.append(data[1])
-                self.selected_view_path.append(data[2])
-                self.geom_field.append(data[3])
-                self.srid.append(data[4])
+                self.selected_view_schema.append(data[2])
+                self.selected_view_name.append(data[3])
+                self.geom_field.append(data[4])
+                self.srid.append(data[5])
+                self.pk_column.append(data[6])
 
         else : 
               QMessageBox.warning(self, u"Aucun Export sélectioné.", QMessageBox.Ok)
 
-        print(self.selected_view_name)
-        print(self.description)
-        print(self.selected_view_path)
-        print(self.geom_field)
-        print(self.srid)
+        # print(self.selected_export_name)
+        # print(self.description)
+        # print(self.selected_view_schema)
+        # print(self.selected_view_name)
+        # print(self.geom_field)
+        # print(self.srid)
 
         QDialog.accept(self)
 

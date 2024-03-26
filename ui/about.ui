@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>660</width>
-    <height>639</height>
+    <width>716</width>
+    <height>760</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -249,7 +249,7 @@ color: rgb(0, 85, 127);</string>
          <string notr="true">;</string>
         </property>
         <property name="text">
-         <string>Version : 0.2</string>
+         <string>Version : 1.0</string>
         </property>
        </widget>
       </item>
@@ -266,17 +266,17 @@ color: rgb(0, 85, 127);</string>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <widget class="QLabel" name="lbl_lpo">
+       <widget class="QLabel" name="lbl_geonature">
         <property name="minimumSize">
          <size>
-          <width>200</width>
-          <height>100</height>
+          <width>150</width>
+          <height>70</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>200</width>
-          <height>100</height>
+          <width>150</width>
+          <height>70</height>
          </size>
         </property>
         <property name="text">
@@ -291,17 +291,17 @@ color: rgb(0, 85, 127);</string>
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="lbl_geonat">
+       <widget class="QLabel" name="lbl_geonature_gis">
         <property name="minimumSize">
          <size>
           <width>200</width>
-          <height>70</height>
+          <height>50</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
           <width>200</width>
-          <height>70</height>
+          <height>50</height>
          </size>
         </property>
         <property name="text">
@@ -316,16 +316,52 @@ color: rgb(0, 85, 127);</string>
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="lbl_lupsig">
+       <widget class="QLabel" name="lbl_lpo">
+        <property name="minimumSize">
+         <size>
+          <width>150</width>
+          <height>70</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>150</width>
+          <height>70</height>
+         </size>
+        </property>
         <property name="text">
-         <string>TextLabel</string>
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="../resources.qrc">:/plugins/Geonature-GIS-main/icons/lpo.jpeg</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="lbl_geonatgis">
+       <widget class="QLabel" name="lbl_lupsig">
+        <property name="minimumSize">
+         <size>
+          <width>150</width>
+          <height>70</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>150</width>
+          <height>70</height>
+         </size>
+        </property>
         <property name="text">
-         <string>TextLabel</string>
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="../resources.qrc">:/plugins/Geonature-GIS-main/icons/lupsig.png</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
         </property>
        </widget>
       </item>

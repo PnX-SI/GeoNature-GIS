@@ -14,7 +14,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Filtre - Données additionnelles</string>
+   <string>Filtre - Exports</string>
   </property>
   <property name="modal">
    <bool>true</bool>
@@ -44,7 +44,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QListWidget" name="lw_keys">
+      <widget class="QListWidget" name="lw_fields">
        <property name="minimumSize">
         <size>
          <width>600</width>
@@ -382,7 +382,7 @@
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QLineEdit" name="le_selectkey">
+      <widget class="QLineEdit" name="le_selectfield">
        <property name="minimumSize">
         <size>
          <width>150</width>

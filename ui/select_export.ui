@@ -172,7 +172,7 @@
     </layout>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="bb_viewfilter">
+    <widget class="QDialogButtonBox" name="btnBox">
      <property name="font">
       <font>
        <family>Arial</family>
@@ -195,7 +195,7 @@
  <resources/>
  <connections>
   <connection>
-   <sender>bb_viewfilter</sender>
+   <sender>btnBox</sender>
    <signal>accepted()</signal>
    <receiver>select_view</receiver>
    <slot>accept()</slot>
@@ -211,7 +211,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>bb_viewfilter</sender>
+   <sender>btnBox</sender>
    <signal>rejected()</signal>
    <receiver>select_view</receiver>
    <slot>reject()</slot>

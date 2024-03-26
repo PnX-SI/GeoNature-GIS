@@ -41,28 +41,19 @@ class AddDataFilterWidget(QDialog, form_add_data_filter):
         self.psw = wpsw
 
         print(typeZone)
+
         self.getKeys(typeZone)
 
         self.lw_keys.clicked.connect(self.getValues)
         # Connexion du signal du QPushButton (pb_filtervalue) à la fonction `filtrer_valeurs`
-        # self.pb_filtervalue.clicked.connect(self.filtrer_valeurs)
-        self.le_filtervalue.textChanged.connect(self.filtrer_valeurs)
-        # self.lw_values.itemSelected()
-        # self.loadvaluesexemple()
-        # self.cb_logical.textActivated.connect()
-        # self.cb_keys.textActivated.connect()
-        
 
-        # self.cb_operator.textActivated.connect()
-        # self.le_selectvalue..connect()
+        self.le_filtervalue.textChanged.connect(self.filtrer_valeurs)
+
         self.lw_values.itemDoubleClicked.connect(self.valeurVersLineEdit)
 
         self.pb_add.clicked.connect(self.addQuery)
         self.pb_remove.clicked.connect(self.removeQuery)
 
-
-
-        # self.pb_annuler.clicked.connect(self.cancel)
         self.btnBox.accepted.connect(self.accept)
         self.btnBox.rejected.connect(self.reject)
 
@@ -185,25 +176,32 @@ class AddDataFilterWidget(QDialog, form_add_data_filter):
         elif self.cb_operator.currentText() == "FINI PAR":
             operator_value = f" ILIKE '%{value}' "
         elif self.cb_operator.currentText() == "PAS EGAL":
-            operator_value = f" != {value} "
+            operator_value = f" != '{value}' "
         elif self.cb_operator.currentText() == "EGAL":
-            operator_value = f" = {value} "
+            operator_value = f" = '{value}' "
         elif self.cb_operator.currentText() == ">":
-            operator_value = f" > {value} "
+            operator_value = f" > '{value}' "
         elif self.cb_operator.currentText() == "<":
-            operator_value = f" < {value} "
+            operator_value = f" < '{value}' "
         elif self.cb_operator.currentText() == ">=":
-            operator_value = f" >= {value} "
+            operator_value = f" >= '{value}' "
         elif self.cb_operator.currentText() == "<=":
-            operator_value = f" <= {value} "
-
+            operator_value = f" <= '{value}' "
+     
 
         # print(self.cb_operator.currentText())
         # print(operator_value)
-    
-        query = f"{logical} {key} {operator_value}"
-        item = QListWidgetItem(query)
-        self.lw_queryresult.addItem(item)
+        query = ""
+        if self.le_selectvalue.text() != "" and self.le_selectkey.text() != "":
+            query = f"{logical} additional_data ->> '{key}' {operator_value}"
+            query = query.rstrip(', ')
+            print(query)
+        else:
+            QMessageBox.information(self, "Information", "veuillez sélectionner une valeur", QMessageBox.Ok)
+        
+        if query != "":
+            item = QListWidgetItem(query)
+            self.lw_queryresult.addItem(item)
          
     def removeQuery(self):
         selected_items = self.lw_queryresult.selectedItems()
