@@ -117,13 +117,17 @@ class ExportWidget(QDockWidget, form_export):
         self.srid = self.connexionSelect.srid[0]
         pk_column = self.connexionSelect.pk_column[0]
 
-        if self.connexionFilter.filter_result != [] :
-            print(self.connexionFilter.filter_result)
-            filter = " ".join(self.connexionFilter.filter_result)
-            filter += " AND "
+        if self.connexionFilter:
+            if self.connexionFilter.filter_result != [] :
+                print(self.connexionFilter.filter_result)
+                filter = " ".join(self.connexionFilter.filter_result)
+                filter += " AND "
+            else:
+                filter = ""
         else:
             filter = ""
 
+       
 
         wuri_point = QgsDataSourceUri()
         wuri_ligne = QgsDataSourceUri()
@@ -252,11 +256,11 @@ class ExportWidget(QDockWidget, form_export):
                     self.multiligne = False
                     
             if self.vlayer_multipoly.featureCount() > 0 :
-                if self.vlayer_multipoly.isValid() and self.vlayer_point.featureCount() > 0 :
+                if self.vlayer_multipoly.isValid():
                     print("vlayer valide multipoly")
                     QMessageBox.information(self, "Information", "Couche valide !", QMessageBox.Ok)
                     QgsProject.instance().addMapLayer(self.vlayer_multipoly, False)
-                    self.multipoly = True
+            
                     self.lw_typegeomresult.addItem(f"MultiPolygones ({self.vlayer_multipoly.featureCount()})")
                     self.geomtype = "multipoly"
 
@@ -272,81 +276,19 @@ class ExportWidget(QDockWidget, form_export):
     
         for selection in self.lw_typegeomresult.selectedItems():
 
-            if self.point is True :
-                # self.vlayer_point = QgsProject.instance().mapLayersByName(f"{self.nom_export}_{self.srid}_point")[0]# RAJOUTER TYPE GEOM
-                root = QgsProject.instance().layerTreeRoot()
-                noeudCouche0 = QgsLayerTreeLayer(self.vlayer_point)
-                root.insertChildNode(0, noeudCouche0)
-                # Zommer sur la couche ajoutée
-                iface = qgis.utils.iface
-                canvas = iface.mapCanvas()
-                layer = QgsProject.instance().mapLayersByName(f"{self.nom_export}_{self.srid}_{self.geomtype}")[0]
-                canvas.setExtent(layer.extent())
-                canvas.refresh()
+            # if self.point is True :
+            vlayer = QgsProject.instance().mapLayersByName("nom de la couche")[0]# RAJOUTER item DATA nom couche
+            root = QgsProject.instance().layerTreeRoot()
+            noeudCouche = QgsLayerTreeLayer(vlayer)
+            root.insertChildNode(0, noeudCouche)
 
+            # Zommer sur la couche ajoutée
+            iface = qgis.utils.iface
+            canvas = iface.mapCanvas()
+            # layer = QgsProject.instance().mapLayersByName("nom de la couche")[0]
+            canvas.setExtent(vlayer.extent())
+            canvas.refresh()
 
-            elif self.ligne is True :
-                # self.vlayer_ligne = QgsProject.instance().mapLayersByName(f"{self.nom_export}_{self.srid}_ligne")[0]# RAJOUTER TYPE GEOM
-                root = QgsProject.instance().layerTreeRoot()
-                noeudCouche1 = QgsLayerTreeLayer( self.vlayer_ligne)
-                root.insertChildNode(0, noeudCouche1)
-                # Zommer sur la couche ajoutée
-                iface = qgis.utils.iface
-                canvas = iface.mapCanvas()
-                layer = QgsProject.instance().mapLayersByName(f"{self.nom_export}_{self.srid}_{self.geomtype}")[0]
-                canvas.setExtent(layer.extent())
-                canvas.refresh()
-
-            elif self.poly is True :
-                # self.vlayer_poly = QgsProject.instance().mapLayersByName(f"{self.nom_export}_{self.srid}_poly")[0]# RAJOUTER TYPE GEOM
-                root = QgsProject.instance().layerTreeRoot()
-                noeudCouche2 = QgsLayerTreeLayer(self.vlayer_poly)
-                root.insertChildNode(0, noeudCouche2)
-                # Zommer sur la couche ajoutée
-                iface = qgis.utils.iface
-                canvas = iface.mapCanvas()
-                layer = QgsProject.instance().mapLayersByName(f"{self.nom_export}_{self.srid}_{self.geomtype}")[0]
-                canvas.setExtent(layer.extent())
-                canvas.refresh()
-
-            elif self.multipoint is True :
-                # self.vlayer_multipoint = QgsProject.instance().mapLayersByName(f"{self.nom_export}_{self.srid}_multipoint")[0]# RAJOUTER TYPE GEOM
-                root = QgsProject.instance().layerTreeRoot()
-                noeudCouche3 = QgsLayerTreeLayer(self.vlayer_multipoint)
-                root.insertChildNode(0, noeudCouche3)
-                # Zommer sur la couche ajoutée
-                iface = qgis.utils.iface
-                canvas = iface.mapCanvas()
-                layer = QgsProject.instance().mapLayersByName(f"{self.nom_export}_{self.srid}_{self.geomtype}")[0]
-                canvas.setExtent(layer.extent())
-                canvas.refresh()
-
-            elif self.multiligne  is True :
-                # self.vlayer_multiligne = QgsProject.instance().mapLayersByName(f"{self.nom_export}_{self.srid}_multiligne")[0]# RAJOUTER TYPE GEOM
-                root = QgsProject.instance().layerTreeRoot()
-                noeudCouche4 = QgsLayerTreeLayer(self.vlayer_multiligne)
-                root.insertChildNode(0, noeudCouche4)
-                # Zommer sur la couche ajoutée
-                iface = qgis.utils.iface
-                canvas = iface.mapCanvas()
-                layer = QgsProject.instance().mapLayersByName(f"{self.nom_export}_{self.srid}_{self.geomtype}")[0]
-                canvas.setExtent(layer.extent())
-                canvas.refresh()
-
-            elif self.multipoly is True :
-                # self.vlayer_multipoly = QgsProject.instance().mapLayersByName(f"{self.nom_export}_{self.srid}_multipoly")[0]# RAJOUTER TYPE GEOM
-                root = QgsProject.instance().layerTreeRoot()
-                noeudCouche5 = QgsLayerTreeLayer(self.vlayer_multipoly)
-                root.insertChildNode(0, noeudCouche5)     
-                # Zommer sur la couche ajoutée
-                iface = qgis.utils.iface
-                canvas = iface.mapCanvas()
-                layer = QgsProject.instance().mapLayersByName(f"{self.nom_export}_{self.srid}_{self.geomtype}")[0]
-                canvas.setExtent(layer.extent())
-                canvas.refresh()
-
-        # root = QgsProject.instance().layerTreeRoot()
-        # print(len(root.children()))
         
 
     def exporter(self): # TO DO : EXPORTER AU DIFFERENT FORMATS
@@ -362,6 +304,7 @@ class ExportWidget(QDockWidget, form_export):
         selection_format = self.cb_expformat.currentText()
 
         for selection in self.lw_typegeomresult.selectedItems():
+
             if selection_format == "GeoJSON":
                 layer = QgsProject.instance().mapLayersByName(f"{self.nom_export}_{self.srid}_{self.geomtype}")[0]# rajouter le type de GEOM en plus + ne fonctionne que si couche dans arbre de couche 
                 # layer = QgsProject.instance().mapLayers()[0]
@@ -383,9 +326,11 @@ class ExportWidget(QDockWidget, form_export):
                 if os.path.exists(path_file):
                     os.remove(path_file)
 
-                unCrs = QgsCoordinateReferenceSystem(self.srid, QgsCoordinateReferenceSystem.EpsgCrsId)
-                print(unCrs)
-                error, message = QgsVectorFileWriter.writeAsVectorFormat(layer, path_file, "utf-8", unCrs, 'GeoJSON') 
+                
+                options = QgsVectorFileWriter.SaveVectorOptions()
+                options.driverName = 'GeoJSON'
+                context = QgsProject.instance().transformContext()
+                error, message, _, _ = QgsVectorFileWriter.writeAsVectorFormatV3(layer, path_file, context, options)
                 if error > 1 :
                     print("error:", error)
                     print("message:", message)
@@ -416,9 +361,13 @@ class ExportWidget(QDockWidget, form_export):
                 if os.path.exists(path_file):
                     os.remove(path_file)
 
-                unCrs = QgsCoordinateReferenceSystem(self.srid, QgsCoordinateReferenceSystem.EpsgCrsId)
-                print(unCrs)
-                error, message = QgsVectorFileWriter.writeAsVectorFormat(layer, path_file, "utf-8", unCrs, 'GeoPackage') 
+                # unCrs = QgsCoordinateReferenceSystem(self.srid, QgsCoordinateReferenceSystem.EpsgCrsId)
+                # print(unCrs)
+                # error, message = QgsVectorFileWriter.writeAsVectorFormat(layer, path_file, "utf-8", unCrs, 'GeoPackage') 
+                options = QgsVectorFileWriter.SaveVectorOptions()
+                options.driverName = 'GeoPackage'
+                context = QgsProject.instance().transformContext()
+                error, message, _, _ = QgsVectorFileWriter.writeAsVectorFormatV3(layer, path_file, context, options)
                 if error > 1 :
                     print("error:", error)
                     print("message:", message)
@@ -449,9 +398,14 @@ class ExportWidget(QDockWidget, form_export):
                 if os.path.exists(path_file):
                     os.remove(path_file)
 
-                unCrs = QgsCoordinateReferenceSystem(self.srid, QgsCoordinateReferenceSystem.EpsgCrsId)
-                print(unCrs)
-                error, message = QgsVectorFileWriter.writeAsVectorFormat(layer, path_file, "utf-8", unCrs, 'csv') 
+                # unCrs = QgsCoordinateReferenceSystem(self.srid, QgsCoordinateReferenceSystem.EpsgCrsId)
+                # print(unCrs)
+                # error, message = QgsVectorFileWriter.writeAsVectorFormat(layer, path_file, "utf-8", unCrs, 'csv')
+                options = QgsVectorFileWriter.SaveVectorOptions()
+                options.driverName = 'csv'
+                context = QgsProject.instance().transformContext()
+                error, message, _, _ = QgsVectorFileWriter.writeAsVectorFormatV3(layer, path_file, context, options)
+
                 if error > 1 :
                     print("error:", error)
                     print("message:", message)
@@ -481,9 +435,13 @@ class ExportWidget(QDockWidget, form_export):
                 if os.path.exists(path_file):
                     os.remove(path_file)
 
-                unCrs = QgsCoordinateReferenceSystem(self.srid, QgsCoordinateReferenceSystem.EpsgCrsId)
-                print(unCrs)
-                error, message = QgsVectorFileWriter.writeAsVectorFormat(layer, path_file, "utf-8", unCrs, 'xlsx') 
+                # unCrs = QgsCoordinateReferenceSystem(self.srid, QgsCoordinateReferenceSystem.EpsgCrsId)
+                # print(unCrs)
+                # error, message = QgsVectorFileWriter.writeAsVectorFormat(layer, path_file, "utf-8", unCrs, 'xlsx') 
+                options = QgsVectorFileWriter.SaveVectorOptions()
+                options.driverName = 'xlsx'
+                context = QgsProject.instance().transformContext()
+                error, message, _, _ = QgsVectorFileWriter.writeAsVectorFormatV3(layer, path_file, context, options)
                 if error > 1 :
                     print("error:", error)
                     print("message:", message)
