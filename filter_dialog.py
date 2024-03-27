@@ -47,8 +47,11 @@ class FilterWidget(QDialog, form_connect):
         self.pb_add.clicked.connect(self.addQuery)
         self.pb_remove.clicked.connect(self.removeQuery)
 
-        
+        self.btnBox.accepted.connect(self.accept)
+        self.btnBox.rejected.connect(self.reject)
+
         self.getFields()
+
    
 
     def getFields(self): # 0  EN COURS DE DEV ------------------------------------------------
