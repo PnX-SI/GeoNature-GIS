@@ -47,9 +47,6 @@ class FilterWidget(QDialog, form_connect):
         self.pb_add.clicked.connect(self.addQuery)
         self.pb_remove.clicked.connect(self.removeQuery)
 
-        self.btnBox.accepted.connect(self.accept)
-        self.btnBox.rejected.connect(self.reject)
-        
         
         self.getFields()
    
@@ -189,7 +186,7 @@ class FilterWidget(QDialog, form_connect):
         # print(operator_value)
         query = ""
         if self.le_selectvalue.text() != "" and self.le_selectfield.text() != "":
-            query = f"{logical} \"{field}\" {operator_value}"  # 0 ----- A MODIFIER POUR QUE FIELD SOIT ENTRE ""
+            query = f"{logical} \"{field}\" {operator_value}"  
         else:
             QMessageBox.information(self, "Information", "veuillez sélectionner une valeur", QMessageBox.Ok)
 

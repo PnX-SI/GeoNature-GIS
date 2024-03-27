@@ -70,6 +70,7 @@ class ExportWidget(QDockWidget, form_export):
         self.vlayer_multipoint = QgsVectorLayer()
         self.vlayer_multiligne = QgsVectorLayer()
         self.vlayer_multipoly = QgsVectorLayer()
+        self.nom_couche = ""
 
     def openSelectExport(self):
         self.connexionSelect = SelectExportWidget(self.interfaceFenetres, self.host, self.port, self.bdd, self.username, self.psw)
@@ -127,8 +128,6 @@ class ExportWidget(QDockWidget, form_export):
         else:
             filter = ""
 
-       
-
         wuri_point = QgsDataSourceUri()
         wuri_ligne = QgsDataSourceUri()
         wuri_poly = QgsDataSourceUri()
@@ -177,112 +176,125 @@ class ExportWidget(QDockWidget, form_export):
             self.vlayer_multiligne = QgsVectorLayer(wuri_multiligne.uri(), f"{self.nom_export}_{self.srid}_multiligne", "postgres")
             self.vlayer_multipoly = QgsVectorLayer(wuri_multipoly.uri(), f"{self.nom_export}_{self.srid}_multipoly", "postgres")
 
-            
-            self.point = False
-            self.ligne = False
-            self.poly = False
-            self.multipoint = False
-            self.multiligne = False
-            self.multipoly = False
-
-
             if self.vlayer_point.featureCount() > 0 :
                 if self.vlayer_point.isValid() :
                     print(self.vlayer_point.featureCount())
                     print("vlayer valide point")
                     QMessageBox.information(self, "Information", "Couche valide !", QMessageBox.Ok)
                     QgsProject.instance().addMapLayer(self.vlayer_point, False)
-                    self.point = True
-                    self.lw_typegeomresult.addItem(f"Points ({self.vlayer_point.featureCount()})")
-                    self.geomtype = "point"
+                    # on crée un item qui contient à la fois le texte présenté à l'utilisateur
+                    item = QListWidgetItem(f"Points ({self.vlayer_point.featureCount()})")
+                    # et les données associées
+                    data = self.vlayer_point.name()
+                    print(data)
+                    item.setData(256, data) #256 = constante renvoyée par Qt.UserRole (bug avec Qt.UserRole sur certains pc)
+                    self.lw_typegeomresult.addItem(item)
                 else:
                     QMessageBox.critical(self, "Erreur", "Couche non valide", QMessageBox.Ok)
                     print("vlayer non valid")
-                    self.point = False
 
             if self.vlayer_ligne.featureCount() > 0 :
                 if self.vlayer_ligne.isValid() :
                     print("vlayer valide ligne")
                     QMessageBox.information(self, "Information", "Couche valide !", QMessageBox.Ok)
                     QgsProject.instance().addMapLayer(self.vlayer_ligne, False)
-                    self.ligne = True
-                    self.lw_typegeomresult.addItem(f"Lignes ({self.vlayer_ligne.featureCount()})")
-                    self.geomtype = "ligne"
+                    # on crée un item qui contient à la fois le texte présenté à l'utilisateur
+                    item = QListWidgetItem(f"Lignes ({self.vlayer_ligne.featureCount()})")
+                    # et les données associées
+                    data = self.vlayer_ligne.name()
+                    print(data)
+                    item.setData(256,data)  # 256 = constante renvoyée par Qt.UserRole (bug avec Qt.UserRole sur certains pc)
+                    self.lw_typegeomresult.addItem(item)
+
        
                 else:
                     QMessageBox.critical(self, "Erreur", "Couche non valide", QMessageBox.Ok)
                     print("vlayer non valid")
-                    self.ligne = False
-            
+
             if self.vlayer_poly.featureCount() > 0 :
                 if self.vlayer_poly.isValid() :
                     print(self.vlayer_point.featureCount())
                     print("vlayer valide poly")
                     QMessageBox.information(self, "Information", "Couche valide !", QMessageBox.Ok)
                     QgsProject.instance().addMapLayer(self.vlayer_poly, False)
-                    self.poly = True    
-                    self.lw_typegeomresult.addItem(f"Polygone ({self.vlayer_poly.featureCount()})")
-                    self.geomtype = "poly"
+                    # on crée un item qui contient à la fois le texte présenté à l'utilisateur
+                    item = QListWidgetItem(f"Polygone ({self.vlayer_poly.featureCount()})")
+                    # et les données associées
+                    data = self.vlayer_poly.name()
+                    print(data)
+                    item.setData(256,data)  # 256 = constante renvoyée par Qt.UserRole (bug avec Qt.UserRole sur certains pc)
+                    self.lw_typegeomresult.addItem(item)
 
                 else:
                     QMessageBox.critical(self, "Erreur", "Couche non valide", QMessageBox.Ok)
                     print("vlayer non valid")
-                    self.poly = False
 
             if self.vlayer_multipoint.featureCount() > 0 :
                 if self.vlayer_multipoint.isValid():
                     print("vlayer valide multipoint")
                     QMessageBox.information(self, "Information", "Couche valide !", QMessageBox.Ok)
                     QgsProject.instance().addMapLayer(self.vlayer_multipoint, False)
-                    self.multipoint = True
-                    self.lw_typegeomresult.addItem(f"MultiPoints ({self.vlayer_multipoint.featureCount()})")
+                    # on crée un item qui contient à la fois le texte présenté à l'utilisateur
+                    item = QListWidgetItem(f"MultiPoints ({self.vlayer_multipoint.featureCount()})")
+                    # et les données associées
+                    data = self.vlayer_multipoint.name()
+                    print(data)
+                    item.setData(256,data)  # 256 = constante renvoyée par Qt.UserRole (bug avec Qt.UserRole sur certains pc)
+                    self.lw_typegeomresult.addItem(item)
                 else:
                     QMessageBox.critical(self, "Erreur", "Couche non valide", QMessageBox.Ok)
                     print("vlayer non valid multipoint")
-                    self.multipoint = False
-                    self.geomtype = "multipoint"
+
 
             if self.vlayer_multiligne.featureCount() > 0 :
                 if self.vlayer_multiligne.isValid() :
                     print("vlayer valide multiligne")
                     QMessageBox.information(self, "Information", "Couche valide !", QMessageBox.Ok)
                     QgsProject.instance().addMapLayer(self.vlayer_multiligne, False)
-                    self.multiligne = True
-                    self.lw_typegeomresult.addItem(f"MultiLignes ({self.vlayer_multiligne.featureCount()})")
-                    self.geomtype = "multiligne"
+                    # on crée un item qui contient à la fois le texte présenté à l'utilisateur
+                    item = QListWidgetItem(f"MultiLignes ({self.vlayer_multiligne.featureCount()})")
+                    # et les données associées
+                    data = self.vlayer_multiligne.name()
+                    print(data)
+                    item.setData(256,data)  # 256 = constante renvoyée par Qt.UserRole (bug avec Qt.UserRole sur certains pc)
+                    self.lw_typegeomresult.addItem(item)
                 else:
                     QMessageBox.critical(self, "Erreur", "Couche non valide", QMessageBox.Ok)
                     print("vlayer non valid")
-                    self.multiligne = False
-                    
+
             if self.vlayer_multipoly.featureCount() > 0 :
                 if self.vlayer_multipoly.isValid():
                     print("vlayer valide multipoly")
                     QMessageBox.information(self, "Information", "Couche valide !", QMessageBox.Ok)
                     QgsProject.instance().addMapLayer(self.vlayer_multipoly, False)
-            
-                    self.lw_typegeomresult.addItem(f"MultiPolygones ({self.vlayer_multipoly.featureCount()})")
-                    self.geomtype = "multipoly"
+                    # on crée un item qui contient à la fois le texte présenté à l'utilisateur
+                    item = QListWidgetItem(f"Multipoly ({self.vlayer_multipoly.featureCount()})")
+                    # et les données associées
+                    data = self.vlayer_multipoly.name()
+                    print(data)
+                    item.setData(256,data)  # 256 = constante renvoyée par Qt.UserRole (bug avec Qt.UserRole sur certains pc)
+                    self.lw_typegeomresult.addItem(item)
 
                 else:
                     QMessageBox.critical(self, "Erreur", "Couche non valide", QMessageBox.Ok)
                     print("vlayer non valid")
-                    self.multipoly = False
-       
+
            
                 
-    def loadInQGIS(self): 
-
+    def loadInQGIS(self):
     
         for selection in self.lw_typegeomresult.selectedItems():
 
+            data = selection.data(Qt.UserRole)
+            self.nom_couche = data[0]
+
             # if self.point is True :
-            vlayer = QgsProject.instance().mapLayersByName("nom de la couche")[0]# RAJOUTER item DATA nom couche
+            vlayer = QgsProject.instance().mapLayersByName(self.nom_couche)[0]
             root = QgsProject.instance().layerTreeRoot()
             noeudCouche = QgsLayerTreeLayer(vlayer)
             root.insertChildNode(0, noeudCouche)
 
-            # Zommer sur la couche ajoutée
+            # Zoomer sur la couche ajoutée
             iface = qgis.utils.iface
             canvas = iface.mapCanvas()
             # layer = QgsProject.instance().mapLayersByName("nom de la couche")[0]
@@ -306,7 +318,7 @@ class ExportWidget(QDockWidget, form_export):
         for selection in self.lw_typegeomresult.selectedItems():
 
             if selection_format == "GeoJSON":
-                layer = QgsProject.instance().mapLayersByName(f"{self.nom_export}_{self.srid}_{self.geomtype}")[0]# rajouter le type de GEOM en plus + ne fonctionne que si couche dans arbre de couche 
+                layer = QgsProject.instance().mapLayersByName(self.nom_couche)[0]# rajouter le type de GEOM en plus + ne fonctionne que si couche dans arbre de couche
                 # layer = QgsProject.instance().mapLayers()[0]
                 self.nom_export = self.nom_export.replace("|","")
                 self.nom_export = self.nom_export.replace(" ","_")
@@ -329,6 +341,11 @@ class ExportWidget(QDockWidget, form_export):
                 
                 options = QgsVectorFileWriter.SaveVectorOptions()
                 options.driverName = 'GeoJSON'
+                lesChamps = []
+                for unChamp in layer.fields():
+                    if unChamp.typeName().lower() != "geometry":
+                        lesChamps.append(layer.fields().indexFromName(unChamp.name()))
+                options.attributes = lesChamps # attend une liste d'index de champ
                 context = QgsProject.instance().transformContext()
                 error, message, _, _ = QgsVectorFileWriter.writeAsVectorFormatV3(layer, path_file, context, options)
                 if error > 1 :
@@ -343,7 +360,7 @@ class ExportWidget(QDockWidget, form_export):
 
             elif selection_format == "GeoPackage":
                 # layer = self.vlayer
-                layer = QgsProject.instance().mapLayersByName(f"{self.nom_export}_{self.srid}_{self.geomtype}")[0]# rajouter le type de GEOM en plus + ne fonctionne que si couche dans arbre de couche 
+                layer = QgsProject.instance().mapLayersByName(self.nom_couche)[0]# rajouter le type de GEOM en plus + ne fonctionne que si couche dans arbre de couche
                 self.nom_export = self.nom_export.replace("|","")
                 self.nom_export = self.nom_export.replace(" ","_")
                 self.nom_export = self.nom_export.replace(":","")
@@ -366,6 +383,11 @@ class ExportWidget(QDockWidget, form_export):
                 # error, message = QgsVectorFileWriter.writeAsVectorFormat(layer, path_file, "utf-8", unCrs, 'GeoPackage') 
                 options = QgsVectorFileWriter.SaveVectorOptions()
                 options.driverName = 'GeoPackage'
+                lesChamps = []
+                for unChamp in layer.fields():
+                    if unChamp.typeName().lower() != "geometry":
+                        lesChamps.append(layer.fields().indexFromName(unChamp.name()))
+                options.attributes = lesChamps # attend une liste d'index de champ
                 context = QgsProject.instance().transformContext()
                 error, message, _, _ = QgsVectorFileWriter.writeAsVectorFormatV3(layer, path_file, context, options)
                 if error > 1 :
@@ -380,7 +402,7 @@ class ExportWidget(QDockWidget, form_export):
 
             elif selection_format == "CSV":
                 # layer = self.vlayer
-                layer = QgsProject.instance().mapLayersByName(f"{self.nom_export}_{self.srid}_{self.geomtype}")[0]# rajouter le type de GEOM en plus + ne fonctionne que si couche dans arbre de couche 
+                layer = QgsProject.instance().mapLayersByName(self.nom_couche)[0]# rajouter le type de GEOM en plus + ne fonctionne que si couche dans arbre de couche
                 self.nom_export = self.nom_export.replace("|","")
                 self.nom_export = self.nom_export.replace(" ","_")
                 self.nom_export = self.nom_export.replace(":","")
@@ -403,6 +425,11 @@ class ExportWidget(QDockWidget, form_export):
                 # error, message = QgsVectorFileWriter.writeAsVectorFormat(layer, path_file, "utf-8", unCrs, 'csv')
                 options = QgsVectorFileWriter.SaveVectorOptions()
                 options.driverName = 'csv'
+                lesChamps = []
+                for unChamp in layer.fields():
+                    if unChamp.typeName().lower() != "geometry":
+                        lesChamps.append(layer.fields().indexFromName(unChamp.name()))
+                options.attributes = lesChamps # attend une liste d'index de champ
                 context = QgsProject.instance().transformContext()
                 error, message, _, _ = QgsVectorFileWriter.writeAsVectorFormatV3(layer, path_file, context, options)
 
@@ -417,7 +444,7 @@ class ExportWidget(QDockWidget, form_export):
 
             elif selection_format == "XLSX":
                 # layer = self.vlayer
-                layer = QgsProject.instance().mapLayersByName(f"{self.nom_export}_{self.srid}_{self.geomtype}")[0]# rajouter le type de GEOM en plus + ne fonctionne que si couche dans arbre de couche 
+                layer = QgsProject.instance().mapLayersByName(self.nom_couche)[0]# rajouter le type de GEOM en plus + ne fonctionne que si couche dans arbre de couche
                 self.nom_export = self.nom_export.replace("|","")
                 self.nom_export = self.nom_export.replace(" ","_")
                 self.nom_export = self.nom_export.replace(":","")
@@ -440,6 +467,11 @@ class ExportWidget(QDockWidget, form_export):
                 # error, message = QgsVectorFileWriter.writeAsVectorFormat(layer, path_file, "utf-8", unCrs, 'xlsx') 
                 options = QgsVectorFileWriter.SaveVectorOptions()
                 options.driverName = 'xlsx'
+                lesChamps = []
+                for unChamp in layer.fields():
+                    if unChamp.typeName().lower() != "geometry":
+                        lesChamps.append(layer.fields().indexFromName(unChamp.name()))
+                options.attributes = lesChamps # attend une liste d'index de champ
                 context = QgsProject.instance().transformContext()
                 error, message, _, _ = QgsVectorFileWriter.writeAsVectorFormatV3(layer, path_file, context, options)
                 if error > 1 :

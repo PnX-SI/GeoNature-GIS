@@ -96,92 +96,9 @@
        <number>7</number>
       </property>
       <property name="verticalSpacing">
-       <number>12</number>
+       <number>10</number>
       </property>
-      <item row="0" column="0" alignment="Qt::AlignTop">
-       <widget class="QLabel" name="lbl_typezonage">
-        <property name="font">
-         <font>
-          <family>Arial</family>
-          <pointsize>9</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="toolTip">
-         <string>A preset to fetch.</string>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">color: rgb(5, 144, 110);</string>
-        </property>
-        <property name="text">
-         <string>Sélection du type de zonage* :</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1" alignment="Qt::AlignHCenter">
-       <widget class="QPushButton" name="pb_filterzonage">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>200</width>
-          <height>35</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>200</width>
-          <height>30</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <family>Arial</family>
-          <pointsize>9</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">color: rgb(5, 144, 110);
-</string>
-        </property>
-        <property name="text">
-         <string>Filtrer le zonage</string>
-        </property>
-        <property name="icon">
-         <iconset resource="../resources.qrc">
-          <normaloff>:/plugins/Geonature-GIS-main/icons/plusfilter.png</normaloff>:/plugins/Geonature-GIS-main/icons/plusfilter.png</iconset>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>30</width>
-          <height>30</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0" colspan="2">
-       <widget class="QLabel" name="lbl_source">
-        <property name="font">
-         <font>
-          <family>Arial</family>
-          <pointsize>9</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">color: rgb(5, 144, 110);</string>
-        </property>
-        <property name="text">
-         <string>Sources (laisser vide pour conserver tout les champs) [optionnel] :</string>
-        </property>
-       </widget>
-      </item>
-      <item row="8" column="1">
+      <item row="9" column="1">
        <layout class="QHBoxLayout" name="HL_chk">
         <property name="bottomMargin">
          <number>5</number>
@@ -234,6 +151,84 @@
         </item>
        </layout>
       </item>
+      <item row="1" column="0" colspan="2">
+       <widget class="QLabel" name="lbl_zonageparam">
+        <property name="maximumSize">
+         <size>
+          <width>700</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Type(s) de zonage(s) sélectionné(s) :</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" alignment="Qt::AlignHCenter">
+       <widget class="QPushButton" name="pb_filterzonage">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>35</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>200</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <family>Arial</family>
+          <pointsize>9</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: rgb(5, 144, 110);
+</string>
+        </property>
+        <property name="text">
+         <string>Filtrer le zonage</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../resources.qrc">
+          <normaloff>:/plugins/Geonature-GIS-main/icons/plusfilter.png</normaloff>:/plugins/Geonature-GIS-main/icons/plusfilter.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="lbl_selectzonage">
+        <property name="font">
+         <font>
+          <family>Arial</family>
+          <pointsize>9</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: rgb(5, 144, 110);</string>
+        </property>
+        <property name="text">
+         <string>Sélection du zonage [optionnel] :</string>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="1">
        <widget class="QListWidget" name="lw_zonage">
         <property name="sizePolicy">
@@ -265,14 +260,42 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="0">
+      <item row="3" column="1" alignment="Qt::AlignHCenter">
+       <widget class="QLabel" name="lbl_infozonage">
+        <property name="text">
+         <string>** Info filtre zonage**</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
        <widget class="QLabel" name="lbl_sourceselectcount">
         <property name="text">
          <string>0  source sélectionnée</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="1" alignment="Qt::AlignHCenter">
+      <item row="0" column="0" alignment="Qt::AlignTop">
+       <widget class="QLabel" name="lbl_typezonage">
+        <property name="font">
+         <font>
+          <family>Arial</family>
+          <pointsize>9</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="toolTip">
+         <string>A preset to fetch.</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: rgb(5, 144, 110);</string>
+        </property>
+        <property name="text">
+         <string>Sélection du type de zonage* :</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1" alignment="Qt::AlignHCenter">
        <widget class="QgsCheckableComboBox" name="ccb_source">
         <property name="minimumSize">
          <size>
@@ -291,8 +314,8 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="lbl_selectzonage">
+      <item row="4" column="0" colspan="2">
+       <widget class="QLabel" name="lbl_source">
         <property name="font">
          <font>
           <family>Arial</family>
@@ -305,23 +328,7 @@
          <string notr="true">color: rgb(5, 144, 110);</string>
         </property>
         <property name="text">
-         <string>Sélection du zonage [optionnel] :</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0" colspan="2">
-       <widget class="QLabel" name="lbl_zonageparam">
-        <property name="maximumSize">
-         <size>
-          <width>700</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Type(s) de zonage(s) sélectionné(s) :</string>
-        </property>
-        <property name="wordWrap">
-         <bool>true</bool>
+         <string>Sources (laisser vide pour conserver tout les champs) [optionnel] :</string>
         </property>
        </widget>
       </item>
@@ -679,7 +686,7 @@ font: 75 10pt &quot;Arial&quot;;</string>
        <enum>QLayout::SetDefaultConstraint</enum>
       </property>
       <property name="bottomMargin">
-       <number>10</number>
+       <number>7</number>
       </property>
       <item row="2" column="2">
        <widget class="QPushButton" name="pb_export">
@@ -714,6 +721,13 @@ color: rgb(255, 255, 255);
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="lbl_folder">
+        <property name="font">
+         <font>
+          <family>Arial</family>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
         <property name="text">
          <string>Dossier</string>
         </property>
@@ -721,6 +735,13 @@ color: rgb(255, 255, 255);
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="lbl_expformat">
+        <property name="font">
+         <font>
+          <family>Arial</family>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
         <property name="text">
          <string>Format</string>
         </property>

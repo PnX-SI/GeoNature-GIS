@@ -47,9 +47,6 @@ class SelectExportWidget(QDialog, form_select_export):
         
         self.getExports(self.filterText)
 
-        self.btnBox.accepted.connect(self.accept)
-        self.btnBox.rejected.connect(self.reject)
- 
 
     def getExports(self, filterText):
 

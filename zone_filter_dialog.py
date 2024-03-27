@@ -49,12 +49,6 @@ class ZoneFilterWidget(QDialog, form_filter_zonage):
         self.getZone(self.typeZone, self.filterText)
    
 
-        self.btnBox.accepted.connect(self.accept)
-        self.btnBox.rejected.connect(self.reject)
-
-
-
-
 
     def getZone(self, typeZone, filterText):
         db = QSqlDatabase.addDatabase("QPSQL", "geonature")

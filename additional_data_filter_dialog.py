@@ -42,6 +42,7 @@ class AddDataFilterWidget(QDialog, form_add_data_filter):
 
         print(typeZone)
 
+        self.lw_keys.clear()
         self.getKeys(typeZone)
 
         self.lw_keys.clicked.connect(self.getValues)
@@ -66,7 +67,7 @@ class AddDataFilterWidget(QDialog, form_add_data_filter):
 #  le champ JSONB se requête comme un dictionnaire 
             self.adf_resultat = []
             self.lw_keys.clear()
-            self.dico.clear
+            self.dico = {}
             
             db = QSqlDatabase.addDatabase("QPSQL", "geonature")
             db.setHostName(self.host)

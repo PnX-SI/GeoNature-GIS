@@ -9,6 +9,7 @@ from PyQt5.QtSql import *
 
 from qgis.core import *
 from qgis.gui import *
+import qgis.utils
 
 import sys, os
 
@@ -86,6 +87,9 @@ class RefGeoWidget(QDockWidget, form_refgeo):
         # Fonction d'execution des filtre
         self.pb_runquery.clicked.connect(self.filterExecuter)
 
+        # Fonction charger dans QGIS
+        self.pb_loadlayer.clicked.connect(self.loadInQGIS)
+
         # Fermer la fenêtre
         self.pb_quit.clicked.connect(self.quitter)
 
@@ -100,6 +104,8 @@ class RefGeoWidget(QDockWidget, form_refgeo):
         self.connexionAddFilter = []
         self.enable = ""
         self.getTypeZonage()
+        self.vlayer = QgsVectorLayer()
+      
 
 
 # ------------------------------------------------ PARAMETRES AVANCES ----------------------------------------------------------------
@@ -294,6 +300,7 @@ class RefGeoWidget(QDockWidget, form_refgeo):
         self.tableAreas = ""
         self.tableLinears = ""
         self.tablePoints = ""
+        self.lbl_infozonage.setText("")
 
         #Source
         self.source = ['']
@@ -324,8 +331,7 @@ class RefGeoWidget(QDockWidget, form_refgeo):
         self.connexionZonage = ZoneFilterWidget(self.interfaceFenetres, self.host, self.port, self.bdd, self.username, self.psw, typeZonage)
         result = self.connexionZonage.exec_()
         if result:
-            return self.connexionZonage.resultZone
-
+            return self.connexionZonage.resultZone, self.maj_lbl_infozonage()
 
 
     def lockAddDataFilter(self):
@@ -349,13 +355,22 @@ class RefGeoWidget(QDockWidget, form_refgeo):
         filtre = " ".join(self.connexionAddFilter.adf_resultat)
         self.lbl_filterparam.setText(f"Filtre: {filtre}")
 
-
+    def maj_lbl_infozonage(self):   
+        filtre = " ".join(self.connexionZonage.resultZone)
+        print(filtre)
+        self.lbl_infozonage.setText(f"Filtre: {filtre}")
 
 
     def varWHERE(self):
         self.querywhere = ""
         if self.connexionZonage != []:
-            self.querywhere += " AND area_name IN ('" + "', '".join(self.connexionZonage.resultZone) + "') "
+
+            if self.table[0] == "l_areas":
+                self.querywhere += " AND area_name IN ('" + "', '".join(self.connexionZonage.resultZone) + "') "
+            if self.table[0] == "l_linears":
+                self.querywhere += " AND linear_name IN ('" + "', '".join(self.connexionZonage.resultZone) + "') "
+            if self.table[0] == "l_points":
+                self.querywhere += " AND point_name IN ('" + "', '".join(self.connexionZonage.resultZone) + "') "
 
         if self.connexionAddFilter != []:
             self.querywhere += "" + " ".join(self.connexionAddFilter.adf_resultat) + " "
@@ -396,83 +411,48 @@ class RefGeoWidget(QDockWidget, form_refgeo):
         # # set host name, port, database name, username and password
         wuri.setConnection(self.host, str(self.port), self.bdd , self.username, self.psw)
 
-        for selection in self.lw_zonage.selectedItems() :
-            # if self.tableAreas != "" :
-            # for i in self.idNomTypeZone[0]:
-            #     if 'surface' in self.idNomTypeZone[i] == True:
+        for uneSelection in self.lw_zonage.selectedItems():
+        #print(uneSelection.data(256))
+            data = uneSelection.data(256) #256 = constante renvoyée par Qt.UserRole (bug avec Qt.UserRole sur certains pc)
+            self.nomtypezone = data[0]
+            nomtable = data[2]
+            id_type = data[3]
+
+            print("ref_geo", nomtable, "geom", "geom IS NOT NULL AND id_type = " + str(id_type) + " " + self.enable + self.querywhere)
+            wuri.setDataSource("ref_geo", nomtable, "geom", "geom IS NOT NULL AND id_type = " + str(id_type) + " " + self.enable + self.querywhere)   
+        
+           
+            self.vlayer = QgsVectorLayer(wuri.uri(), self.nomtypezone, "postgres")
+            if self.vlayer.isValid():
+                print("vlayer valide")
+                QgsProject.instance().addMapLayer(self.vlayer, False)
+                # self.lw_typegeomresult.addItem(self.nomtypezone + " (" + str(self.vlayer.featureCount()) +")")
                 
-        #     if self.idNomTypeZone["id_type"] == "l_areas":
-        # if self.idNomTypeZone.value[1] == "l_areas":
-            print("IT'S A POLYGON LAYER !")
-            
-            for id_type, self.name  in self.idNomTypeZone.items():
-                print(self.name)
-                # print(i)
-                # print(self.source)
-                wuri.setDataSource("ref_geo", "l_areas", "geom", "geom IS NOT NULL AND id_type = " + id_type + " " + self.enable + self.querywhere)
-                # print("ref_geo", "l_areas", "geom", "geom IS NOT NULL AND id_type = " + i + " AND source = " + " OR ".join(self.source) + " " + self.enable)            
-
-                self.vlayer = QgsVectorLayer(wuri.uri(), self.name[0], "postgres")
-                if vlayer.isValid():
-                    print("vlayer valide")
-                    QgsProject.instance().addMapLayer(self.vlayer, False)
-                    self.lw_typegeomresult.addItem(self.name[0] + " (" + str(vlayer.featureCount()) +")")
-                else:
-                    print("vlayer non valid")
-
-                
-
-            if self.idNomTypeZone.value[1] == "l_linears":
-            # if self.tableLinears != "" :
-                print("IT'S A LINE LAYER !")
-                for id_type, self.name  in self.idNomTypeZone.items():
-                    # vérifier que le type zone ne soit pas pris 2 fois ------------------- 
-                    # print(i)
-                    # print(self.source)
-                    wuri.setDataSource("ref_geo", "l_linears", "geom", "geom IS NOT NULL AND id_type = " + id_type + " " + self.enable + self.querywhere)
-                    # print("ref_geo", "l_areas", "geom", "geom IS NOT NULL AND id_type = " + i + " AND source = " + " OR ".join(self.source) + " " + self.enable)            
-
-                    self.vlayer = QgsVectorLayer(wuri.uri(), self.name[0], "postgres")
-                    if vlayer.isValid():
-                        print("vlayer valide")
-                        QgsProject.instance().addMapLayer(self.vlayer, False)
-                        self.lw_typegeomresult.addItem(self.name[0] + " (" + str(vlayer.featureCount()) +")")
-                    else:
-                        print("vlayer non valid")
-
-
-            if self.idNomTypeZone.value[1] == "l_points":
-            # if self.tablePoints != "" :
-                print("IT'S A POINT LAYER !")
-                for id_type, self.name  in self.idNomTypeZone.items():
-                    # print(i)
-                    # print(self.source)
-                    wuri.setDataSource("ref_geo", "l_points", "geom", "geom IS NOT NULL AND id_type = " + id_type + " " + self.enable + self.querywhere)
-                    # print("ref_geo", "l_areas", "geom", "geom IS NOT NULL AND id_type = " + i + " AND source = " + " OR ".join(self.source) + " " + self.enable)            
-
-                    self.vlayer = QgsVectorLayer(wuri.uri(), self.name[0], "postgres")
-                    if vlayer.isValid():
-                        print("vlayer valide")
-                        QgsProject.instance().addMapLayer(self.vlayer, False)
-                        self.lw_typegeomresult.addItem(self.name[0] + " (" + str(vlayer.featureCount()) +")")
-                    else:
-                        print("vlayer non valid")
-                
-            
-
-
+                #déclaration d'un item pour recupérer la donnée
+                item = QListWidgetItem(f"{self.nomtypezone} ({str(self.vlayer.featureCount())})")
+                # et les données associées
+                data = self.vlayer.name()
+                print(data)
+                item.setData(256,data)  # 256 = constante renvoyée par Qt.UserRole (bug avec Qt.UserRole sur certains pc)
+                self.lw_typegeomresult.addItem(item)
+            else:
+                print("vlayer non valid")
+    
 
     def loadInQGIS(self) :
 
         for selection in self.lw_typegeomresult.selectedItems():
+          
+            self.vlayer = QgsProject.instance().mapLayersByName(self.nomtypezone)[0]#RAJOUTER item DATA nom couche
             root = QgsProject.instance().layerTreeRoot()
             noeudCouche0 = QgsLayerTreeLayer(self.vlayer)
             root.insertChildNode(0, noeudCouche0)
+
             # Zommer sur la couche ajoutée
             iface = qgis.utils.iface
             canvas = iface.mapCanvas()
-            layer = QgsProject.instance().mapLayersByName(self.self.name[0])[0]
-            canvas.setExtent(layer.extent())
+            # layer = QgsProject.instance().mapLayersByName(self.nomtypezone)[0]
+            canvas.setExtent(self.vlayer.extent())
             canvas.refresh()
        
 
