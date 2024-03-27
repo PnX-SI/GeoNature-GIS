@@ -583,7 +583,7 @@ color: rgb(255, 255, 255);
        <string notr="true">color: rgb(5, 144, 110);</string>
       </property>
       <property name="text">
-       <string>Types de géométries trouvées : </string>
+       <string>Résultats de la requête :</string>
       </property>
      </widget>
     </item>
@@ -594,6 +594,9 @@ color: rgb(255, 255, 255);
         <width>16777215</width>
         <height>75</height>
        </size>
+      </property>
+      <property name="selectionMode">
+       <enum>QAbstractItemView::MultiSelection</enum>
       </property>
       <property name="selectionRectVisible">
        <bool>false</bool>

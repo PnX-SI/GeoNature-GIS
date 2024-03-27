@@ -136,6 +136,7 @@ class ZoneFilterWidget(QDialog, form_filter_zonage):
         for uneSelection in self.lw_list_zone.selectedItems():
             data = uneSelection.data(256)
             result = data
+            result = result.replace("'","''")
             self.resultZone.append(str(result))
         print(self.resultZone)
         

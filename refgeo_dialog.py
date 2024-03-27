@@ -90,6 +90,9 @@ class RefGeoWidget(QDockWidget, form_refgeo):
         # Fonction charger dans QGIS
         self.pb_loadlayer.clicked.connect(self.loadInQGIS)
 
+        self.pb_export.clicked.connect(self.exporter)
+
+
         # Fermer la fenêtre
         self.pb_quit.clicked.connect(self.quitter)
 
@@ -151,12 +154,6 @@ class RefGeoWidget(QDockWidget, form_refgeo):
                 value = [ self.nomtypezone, nomtable]
                 self.idNomTypeZone[str(id_type)] = value
 
-                if nomtable == "l_areas" :
-                    self.tableAreas = "l_areas"
-                elif nomtable == "l_linears" :
-                    self.tableLinears = "l_linears"
-                elif nomtable == "l_points" :
-                    self.tablePoints = "l_points"  
 
                 self.typeZone.append(str(id_type))  
                 self.table.append(str(nomtable))   
@@ -166,7 +163,7 @@ class RefGeoWidget(QDockWidget, form_refgeo):
 
             self.getSource(self.typeZone)
             # self.selection_table()
-            return self.typeZone, self.table, self.tableAreas, self.tableLinears, self.tablePoints
+            return self.typeZone, self.table
          
    
              
@@ -290,32 +287,6 @@ class RefGeoWidget(QDockWidget, form_refgeo):
             self.lbl_zonageparam.setText(f"Type(s) de zonage(s) sélectionné(s) : {listSelection}")
 
 
-    def reinitialisation(self):
-        print('Réinitialisé !')
-
-        #Zonage
-        self.lw_zonage.clearSelection()
-        self.typeZone = []
-        self.connexionZonage = []
-        self.tableAreas = ""
-        self.tableLinears = ""
-        self.tablePoints = ""
-        self.lbl_infozonage.setText("")
-
-        #Source
-        self.source = ['']
-        self.ccb_source.clear()
-        self.ccb_source.deselectAllOptions()
-
-        #Enable
-        self.rdb_na.setChecked(True)
-
-        #Filtre additionel
-        self.connexionAddFilter = []
-        self.lbl_filterparam.setText("")
-
-        #Type de géométrie trouvée
-        self.lw_typegeomresult.clear()
 
 
     def lockZoneFilter(self):
@@ -404,6 +375,7 @@ class RefGeoWidget(QDockWidget, form_refgeo):
     def filterExecuter(self):
         self.lw_typegeomresult.clear()
         self.varWHERE()
+    
 
 
         wuri = QgsDataSourceUri()
@@ -417,7 +389,7 @@ class RefGeoWidget(QDockWidget, form_refgeo):
             self.nomtypezone = data[0]
             nomtable = data[2]
             id_type = data[3]
-
+            print(self.querywhere)
             print("ref_geo", nomtable, "geom", "geom IS NOT NULL AND id_type = " + str(id_type) + " " + self.enable + self.querywhere)
             wuri.setDataSource("ref_geo", nomtable, "geom", "geom IS NOT NULL AND id_type = " + str(id_type) + " " + self.enable + self.querywhere)   
         
@@ -437,23 +409,35 @@ class RefGeoWidget(QDockWidget, form_refgeo):
                 self.lw_typegeomresult.addItem(item)
             else:
                 print("vlayer non valid")
-    
+
+
+    def retrouveCouche(self, sonNom):
+        vlayer = None
+        dico = QgsProject.instance().mapLayers()
+        for (id, couche) in dico.items():
+            if couche.name() == sonNom:
+                vlayer = couche
+                break
+        return vlayer   
 
     def loadInQGIS(self) :
 
         for selection in self.lw_typegeomresult.selectedItems():
-          
-            self.vlayer = QgsProject.instance().mapLayersByName(self.nomtypezone)[0]#RAJOUTER item DATA nom couche
-            root = QgsProject.instance().layerTreeRoot()
-            noeudCouche0 = QgsLayerTreeLayer(self.vlayer)
-            root.insertChildNode(0, noeudCouche0)
+        
+            # nom_couche = selection.data(Qt.UserRole)
+            nom_couche = selection.data(256)
+            vlayer = self.retrouveCouche(nom_couche)
 
-            # Zommer sur la couche ajoutée
-            iface = qgis.utils.iface
-            canvas = iface.mapCanvas()
-            # layer = QgsProject.instance().mapLayersByName(self.nomtypezone)[0]
-            canvas.setExtent(self.vlayer.extent())
-            canvas.refresh()
+            if vlayer:
+                root = QgsProject.instance().layerTreeRoot()
+                noeudCouche = QgsLayerTreeLayer(vlayer)
+                root.insertChildNode(0, noeudCouche)
+
+                # Zommer sur la couche ajoutée
+                iface = qgis.utils.iface
+                canvas = iface.mapCanvas()
+                canvas.setExtent(vlayer.extent())
+                canvas.refresh()
        
 
     def exporter(self): # TO DO : EXPORTER AU DIFFERENT FORMATS
@@ -467,128 +451,205 @@ class RefGeoWidget(QDockWidget, form_refgeo):
 
         # On récupère le Format choisi par l'utilisateur dans la combobox cb_expformat
         selection_format = self.cb_expformat.currentText()
+        for selection in self.lw_typegeomresult.selectedItems():
+            nom_couche = selection.data(256)
+            print("nom_couche origine: ", nom_couche)
+            layer = self.retrouveCouche(nom_couche)
 
-        if selection_format == "GeoJSON":
-            # for selection in self.lw_typegeomresult.selectedItems() :
-            # layer = self.vlayer
-            layer = QgsProject.instance().mapLayersByName(f"{self.nomtypezone}_")[0]# rajouter le type de GEOM en plus + ne fonctionne que si couche dans arbre de couche 
-            self.nomtypezone = self.nomtypezone.replace("|","")
-            self.nomtypezone = self.nomtypezone.replace(" ","_")
-            self.nomtypezone = self.nomtypezone.replace(":","")
-            self.nomtypezone = self.nomtypezone.replace("*","")
-            self.nomtypezone = self.nomtypezone.replace("[","")
-            self.nomtypezone = self.nomtypezone.replace("]","")
-            print(self.nomtypezone)
-            # FOR TESTING -------------- TBD
-            # output_file = "C:/FUTURE_D/LPSIG/04-PROJETS/02-PROJETS_TUTORES/PLUGIN QGIS LPO/06-PLUGIN/test_export/test.geojson"
-            output_file = f"{self.nomtypezone}_{self.srid}.geojson"
-            # output_file = "test.geojson"
-            path_file = os.path.join(output_dir,output_file)
-            path_file = path_file.replace("\\","/")
-            print("path:", path_file)
-             
-            if os.path.exists(path_file):
-                os.remove(path_file)
+            if selection_format == "GeoJSON":
 
-            unCrs = QgsCoordinateReferenceSystem(self.srid, QgsCoordinateReferenceSystem.EpsgCrsId)
-            print(unCrs)
-            error, message = QgsVectorFileWriter.writeAsVectorFormat(layer, path_file, "utf-8", unCrs, 'GeoJSON') 
-            if error > 1 :
-                print("error:", error)
-                print("message:", message)
-                QMessageBox.critical(self, "Attention", "Problème dans l'exportation", QMessageBox.Ok)
-            else:
-                print("L'exportation a été effectuée avec succès")
-            # A FAIRE - RECUPERER LA METHODE QUI DONNE L INFORMATION DE LA BONNE ECRITURE DU FICHIER
-                QMessageBox.information(self, "Information", "L'exportation a été effectuée avec succès!", QMessageBox.Ok)
+                print(Qgis.versionInt())
 
+                nom_couche = nom_couche.replace("|", "")
+                nom_couche = nom_couche.replace(" ", "_")
+                nom_couche = nom_couche.replace(":", "")
+                nom_couche = nom_couche.replace("*", "")
+                nom_couche = nom_couche.replace("[", "")
+                nom_couche = nom_couche.replace("]", "")
 
-        elif selection_format == "GeoPackage":
-             # layer = self.vlayer
-            layer = QgsProject.instance().mapLayersByName(f"{self.nomtypezone}_{self.srid}")[0]# rajouter le type de GEOM en plus + ne fonctionne que si couche dans arbre de couche 
-            self.nomtypezone = self.nomtypezone.replace("|","")
-            self.nomtypezone = self.nomtypezone.replace(" ","_")
-            print(self.nomtypezone)
-            # FOR TESTING -------------- TBD
-            # output_file = "C:/FUTURE_D/LPSIG/04-PROJETS/02-PROJETS_TUTORES/PLUGIN QGIS LPO/06-PLUGIN/test_export/test.geojson"
-            output_file = f"{self.nomtypezone}_{self.srid}.gpkg"
-            # output_file = "test.geojson"
-            path_file = os.path.join(output_dir,output_file)
-            path_file = path_file.replace("\\","/")
-            print("path:", path_file)
-            if os.path.exists(path_file):
+                print("nom_couche : ", nom_couche)
+
+                output_file = f"{nom_couche}.geojson"
+                path_file = os.path.join(output_dir,output_file)
+                path_file = path_file.replace("\\","/")
+                print("path:", path_file)
+                if os.path.exists(path_file):
                     os.remove(path_file)
 
-            unCrs = QgsCoordinateReferenceSystem(self.srid, QgsCoordinateReferenceSystem.EpsgCrsId)
-            print(unCrs)
-            error, message = QgsVectorFileWriter.writeAsVectorFormat(layer, path_file, "utf-8", unCrs, 'GeoPackage') 
-            if error > 1 :
-                print("error:", error)
-                print("message:", message)
-                QMessageBox.critical(self, "Attention", "Problème dans l'exportation", QMessageBox.Ok)
-            else:
-                print("L'exportation a été effectuée avec succès")
-            # A FAIRE - RECUPERER LA METHODE QUI DONNE L INFORMATION DE LA BONNE ECRITURE DU FICHIER
-                QMessageBox.information(self, "Information", "L'exportation a été effectuée avec succès!", QMessageBox.Ok)
+
+                options = QgsVectorFileWriter.SaveVectorOptions()
+                options.driverName = 'GeoJSON'
+                lesChamps = []
+                for unChamp in layer.fields():
+                    if unChamp.typeName().lower() != "geometry" and unChamp.typeName().lower() != "jsonb":
+                        lesChamps.append(layer.fields().indexFromName(unChamp.name()))
+                options.attributes = lesChamps # attend une liste d'index de champ
+                context = QgsProject.instance().transformContext()
+
+                if Qgis.versionInt() > 32000 :
+                    error, message, _, _ = QgsVectorFileWriter.writeAsVectorFormatV3(layer, path_file, context, options)
+                else:
+                    error, message = QgsVectorFileWriter.writeAsVectorFormatV2(layer, path_file, context, options)
+
+                if error > 1 :
+                    print("error:", error)
+                    print("message:", message)
+                    QMessageBox.critical(self, "Attention", "Problème dans l'exportation", QMessageBox.Ok)
+                else:
+                    print("L'exportation a été effectuée avec succès")
+                # A FAIRE - RECUPERER LA METHODE QUI DONNE L INFORMATION DE LA BONNE ECRITURE DU FICHIER
+                    QMessageBox.information(self, "Information", "L'exportation a été effectuée avec succès!", QMessageBox.Ok)
 
 
-        elif selection_format == "CSV":
-             # layer = self.vlayer
-            layer = QgsProject.instance().mapLayersByName(f"{self.nomtypezone}_{self.srid}")[0]# rajouter le type de GEOM en plus + ne fonctionne que si couche dans arbre de couche 
-            self.nomtypezone = self.nomtypezone.replace("|","")
-            self.nomtypezone = self.nomtypezone.replace(" ","_")
-            print(self.nomtypezone)
-            # FOR TESTING -------------- TBD
-            # output_file = "C:/FUTURE_D/LPSIG/04-PROJETS/02-PROJETS_TUTORES/PLUGIN QGIS LPO/06-PLUGIN/test_export/test.geojson"
-            output_file = f"{self.nomtypezone}_{self.srid}.csv"
-            # output_file = "test.geojson"
-            path_file = os.path.join(output_dir,output_file)
-            path_file = path_file.replace("\\","/")
-            print("path:", path_file)
-            if os.path.exists(path_file):
-                os.remove(path_file)
+            elif selection_format == "GeoPackage":
+                # layer = self.vlayer
 
-            unCrs = QgsCoordinateReferenceSystem(self.srid, QgsCoordinateReferenceSystem.EpsgCrsId)
-            print(unCrs)
-            error, message = QgsVectorFileWriter.writeAsVectorFormat(layer, path_file, "utf-8", unCrs, 'csv') 
-            if error > 1 :
-                print("error:", error)
-                print("message:", message)
-                QMessageBox.critical(self, "Attention", "Problème dans l'exportation", QMessageBox.Ok)
-            else:
-                print("L'exportation a été effectuée avec succès")
-            # A FAIRE - RECUPERER LA METHODE QUI DONNE L INFORMATION DE LA BONNE ECRITURE DU FICHIER
-                QMessageBox.information(self, "Information", "L'exportation a été effectuée avec succès!", QMessageBox.Ok)
+                nom_couche = nom_couche.replace("|", "")
+                nom_couche = nom_couche.replace(" ", "_")
+                nom_couche = nom_couche.replace(":", "")
+                nom_couche = nom_couche.replace("*", "")
+                nom_couche = nom_couche.replace("[", "")
+                nom_couche = nom_couche.replace("]", "")
 
-        elif selection_format == "XLSX":
-              # layer = self.vlayer
-            layer = QgsProject.instance().mapLayersByName(f"{self.nomtypezone}_{self.srid}")[0]# rajouter le type de GEOM en plus + ne fonctionne que si couche dans arbre de couche 
-            self.nomtypezone = self.nomtypezone.replace("|","")
-            self.nomtypezone = self.nomtypezone.replace(" ","_")
-            print(self.nomtypezone)
-            # FOR TESTING -------------- TBD
-            # output_file = "C:/FUTURE_D/LPSIG/04-PROJETS/02-PROJETS_TUTORES/PLUGIN QGIS LPO/06-PLUGIN/test_export/test.geojson"
-            output_file = f"{self.nomtypezone}_{self.srid}.xlsx"
-            # output_file = "test.geojson"
-            path_file = os.path.join(output_dir,output_file)
-            path_file = path_file.replace("\\","/")
-            print("path:", path_file)
-            print("path:", path_file)
-            if os.path.exists(path_file):
-                os.remove(path_file)
 
-            unCrs = QgsCoordinateReferenceSystem(self.srid, QgsCoordinateReferenceSystem.EpsgCrsId)
-            print(unCrs)
-            error, message = QgsVectorFileWriter.writeAsVectorFormat(layer, path_file, "utf-8", unCrs, 'xlsx') 
-            if error > 1 :
-                print("error:", error)
-                print("message:", message)
-                QMessageBox.critical(self, "Attention", "Problème dans l'exportation", QMessageBox.Ok)
-            else:
-                print("L'exportation a été effectuée avec succès")
-            # A FAIRE - RECUPERER LA METHODE QUI DONNE L INFORMATION DE LA BONNE ECRITURE DU FICHIER
-                QMessageBox.information(self, "Information", "L'exportation a été effectuée avec succès!", QMessageBox.Ok)
+                output_file = f"{nom_couche}.gpkg"
+                path_file = os.path.join(output_dir,output_file)
+                path_file = path_file.replace("\\","/")
+                print("path:", path_file)
+                if os.path.exists(path_file):
+                    os.remove(path_file)
 
+                options = QgsVectorFileWriter.SaveVectorOptions()
+                options.driverName = 'GPKG'
+                lesChamps = []
+                for unChamp in layer.fields():
+                    if unChamp.typeName().lower() != "geometry" and unChamp.typeName().lower() != "jsonb":
+                        lesChamps.append(layer.fields().indexFromName(unChamp.name()))
+                options.attributes = lesChamps # attend une liste d'index de champ
+                context = QgsProject.instance().transformContext()
+
+                if Qgis.versionInt() > 32000 :
+                    error, message, _, _ = QgsVectorFileWriter.writeAsVectorFormatV3(layer, path_file, context, options)
+                else:
+                    error, message = QgsVectorFileWriter.writeAsVectorFormatV2(layer, path_file, context, options)
+
+                if error > 1 :
+                    print("error:", error)
+                    print("message:", message)
+                    QMessageBox.critical(self, "Attention", "Problème dans l'exportation", QMessageBox.Ok)
+                else:
+                    print("L'exportation a été effectuée avec succès")
+                # A FAIRE - RECUPERER LA METHODE QUI DONNE L INFORMATION DE LA BONNE ECRITURE DU FICHIER
+                    QMessageBox.information(self, "Information", "L'exportation a été effectuée avec succès!", QMessageBox.Ok)
+
+
+            elif selection_format == "CSV":
+                nom_couche = nom_couche.replace("|", "")
+                nom_couche = nom_couche.replace(" ", "_")
+                nom_couche = nom_couche.replace(":", "")
+                nom_couche = nom_couche.replace("*", "")
+                nom_couche = nom_couche.replace("[", "")
+                nom_couche = nom_couche.replace("]", "")
+
+
+                output_file = f"{nom_couche}.csv"
+                path_file = os.path.join(output_dir,output_file)
+                path_file = path_file.replace("\\","/")
+                print("path:", path_file)
+                if os.path.exists(path_file):
+                    os.remove(path_file)
+
+                options = QgsVectorFileWriter.SaveVectorOptions()
+                options.driverName = 'csv'
+                lesChamps = []
+                for unChamp in layer.fields():
+                    if unChamp.typeName().lower() != "geometry" and unChamp.typeName().lower() != "jsonb":
+                        lesChamps.append(layer.fields().indexFromName(unChamp.name()))
+                options.attributes = lesChamps # attend une liste d'index de champ
+                context = QgsProject.instance().transformContext()
+
+                if Qgis.versionInt() > 32000 :
+                    error, message, _, _ = QgsVectorFileWriter.writeAsVectorFormatV3(layer, path_file, context, options)
+                else:
+                    error, message = QgsVectorFileWriter.writeAsVectorFormatV2(layer, path_file, context, options)
+
+                if error > 1 :
+                    print("error:", error)
+                    print("message:", message)
+                    QMessageBox.critical(self, "Attention", "Problème dans l'exportation", QMessageBox.Ok)
+                else:
+                    print("L'exportation a été effectuée avec succès")
+                # A FAIRE - RECUPERER LA METHODE QUI DONNE L INFORMATION DE LA BONNE ECRITURE DU FICHIER
+                    QMessageBox.information(self, "Information", "L'exportation a été effectuée avec succès!", QMessageBox.Ok)
+
+
+            elif selection_format == "XLSX":
+
+                nom_couche = nom_couche.replace("|", "")
+                nom_couche = nom_couche.replace(" ", "_")
+                nom_couche = nom_couche.replace(":", "")
+                nom_couche = nom_couche.replace("*", "")
+                nom_couche = nom_couche.replace("[", "")
+                nom_couche = nom_couche.replace("]", "")
+
+                output_file = f"{nom_couche}.xlsx"
+
+                path_file = os.path.join(output_dir,output_file)
+                path_file = path_file.replace("\\","/")
+                print("path:", path_file)
+                if os.path.exists(path_file):
+                    os.remove(path_file)
+
+                options = QgsVectorFileWriter.SaveVectorOptions()
+                options.driverName = 'xlsx'
+                lesChamps = []
+                for unChamp in layer.fields():
+                    if unChamp.typeName().lower() != "geometry" and unChamp.typeName().lower() != "jsonb":
+                        lesChamps.append(layer.fields().indexFromName(unChamp.name()))
+                options.attributes = lesChamps # attend une liste d'index de champ
+                context = QgsProject.instance().transformContext()
+                
+                if Qgis.versionInt() > 32000 :
+                    error, message, _, _ = QgsVectorFileWriter.writeAsVectorFormatV3(layer, path_file, context, options)
+                else:
+                    error, message = QgsVectorFileWriter.writeAsVectorFormatV2(layer, path_file, context, options)
+
+                if error > 1 :
+                    print("error:", error)
+                    print("message:", message)
+                    QMessageBox.critical(self, "Attention", "Problème dans l'exportation", QMessageBox.Ok)
+                else:
+                    print("L'exportation a été effectuée avec succès")
+                # A FAIRE - RECUPERER LA METHODE QUI DONNE L INFORMATION DE LA BONNE ECRITURE DU FICHIER
+                    QMessageBox.information(self, "Information", "L'exportation a été effectuée avec succès!", QMessageBox.Ok)
+
+
+    def reinitialisation(self):
+            print('Réinitialisé !')
+
+            #Zonage
+            self.lw_zonage.clearSelection()
+            self.typeZone = []
+            self.connexionZonage = []
+            self.tableAreas = ""
+            self.tableLinears = ""
+            self.tablePoints = ""
+            self.lbl_infozonage.setText("")
+
+            #Source
+            self.source = ['']
+            self.ccb_source.clear()
+            self.ccb_source.deselectAllOptions()
+
+            #Enable
+            self.rdb_na.setChecked(True)
+
+            #Filtre additionel
+            self.connexionAddFilter = []
+            self.lbl_filterparam.setText("")
+
+            #Type de géométrie trouvée
+            self.lw_typegeomresult.clear()
  
     def closeEvent(self, event):
         self.fermeFenetreFonction.emit(["refgeo"])
