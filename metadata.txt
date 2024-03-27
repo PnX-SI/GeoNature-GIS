@@ -7,7 +7,7 @@ author= LUPSIG 2023-2024 : Laura Madonna, Colin Machet, Leïa Rabache
 qgisMinimumVersion=3.0
 description= Réaliser des exports d'une base de données Géonature depuis QGIS
 about=Ce plugin permet de réaliser des exports depuis une base de données Géonature en les filtrant ou non.
-version=version 0.4.9
+version=version 0.5.0
 tracker=
 repository=https://github.com/Geonature-GIS/Geonature-GIS
 ; end of mandatory metadata
