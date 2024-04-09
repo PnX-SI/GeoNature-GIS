@@ -1,4 +1,4 @@
-Actual version : 0.4.2
+Actual version : 1.0.0
 
 * 08/03/2024 - Version 0.1 : Base du Plugin avec connexion entre les fenêtres QTdesigner 
 * 10/03/2024 - Version 0.2 : Implémentation, Connexion bdd, Sélection du type de zonage v1 , Ajout des icones
@@ -6,3 +6,5 @@ Actual version : 0.4.2
 * 13/03/2024 - Version 0.4 : Modifications Reférentiel géographique (implémentation nouveaux boutons (tout cocher / tout décocher) + filtre zonage + connexion des labels
 * 14/03/2024 - Version 0.4.1: Renomage .py widget => dialog
 * 15/03/2024 - Version 0.4.2: Liste types de zonages v3, Sources v2, Additional_data_filter v1, boutons quitter et annuler, paramètre avancé, about
+* 28/03/2024 - Version 0.5.0: Version de restitution à la LPO et fin du projet tutoré
+* 09/04/2024 - Version 1.0.0: Première release du plugin
