@@ -2,7 +2,7 @@
 
 Plugin QGIS pour interroger le référentiel géographique et les exports de GeoNature.
 
-.. image :: docs/icons/geonaturegis_full_logo.png
+![logo](https://github.com/Geonature-GIS/Geonature-GIS/raw/main/icons/geonaturegis_full_logo.png)
 
 ## Installation
 
@@ -10,9 +10,9 @@ Documentation d'installation : https://github.com/Geonature-GIS/Geonature-GIS/bl
 
 ## Prise en main
 
-📘 Utilisateur : https://github.com/Geonature-GIS/Geonature-GIS/blob/main/help/user_manual.md
+[📘 Manuel Utilisateur](https://github.com/Geonature-GIS/Geonature-GIS/blob/main/help/user_manual.md)
 
-📙 Administrateur base de donnée : https://github.com/Geonature-GIS/Geonature-GIS/blob/main/help/admin_manual.md
+[📙 Manuel Administrateur (base de donnée)](https://github.com/Geonature-GIS/Geonature-GIS/blob/main/help/admin_manual.md)
 
 ## Technologies, Compatibilités et Dépendances
 
@@ -33,11 +33,11 @@ Documentation d'installation : https://github.com/Geonature-GIS/Geonature-GIS/bl
 ## L'origine du projet
 
 Ce plugin, à code source ouvert, a été initialement développé pour répondre aux besoins de filtrer et visualiser les entités géographiques du Référentiel Géographique et des exports du module EXPORTS de GeoNature.
+
 La première version de ce projet est le fruit d'un projet tutoré initialement développé en partenariat avec la [Licence SIG de La Rochelle](https://lpsig.univ-lr.fr/) et la [Ligue pour la Protection des Oiseaux](https://www.lpo.fr/).
 
-Rapport de projet tutoré : https://github.com/PnX-SI/GeoNature-atlas/blob/master/docs/2016-09-30-rapport_stage_Theo-Lechemia.pdf
-
-Soutenance de projet tutoré (LUPSIG 2024) : https://github.com/PnX-SI/GeoNature-atlas/blob/master/docs/2016-09-soutenance-Theo-Lechemia.pdf
+- Rapport de projet tutoré (LUPSIG 2024) : *a venir*
+- Soutenance de projet tutoré (LUPSIG 2024) : *a venir*
 
 Il constitue une brique du projet GeoNature, porté par les [Parcs nationaux de France](http://www.parcsnationaux.fr/fr).
 
