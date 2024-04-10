@@ -1,5 +1,5 @@
 # MANUEL UTILISATEUR
-
+>Mis à jour le 05 avril 2024
 
 ## Interface de Connexion
 
@@ -36,7 +36,7 @@ Le panneau latéral suivant s'ouvre :
 
 ### Bouton aide
 ![Bouton aide](./img/UM_btn_help.png)
-
+Il permet de rediriger l’utilisateur vers le manuel utilisateur pour se renseigner sur le fonctionnement du plugin. 
 
 
 ### Bouton Réinitialisation
@@ -100,7 +100,7 @@ Les paramètres avancés sont destinés à des utilisations spécifiques. Actuel
 
 ![Paramètres avancés](./img/UM_parametres_avances.png)
 
->Cocher "Oui" pour sélectionner les géométries actives dans Géonature dans votre filtre, "Non" pour les inactives et laisser "Indiférent" si vous ne souhaitez pas filtrer ce champs.
+Cocher "Oui" pour sélectionner les géométries actives dans Géonature dans votre filtre, "Non" pour les inactives et laisser "Indiférent" si vous ne souhaitez pas filtrer ce champs.
 
 
 ### Filtre - Données additionnelles
@@ -121,10 +121,196 @@ La fenêtre affichera les **clés** de ce champ. Vous pouvez choisir la clé don
 
 ![Fenêtre filtre des données additionnelles exemple](./img/UM_fenetre_filtre_additionnel_choix.png)
 
-
+Pour finir votre filtre, vous pouvez ajuster les opérateurs logiques et les opérateurs conditionnels.
 
 >Le **Constructeur de filtre** peut également être entièrement renseigné à la main.
 
+**Logiques**
+Opérateurs logiques | Signification
+ :--- | :---
+ AND | Permet de s’assurer que la condition1 **ET** la condition2 sont vrai
+ OR | Vérifie si au moins l'une des conditions est vrai
 
-Vous aurez donc les valeurs de la clé sélectionnée qui apparaîtront en dessous, il est possible de rechercher la valeur souhaitée dans la barre de recherche des valeurs.
-Vous allez donc pouvoir construire votre filtre avec un ET/OU, le nom du champ que vous aurez sélectionné, un opérateur, et le nom de la valeur que vous aurez sélectionnée. 
+Quelques exemples :
+ - ``'nature' = 'Mare' AND 'espece' = 'Crapaud commun'`` renverra uniquement les données qui prennent pour ``nature`` la valeur ``Mare`` **ET** pour ``espèce`` la valeur ``Crapaud commun``.
+ - ``'nature' = 'Mare' OR 'espece' = 'Crapaud commun'`` renverra toutes les données pour lesquelles ``nature = Mare`` et toutes les données pour lesquelles ``espèce = Crapaud commun``.
+
+ **Opérateurs**
+Opérateurs conditionnels | Signification
+ :--- | :---
+ **EGAL** | Prend exactement la valeur sélectionnée
+ **PAS EGAL** | Prend toutes les valeurs sauf celle qui est sélectionnée
+ **\>** | *(Pour valeur numérique uniquement)* Clé strictement supérieure à
+ **<** | *(Pour valeur numérique uniquement)* Clé strictement inférieure à
+ **\>=** | *(Pour valeur numérique uniquement)* Clé supérieure ou égale à
+ **<=** | *(Pour valeur numérique uniquement)* Clé inférieure ou égale à
+ **COMMENCE PAR** | Prend les valeurs sélectionnée qui commence par votre texte/chiffre
+ **FINI PAR** | Prend les valeurs sélectionnée qui fini par votre texte/chiffre
+ **CONTIENT** | Prend les valeurs sélectionnée qui comprend votre texte/chiffre
+
+Une fois ajoutée, la requête s'inscrit dans la "**Visualisation de la requête**".
+
+![Fenêtre filtre des données additionnelles exemple suite](./img/UM_fenetre_filtre_additionnel_constructeur.png)
+
+Cliquez sur "**OK**" pour validé votre filtre ou "**Annuler**" pour ne pas l'ajouter.
+
+
+### Exécution du filtre
+
+![Bouton executer](./img/UM_btn_executer.png)
+L'exécution de votre requête s'effectue lorsque vous cliquez sur le bouton "**Executer**".
+
+
+### Affichage et export du résultat
+
+Si votre requête correspond à une ou plusieurs données, celles-ci s'afficheront dans "**Résultat de la requête**" comme ci dessous :
+
+![Affichage du résultat de la requête](./img/UM_resultat_requete.png)
+
+Le résultat donne le nom du ou des type(s) de zonage sélectionné(s) accompagné du nombre d'entités trouvées entre parenthèses. Chaque ligne correspond à une couche.
+
+Sélectionner une ou plusieurs couches en cliquant dessus.
+
+
+### Charger la couche dans QGIS
+
+Après avoir séléctionné une ou plusieurs couches depuis l'encart "**Résultat de la requête**", il vous est possible de la/les charger dans votre projet QGIS via le boutton ci-dessous.
+
+![Bouton "Charger la coushe dans QGIS](./img/UM_btn_charger_in_QGIS.png)
+
+
+### Exporter une ou plusieurs couches
+
+Après avoir séléctionné une ou plusieurs couches depuis l'encart "**Résultat de la requête**", il vous est possible de les exporter.
+
+![Exporter](./img/UM_export.png)
+
+1. Pour exporter votre/vos couches, vous devez d'abord renseigner le chemin du dossier dans lequel vous allez la/les stocker.
+2. Choisissez ensuite le format d'enregristrement. Les formats actuellement disponibles sont : GeoPackage, GeoJSON, CSV et XLSX.
+3. Il ne vous reste plus qu'à cliquer sur "**Exporter**".
+
+
+## Fenêtre des exports
+
+Dans le menu ``Geonature - GIS``, cliquer sur “**Export**”.
+
+Le panneau latéral suivant s'ouvre : 
+
+![Panneau lateral Référentiel géographique](./img/UM_fenetre_export.png)
+
+
+### Bouton aide
+![Bouton aide](./img/UM_btn_help.png)
+Il permet de rediriger l’utilisateur vers le manuel utilisateur pour se renseigner sur le fonctionnement du plugin. 
+
+
+### Bouton Réinitialisation
+![Bouton Réinitialisation](./img/UM_btn_reinitialisation.png)
+Il permet de remettre l'ensemble des paramètres saisis à zéro.
+
+
+
+### Sélection un export
+
+![Sélection d'un export](./img/UM_selection_export.png)
+
+Le bouton "**Sélectionner un Export**" vous ouvrira une nouvelle fenêtre qui listera les exports disponibles (voir ci-dessous). 
+
+![Fenêtre de sélection de l'export](./img/UM_fenetre_selection_export.png)
+ 
+>Nous prendrons l'export "218 - Cuivré des marais" pour vous donner un exemple concret d'utilisation.
+
+
+
+Vous allez pouvoir renseigner dans la barre de recherche "**Filtrer**" le nom de l'export (ou le numéro) qui vous intéresse afin de filtrer cette liste. 
+
+```
+    Attention : Les zonages se trieront uniquement lors du click sur le bouton “Rechercher”.
+```
+
+![Exemple sélection d'un export](./img/UM_fenetre_selection_export_exemple.png)
+
+Pour sélectionnner votre export, cliquez sur son nom puis sur "**OK**"
+
+*À votre retour sur le panneau latéral "**Export**", Un texte descriptif  (“**Nom de l'Export sélectionné**” et "**Description**") se mettra à jour en conséquence .*
+
+
+### Ajouter des filtres
+
+Le bouton **Ajouter des filtres** vous redirige vers une nouvelle fenêtre dans laquelle vous pourrez filtrer les champs de votre export.
+
+*Sous ce bouton, un texte descriptif se mettra à jour lors de la validation du paramétrage de votre filtre.*
+
+![Fenêtre filtre des exports](./img/UM_fenetre_filtrer_export.png)
+
+La fenêtre affichera les **champs**. Vous pouvez choisir celui dont vous avez besoin en cliquant dessus. Cela l'incrira dans le **Constructeur de filtre** et affichera dans l'espace "**Valeurs**" la liste des valeurs présentes dans ce champ. Il vous est possible de trier ces valeurs avec le champ de recherche "**Filtrer le liste de valeurs**" Pour sélectionner une valeur, double-cliquez dessus. Celle-ci ira s'inscrire dans le **Constructeur de filtre**.
+
+![Fenêtre filtre des exports](./img/UM_filtre_export_exemple.png)
+
+Pour finir votre filtre, vous pouvez ajuster les opérateurs logiques et les opérateurs conditionnels.
+
+>Le **Constructeur de filtre** peut également être entièrement renseigné à la main.
+
+**Logiques**
+Opérateurs logiques | Signification
+ :--- | :---
+ AND | Permet de s’assurer que la condition1 **ET** la condition2 sont vrai
+ OR | Vérifie si au moins l'une des conditions est vrai
+
+Quelques exemples :
+ - ``'nature' = 'Mare' AND 'espece' = 'Crapaud commun'`` renverra uniquement les données qui prennent pour ``nature`` la valeur ``Mare`` **ET** pour ``espèce`` la valeur ``Crapaud commun``.
+ - ``'nature' = 'Mare' OR 'espece' = 'Crapaud commun'`` renverra toutes les données pour lesquelles ``nature = Mare`` et toutes les données pour lesquelles ``espèce = Crapaud commun``.
+
+ **Opérateurs**
+Opérateurs conditionnels | Signification
+ :--- | :---
+ **EGAL** | Prend exactement la valeur sélectionnée
+ **PAS EGAL** | Prend toutes les valeurs sauf celle qui est sélectionnée
+ **\>** | *(Pour valeur numérique uniquement)* Champ strictement supérieure à
+ **<** | *(Pour valeur numérique uniquement)* Champ strictement inférieure à
+ **\>=** | *(Pour valeur numérique uniquement)* Champ supérieure ou égale à
+ **<=** | *(Pour valeur numérique uniquement)* Champ inférieure ou égale à
+ **COMMENCE PAR** | Prend les valeurs sélectionnée qui commence par votre texte/chiffre
+ **FINI PAR** | Prend les valeurs sélectionnée qui fini par votre texte/chiffre
+ **CONTIENT** | Prend les valeurs sélectionnée qui comprend votre texte/chiffre
+
+Une fois ajoutée, la requête s'inscrit dans la "**Visualisation de la requête**".
+
+![Fenêtre filtre des données additionnelles exemple](./img/UM_filtre_export_exemple2.png) 
+
+Cliquez sur "**OK**" pour validé votre filtre ou "**Annuler**" pour ne pas l'ajouter.
+
+
+### Exécution du filtre
+
+![Bouton executer](./img/UM_btn_executer.png)
+L'exécution de votre requête s'effectue lorsque vous cliquer sur le bouton "**Executer**".
+
+
+### Affichage et export du résultat
+
+Si votre requête correspond à une ou plusieurs données, celles-ci s'afficheront dans "**Types de géométrie trouvées**" comme ci dessous :
+
+![Affichage du résultat de la requête](./img/UM_resultat_requete_export.png)
+
+Le résultat donne le(s) type(s) de géométrie de l'export sélectionné accompagné du nombre d'entités trouvées entre parenthèses.
+
+Sélectionner une ou plusieurs type(s) de géométrie en cliquant dessus.
+
+
+### Charger la couche dans QGIS
+
+Après avoir séléctionné une ou plusieurs géométrie(s) depuis l'encart "**Types de géométrie trouvées**", il vous est possible de la/les charger dans votre projet QGIS via le boutton ci-dessous.
+
+![Bouton "Charger la coushe dans QGIS](./img/UM_btn_charger_in_QGIS.png)
+
+
+### Exporter une ou plusieurs couches
+
+Après avoir séléctionné une ou plusieurs géométrie(s) depuis l'encart "**Types de géométrie trouvées**", il vous est possible de les exporter.
+
+![Exporter](./img/UM_export.png)
+
+1. Pour exporter votre/vos couches, vous devez d'abord renseigner le chemin du dossier dans lequel vous allez la/les stocker.
+2. Choisissez ensuite le format d'enregristrement. Les formats actuellement disponibles sont : GeoPackage, GeoJSON, CSV et XLSX.
+3. Il ne vous reste plus qu'à cliquer sur "**Exporter**".
