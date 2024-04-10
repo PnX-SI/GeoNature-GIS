@@ -22,14 +22,13 @@ changelog=
 ; tag name.
 ; Tags should be in English language. Please also check for existing tags and
 ; synonyms before creating a new one.
-tags=wkt,raster,hello world
+tags=GeoNature,GeoNature-GIS,ref_geo,gn_exports
 
 ; these metadata can be empty, they will eventually become mandatory.
-homepage=https://www.itopen.it
 icon=icon.png
 
 ; experimental flag (applies to the single version)
-experimental=True
+experimental=False
 
 ; deprecated flag (applies to the whole plugin and not only to the uploaded version)
 deprecated=False

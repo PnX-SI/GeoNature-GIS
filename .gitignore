@@ -1,1 +1,15 @@
+.vscode/
 .vscode/settings.json
+__pycache__/
+__pycache__/__init__.cpython-39.pyc
+__pycache__/about_dialog.cpython-39.pyc
+__pycache__/additional_data_filter_dialog.cpython-39.pyc
+__pycache__/connexion_dialog.cpython-39.pyc
+__pycache__/export_dialog.cpython-39.pyc
+__pycache__/filter_dialog.cpython-39.pyc
+__pycache__/geonaturegisPlugin.cpython-39.pyc
+__pycache__/refgeo_dialog.cpython-39.pyc
+__pycache__/resources_rc.cpython-39.pyc
+__pycache__/select_export_dialog.cpython-39.pyc
+__pycache__/util_dialog.cpython-39.pyc
+__pycache__/zone_filter_dialog.cpython-39.pyc
