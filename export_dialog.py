@@ -6,6 +6,7 @@ from PyQt5 import uic
 from qgis.core import *
 from qgis.gui import *
 import qgis.utils
+import time
 
 import sys, os
 
@@ -73,8 +74,8 @@ class ExportWidget(QDockWidget, form_export):
         self.nom_couche = ""
 
     def openSelectExport(self):
-        self.connexionSelect = SelectExportWidget(self.interfaceFenetres, self.host, self.port, self.bdd, self.username, self.psw)
         self.reinitialisation()
+        self.connexionSelect = SelectExportWidget(self.interfaceFenetres, self.host, self.port, self.bdd, self.username, self.psw)
         # connexion.show()
         result = self.connexionSelect.exec_()
         if result:
@@ -109,6 +110,18 @@ class ExportWidget(QDockWidget, form_export):
 
     def executer(self, feature): # TO DO : TRIER LES TYPES DE GEOM D'UNE VUE CF Ligne 234 separer_geom()
 
+        # === On créé une instance de QProgressDialog pour l'execution de la requête ===
+
+        progress_dialog = QProgressDialog("Exécution de la requête...", None, 0, 0, self)
+        progress_dialog.setWindowTitle("Chargement")
+        progress_dialog.setWindowModality(Qt.WindowModal)
+        progress_dialog.setAutoReset(False)
+        progress_dialog.setAutoClose(False)
+
+        # === On execute les requêtes ===
+
+        progress_dialog.show()
+
         self.lw_typegeomresult.clear()
 
         self.nom_export = self.connexionSelect.selected_export_name[0]
@@ -134,6 +147,7 @@ class ExportWidget(QDockWidget, form_export):
         wuri_multipoint = QgsDataSourceUri()
         wuri_multiligne = QgsDataSourceUri()
         wuri_multipoly = QgsDataSourceUri()
+        wuri_ssgeom = QgsDataSourceUri()
 
         # set host name, port, database name, username and password
         # wuri.setConnection(self.host, str(self.port), self.bdd , self.username, self.psw) 
@@ -144,6 +158,7 @@ class ExportWidget(QDockWidget, form_export):
         wuri_multipoint.setConnection(self.host, str(self.port), self.bdd , self.username, self.psw) 
         wuri_multiligne.setConnection(self.host, str(self.port), self.bdd , self.username, self.psw) 
         wuri_multipoly.setConnection(self.host, str(self.port), self.bdd , self.username, self.psw) 
+        wuri_ssgeom.setConnection(self.host, str(self.port), self.bdd , self.username, self.psw) 
 
         if self.connexionSelect.selected_view_name != [] :
             print(self.schema)
@@ -162,12 +177,13 @@ class ExportWidget(QDockWidget, form_export):
 
             # set database schema, table name, geometry column and optionally
             # subset (WHERE clause)
-            wuri_point.setDataSource(self.schema, self.vue, geom_column, where_point, pk_column) # 6 LIGNES ST_geometry 
-            wuri_ligne.setDataSource(self.schema, self.vue, geom_column, where_ligne, pk_column)
-            wuri_poly.setDataSource(self.schema, self.vue, geom_column, where_poly, pk_column)
-            wuri_multipoint.setDataSource(self.schema, self.vue, geom_column, where_multipoint, pk_column)
-            wuri_multiligne.setDataSource(self.schema, self.vue, geom_column, where_multiligne, pk_column)
-            wuri_multipoly.setDataSource(self.schema, self.vue, geom_column, where_multipoly, pk_column)
+            wuri_point.setDataSource(self.schema, self.vue, str(geom_column), where_point, pk_column) # 6 LIGNES ST_geometry 
+            wuri_ligne.setDataSource(self.schema, self.vue, str(geom_column), where_ligne, pk_column)
+            wuri_poly.setDataSource(self.schema, self.vue, str(geom_column), where_poly, pk_column)
+            wuri_multipoint.setDataSource(self.schema, self.vue, str(geom_column), where_multipoint, pk_column)
+            wuri_multiligne.setDataSource(self.schema, self.vue, str(geom_column), where_multiligne, pk_column)
+            wuri_multipoly.setDataSource(self.schema, self.vue, str(geom_column), where_multipoly, pk_column)
+            wuri_ssgeom.setDataSource(self.schema, self.vue, "", "", pk_column)
 
             self.vlayer_point = QgsVectorLayer(wuri_point.uri(), f"{self.nom_export}_{self.srid}_point", "postgres")
             self.vlayer_ligne = QgsVectorLayer(wuri_ligne.uri(), f"{self.nom_export}_{self.srid}_ligne", "postgres")
@@ -175,6 +191,7 @@ class ExportWidget(QDockWidget, form_export):
             self.vlayer_multipoint = QgsVectorLayer(wuri_multipoint.uri(), f"{self.nom_export}_{self.srid}_multipoint", "postgres")
             self.vlayer_multiligne = QgsVectorLayer(wuri_multiligne.uri(), f"{self.nom_export}_{self.srid}_multiligne", "postgres")
             self.vlayer_multipoly = QgsVectorLayer(wuri_multipoly.uri(), f"{self.nom_export}_{self.srid}_multipoly", "postgres")
+            self.vlayer_ssgeom = QgsVectorLayer(wuri_ssgeom.uri(), f"{self.nom_export}_sansgeom", "postgres")
 
             if self.vlayer_point.featureCount() > 0 :
                 if self.vlayer_point.isValid() :
@@ -192,6 +209,8 @@ class ExportWidget(QDockWidget, form_export):
                 else:
                     QMessageBox.critical(self, "Erreur", "Couche non valide", QMessageBox.Ok)
                     print("vlayer non valid")
+                if progress_dialog:
+                    progress_dialog.hide()
 
             if self.vlayer_ligne.featureCount() > 0 :
                 if self.vlayer_ligne.isValid() :
@@ -205,11 +224,11 @@ class ExportWidget(QDockWidget, form_export):
                     print(data)
                     item.setData(256,data)  # 256 = constante renvoyée par Qt.UserRole (bug avec Qt.UserRole sur certains pc)
                     self.lw_typegeomresult.addItem(item)
-
-       
                 else:
                     QMessageBox.critical(self, "Erreur", "Couche non valide", QMessageBox.Ok)
                     print("vlayer non valid")
+                if progress_dialog:
+                    progress_dialog.hide()
 
             if self.vlayer_poly.featureCount() > 0 :
                 if self.vlayer_poly.isValid() :
@@ -224,10 +243,11 @@ class ExportWidget(QDockWidget, form_export):
                     print(data)
                     item.setData(256,data)  # 256 = constante renvoyée par Qt.UserRole (bug avec Qt.UserRole sur certains pc)
                     self.lw_typegeomresult.addItem(item)
-
                 else:
                     QMessageBox.critical(self, "Erreur", "Couche non valide", QMessageBox.Ok)
                     print("vlayer non valid")
+                if progress_dialog:
+                    progress_dialog.hide()
 
             if self.vlayer_multipoint.featureCount() > 0 :
                 if self.vlayer_multipoint.isValid():
@@ -244,6 +264,8 @@ class ExportWidget(QDockWidget, form_export):
                 else:
                     QMessageBox.critical(self, "Erreur", "Couche non valide", QMessageBox.Ok)
                     print("vlayer non valid multipoint")
+                if progress_dialog:
+                    progress_dialog.hide()
 
 
             if self.vlayer_multiligne.featureCount() > 0 :
@@ -261,6 +283,8 @@ class ExportWidget(QDockWidget, form_export):
                 else:
                     QMessageBox.critical(self, "Erreur", "Couche non valide", QMessageBox.Ok)
                     print("vlayer non valid")
+                if progress_dialog:
+                    progress_dialog.hide()
 
             if self.vlayer_multipoly.featureCount() > 0 :
                 if self.vlayer_multipoly.isValid():
@@ -274,10 +298,30 @@ class ExportWidget(QDockWidget, form_export):
                     print(data)
                     item.setData(256,data)  # 256 = constante renvoyée par Qt.UserRole (bug avec Qt.UserRole sur certains pc)
                     self.lw_typegeomresult.addItem(item)
-
                 else:
                     QMessageBox.critical(self, "Erreur", "Couche non valide", QMessageBox.Ok)
                     print("vlayer non valid")
+                if progress_dialog:
+                    progress_dialog.hide()
+            
+            
+            if self.vlayer_ssgeom.featureCount() > 0 and geom_column == '' or geom_column == None :
+                if self.vlayer_ssgeom.isValid():
+                    print("vlayer valide sans geom")
+                    QMessageBox.information(self, "Information", "Couche valide !", QMessageBox.Ok)
+                    QgsProject.instance().addMapLayer(self.vlayer_ssgeom, False)
+                    # on crée un item qui contient à la fois le texte présenté à l'utilisateur
+                    item = QListWidgetItem(f"Sans geométrie ({self.vlayer_ssgeom.featureCount()})")
+                    # et les données associées
+                    data = self.vlayer_ssgeom.name()
+                    print(data)
+                    item.setData(256,data)  # 256 = constante renvoyée par Qt.UserRole (bug avec Qt.UserRole sur certains pc)
+                    self.lw_typegeomresult.addItem(item)
+                else:
+                    QMessageBox.critical(self, "Erreur", "Couche non valide", QMessageBox.Ok)
+                    print("vlayer non valid")
+                if progress_dialog:
+                    progress_dialog.hide()
 
     def retrouveCouche(self, sonNom):
         vlayer = None
@@ -496,12 +540,13 @@ class ExportWidget(QDockWidget, form_export):
         print('Réinitialisé !')
 
         #Export
-        self.connexionSelect.selected_export_name = [] 
-        self.connexionSelect.description = []
-        self.connexionSelect.selected_view_schema = []
-        self.connexionSelect.selected_view_name = []
-        self.connexionSelect.geom_field = []
-        self.connexionSelect.srid = []
+        if self.connexionSelect: # Réinitialise si self.connexionSelect existe
+            self.connexionSelect.selected_export_name = [] 
+            self.connexionSelect.description = []
+            self.connexionSelect.selected_view_schema = []
+            self.connexionSelect.selected_view_name = []
+            self.connexionSelect.geom_field = []
+            self.connexionSelect.srid = []
         
         #Filtre 
         self.filter_result = []
