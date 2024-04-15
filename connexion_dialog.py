@@ -9,6 +9,8 @@ from qgis.gui import *
 
 import sys, os
 
+from .geonaturegisPlugin import *
+
 sys.path.append(os.path.dirname(__file__))
 from .resources_rc import *
 
@@ -17,13 +19,16 @@ ui_path = os.path.join(ui_path, "ui")
 form_connect, _ = uic.loadUiType(os.path.join(ui_path, "connect.ui"))
 
 class ConnexionWidget(QDialog, form_connect):
-    def __init__(self, iface, wpsw, parent=None):
+    def __init__(self, iface, wpsw, pluginGeonatGIS, parent=None):
         QDialog.__init__(self)
 
         self.setupUi(self) # méthode de Ui_action1_form pour construire les widgets
 
         self.psw = wpsw
         self.recupParametre()
+
+        # Stockage de la référence à l'instance de pluginGeonatGIS
+        self.pluginGeonatGIS = pluginGeonatGIS
 
         self.btnBox.accepted.connect(self.accept)
         self.btnBox.rejected.connect(self.reject)
@@ -70,6 +75,10 @@ class ConnexionWidget(QDialog, form_connect):
         self.majParametre()
         if self.testCnxOk():
             QMessageBox.information(self, "Test de connexion", "Test de connexion à la base de données OK ...", QMessageBox.Ok)
+            self.pluginGeonatGIS.actionRefGeo.setEnabled(True)
+            self.pluginGeonatGIS.actionExport.setEnabled(True)
             QDialog.accept(self)
         else:
             QMessageBox.critical(self, "Erreur", "Impossible de se connecter à la base de données ...", QMessageBox.Ok)
+            self.pluginGeonatGIS.actionRefGeo.setEnabled(False)
+            self.pluginGeonatGIS.actionExport.setEnabled(False)

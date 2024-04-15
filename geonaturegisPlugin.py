@@ -33,18 +33,15 @@ class pluginGeonatGIS:
         self.username = ""
         self.psw = ""
 
-        # les 5 lignes suivantes seront à supprimer quand le plugin sera fini
-        self.host = "162.19.89.37"
-        self.port = 5432
-        self.bdd = "geonature2db"
-        self.username = "lupsig2024"
-        self.psw = "fdmMP8rYr!ebCQLy"
-
     def initGui(self):
       self.menu = QMenu(self.interface.mainWindow())
       self.menu.setObjectName("geonaturegis")
-      self.menu.setTitle("Geonature - GIS")
+      self.menu.setTitle("GeoNature-GIS")
+      self.toolbar = self.interface.addToolBar(u"GeoNature-GIS")
+      self.toolbar.setObjectName("barreOutilGeoNatureGIS")
 
+      # ==================================================/ Définition des QActions /==================================================
+        
       #Définition action Connexion
       iconCo = QIcon(os.path.dirname(__file__) + "/icons/connexion.svg")
       self.actionConnexion = QAction(iconCo, "Connexion", self.interface.mainWindow())
@@ -52,7 +49,7 @@ class pluginGeonatGIS:
 
       #Multi fenêtres dockées
       self.dicoFonction = {"refgeo": [False, None], "export": [False, None]}
-      #Fénêtre du référentiel géographqiue
+      #Fenêtre du référentiel géographique
       iconGeoRef = QIcon(os.path.dirname(__file__) + "/icons/refgeo.png")
       self.actionRefGeo = QAction(iconGeoRef, "Référentiel Géographique", self.interface.mainWindow())
       self.actionRefGeo.triggered.connect(lambda :self.ouverture("refgeo"))
@@ -71,6 +68,13 @@ class pluginGeonatGIS:
       self.actionAbout = QAction(iconAbout, "À propos", self.interface.mainWindow())
       self.actionAbout.triggered.connect(self.openAbout)
 
+      # =====================/ Blocage des actions RefGeo et Export tant que la connexion n'est pas établie /=====================
+
+      self.actionRefGeo.setEnabled(False)
+      self.actionExport.setEnabled(False)
+
+      # ==================================================/ Définition du QMenu /==================================================
+        
       #Ajout des boutons dans la barres des menus
       self.menu.addAction(self.actionConnexion)
       self.menu.addAction(self.actionRefGeo)
@@ -82,6 +86,12 @@ class pluginGeonatGIS:
       menuBar = self.interface.mainWindow().menuBar()
       menuBar.insertMenu(self.interface.firstRightStandardMenu().menuAction(), self.menu)
 
+      # ==================================================/ Définition de la ToolBar /==================================================
+      self.toolbar.addAction(self.actionRefGeo)
+      self.toolbar.addAction(self.actionExport)
+      self.toolbar.addSeparator()
+      self.toolbar.addAction(self.actionConnexion)
+
       self.pluginEstActif = False
       self.fenetreDockee = None
   
@@ -89,7 +99,7 @@ class pluginGeonatGIS:
         self.interface.mainWindow().menuBar().removeAction(self.menu.menuAction())
 
     def openConnexion(self):
-        connexion = ConnexionWidget(self.interface, self.psw)
+        connexion = ConnexionWidget(self.interface, self.psw, self) # self est ici utile pour intéragir avec ConnexionWidget
         # connexion.show()
         result = connexion.exec_()
         if result:
