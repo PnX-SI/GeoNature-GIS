@@ -62,10 +62,10 @@ class SelectExportWidget(QDialog, form_select_export):
         if (not db.open()):
             QMessageBox.critical(self, "Erreur", "Impossible de se connecter à la base de données ...", QMessageBox.Ok)
         else:
-                wsql =  "SELECT t_exports.id||' - '||t_exports.label as id_label, t_exports.desc , t_exports.schema_name, t_exports.view_name, geometry_field , geometry_srid, view_pk_column "
+                wsql =  "SELECT CONCAT(t_exports.id, ' - ', t_exports.label) as id_label, t_exports.desc , t_exports.schema_name, t_exports.view_name, geometry_field , geometry_srid, view_pk_column "
                 wsql += "FROM gn_exports.t_exports "
-                wsql += "WHERE  t_exports.id||' - '||t_exports.label ILIKE '%" + filterText + "%' "
-                # wsql += "ORDER BY id_label;"
+                wsql += "WHERE CONCAT(t_exports.id, ' - ', t_exports.label) ILIKE '%" + filterText + "%' "
+                wsql += "ORDER BY t_exports.id;"
 
                 # print(wsql)
                 wquery = QSqlQuery(db)
@@ -84,7 +84,7 @@ class SelectExportWidget(QDialog, form_select_export):
                 
                 db.close()
 
-                self.lw_list_view.sortItems(Qt.AscendingOrder)
+                # self.lw_list_view.sortItems(Qt.AscendingOrder)
 
     def filtreRechercher(self):
         self.filterText = self.le_select.text()
