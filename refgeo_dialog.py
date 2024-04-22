@@ -46,6 +46,10 @@ class RefGeoWidget(QDockWidget, form_refgeo):
         self.psw = wpsw
 
         self.filtre_additionnel = ""
+        
+        self.pb_runquery.setEnabled(False)
+        self.pb_loadlayer.setEnabled(False)
+        self.pb_export.setEnabled(False)
 # ----------------------------- ------------------ CONNEXION DES WIDGET --------------------------------------------------------
 
         # Fonction réinitialisation des paramètres des filtes 
@@ -62,6 +66,7 @@ class RefGeoWidget(QDockWidget, form_refgeo):
 
         # Vérouille ou dévérouille le bouton "Filtrer le zonage" en fonction du nombre de sélection du type de zonage
         self.lw_zonage.itemSelectionChanged.connect(self.lockZoneFilter)
+        self.lw_zonage.itemSelectionChanged.connect(self.activeLoadAndExportButtons)
 
         # Connexion à la fenêtre "Sélection du zonage"
         self.pb_filterzonage.clicked.connect(self.openZoneFilter)
@@ -91,7 +96,6 @@ class RefGeoWidget(QDockWidget, form_refgeo):
         self.pb_loadlayer.clicked.connect(self.loadInQGIS)
 
         self.pb_export.clicked.connect(self.exporter)
-
 
         # Fermer la fenêtre
         self.pb_quit.clicked.connect(self.quitter)
@@ -128,6 +132,15 @@ class RefGeoWidget(QDockWidget, form_refgeo):
 
 # ----------------------------- ------------------ DEFINITION DES METHODES --------------------------------------------------------
    
+    def activeLoadAndExportButtons(self):
+        if self.lw_zonage.selectedItems():
+            self.pb_runquery.setEnabled(True)
+            self.pb_loadlayer.setEnabled(True)
+            self.pb_export.setEnabled(True)
+        else:
+            self.pb_runquery.setEnabled(False)
+            self.pb_loadlayer.setEnabled(False)
+            self.pb_export.setEnabled(False)
 
     def selection_typeZonage(self):  # Filtrer les sources en fonction du/des types de zonages sélectionnés 
         # typeZone = []
@@ -163,6 +176,7 @@ class RefGeoWidget(QDockWidget, form_refgeo):
 
             self.getSource(self.typeZone)
             # self.selection_table()
+            self.pb_runquery.setEnabled(True)
             return self.typeZone, self.table
          
    

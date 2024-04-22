@@ -39,6 +39,11 @@ class ExportWidget(QDockWidget, form_export):
         self.username = wusername
         self.psw = wpsw
 
+        self.pb_addfilter.setEnabled(False)
+        self.pb_runquery.setEnabled(False)
+        self.pb_loadlayer.setEnabled(False)
+        self.pb_export.setEnabled(False)
+
         # Fonction réinitialisation des paramètres des filtes 
         self.pb_reset.clicked.connect(self.reinitialisation)
 
@@ -57,7 +62,7 @@ class ExportWidget(QDockWidget, form_export):
 
         self.pb_quit.clicked.connect(self.quitter)
 
-        
+        self.lw_typegeomresult.itemSelectionChanged.connect(self.activeLoadAndExportButtons)        
 
         self.nom_export = ""
         self.schema = ""
@@ -73,12 +78,22 @@ class ExportWidget(QDockWidget, form_export):
         self.vlayer_multipoly = QgsVectorLayer()
         self.nom_couche = ""
 
+    def activeLoadAndExportButtons(self):
+        if self.lw_typegeomresult.selectedItems():
+            self.pb_loadlayer.setEnabled(True)
+            self.pb_export.setEnabled(True)
+        else:
+            self.pb_loadlayer.setEnabled(False)
+            self.pb_export.setEnabled(False)
+
     def openSelectExport(self):
         self.reinitialisation()
         self.connexionSelect = SelectExportWidget(self.interfaceFenetres, self.host, self.port, self.bdd, self.username, self.psw)
         # connexion.show()
         result = self.connexionSelect.exec_()
         if result:
+            self.pb_addfilter.setEnabled(True)
+            self.pb_runquery.setEnabled(True)
             return self.connexionSelect.selected_export_name , self.connexionSelect.description , self.connexionSelect.selected_view_schema, self.connexionSelect.selected_view_name, self.connexionSelect.geom_field, self.connexionSelect.srid, self.connexionSelect.pk_column, self.maj_lbl_nom_export(), self.maj_lbl_description()
 
 
@@ -568,8 +583,15 @@ class ExportWidget(QDockWidget, form_export):
         self.vlayer_multiligne = QgsVectorLayer()
         self.vlayer_multipoly = QgsVectorLayer()
 
-         #Type de géométrie trouvée
+        #Type de géométrie trouvée
         self.lw_typegeomresult.clear()
+
+        # Désactivation des boutons
+        self.pb_addfilter.setEnabled(False)
+        self.pb_runquery.setEnabled(False)
+        self.pb_loadlayer.setEnabled(False)
+        self.pb_export.setEnabled(False)
+
 
     def closeEvent(self, event):
         self.fermeFenetreFonction.emit(["export"])
