@@ -126,9 +126,19 @@ class pluginGeonatGIS:
                     self.dicoFonction[laFonction][1] = ExportWidget(self.interface, self.host, self.port, self.bdd, self.username, self.psw)
 
                 self.dicoFonction[laFonction][1].fermeFenetreFonction.connect(self.surFermetureFenetreFonction)
-            self.interface.addDockWidget(Qt.RightDockWidgetArea, self.dicoFonction[laFonction][1])
-            self.dicoFonction[laFonction][1].show()
 
+            # Add the dock widget
+            self.interface.addDockWidget(Qt.RightDockWidgetArea, self.dicoFonction[laFonction][1])
+
+            # Check if there are other dock widgets already present
+            # existing_docks = self.interface.findChildren(QDockWidget)
+            # if len(existing_docks) > 1:
+            #     for dock in existing_docks:
+            #         if dock != self.dicoFonction[laFonction][1]:
+            #             self.interface.tabifyDockWidget(dock, self.dicoFonction[laFonction][1])
+            #             break  # Tabify only with the first existing dock widget found
+
+            self.dicoFonction[laFonction][1].show()
 
     def openAbout(self):
         about = AboutWidget(self.interface)
