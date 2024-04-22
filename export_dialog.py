@@ -173,6 +173,7 @@ class ExportWidget(QDockWidget, form_export):
             where_multipoint = f"{filter} ST_GeometryType({geom_column}) ILIKE 'ST_MultiPoint'"
             where_multiligne = f"{filter} ST_GeometryType({geom_column}) ILIKE 'ST_MultiLineString'"
             where_multipoly = f"{filter} ST_GeometryType({geom_column}) ILIKE 'ST_MultiPolygon'"
+            where_ssgeom = f"{filter[:-5]}" # [:-5] supprime le dernier AND necessaire en cas de géométrie
 
 
             # set database schema, table name, geometry column and optionally
@@ -183,7 +184,7 @@ class ExportWidget(QDockWidget, form_export):
             wuri_multipoint.setDataSource(self.schema, self.vue, str(geom_column), where_multipoint, pk_column)
             wuri_multiligne.setDataSource(self.schema, self.vue, str(geom_column), where_multiligne, pk_column)
             wuri_multipoly.setDataSource(self.schema, self.vue, str(geom_column), where_multipoly, pk_column)
-            wuri_ssgeom.setDataSource(self.schema, self.vue, "", "", pk_column)
+            wuri_ssgeom.setDataSource(self.schema, self.vue, "", where_ssgeom, pk_column)
 
             self.vlayer_point = QgsVectorLayer(wuri_point.uri(), f"{self.nom_export}_{self.srid}_point", "postgres")
             self.vlayer_ligne = QgsVectorLayer(wuri_ligne.uri(), f"{self.nom_export}_{self.srid}_ligne", "postgres")
@@ -320,6 +321,11 @@ class ExportWidget(QDockWidget, form_export):
                 else:
                     QMessageBox.critical(self, "Erreur", "Couche non valide", QMessageBox.Ok)
                     print("vlayer non valid")
+                if progress_dialog:
+                    progress_dialog.hide()
+
+            if self.vlayer_point.featureCount() == 0 and self.vlayer_multipoint.featureCount() == 0 and self.vlayer_multiligne.featureCount() == 0 and self.vlayer_multipoly.featureCount() == 0 and self.vlayer_ssgeom.featureCount() == 0 :
+                QMessageBox.warning(self, "Aucune entité", "Aucune entité n'a été retourné par la requête", QMessageBox.Ok)
                 if progress_dialog:
                     progress_dialog.hide()
 
