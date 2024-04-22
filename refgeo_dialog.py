@@ -66,6 +66,8 @@ class RefGeoWidget(QDockWidget, form_refgeo):
 
         # Vérouille ou dévérouille le bouton "Filtrer le zonage" en fonction du nombre de sélection du type de zonage
         self.lw_zonage.itemSelectionChanged.connect(self.lockZoneFilter)
+
+        self.lw_source.itemSelectionChanged.connect(self.activeLoadAndExportButtons)
         self.lw_zonage.itemSelectionChanged.connect(self.activeLoadAndExportButtons)
 
         # Connexion à la fenêtre "Sélection du zonage"
@@ -135,8 +137,12 @@ class RefGeoWidget(QDockWidget, form_refgeo):
     def activeLoadAndExportButtons(self):
         if self.lw_zonage.selectedItems():
             self.pb_runquery.setEnabled(True)
-            self.pb_loadlayer.setEnabled(True)
-            self.pb_export.setEnabled(True)
+            if self.lw_source.selectedItems():
+                self.pb_loadlayer.setEnabled(True)
+                self.pb_export.setEnabled(True)
+            else:
+                self.pb_loadlayer.setEnabled(False)
+                self.pb_export.setEnabled(False)
         else:
             self.pb_runquery.setEnabled(False)
             self.pb_loadlayer.setEnabled(False)
