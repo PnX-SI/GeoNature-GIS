@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="/plugins/Geonature-GIS-main">
+    <file>icons/lpo.png</file>
     <file>icons/check.png</file>
     <file>icons/filter.png</file>
     <file>icons/lpo.jpeg</file>
