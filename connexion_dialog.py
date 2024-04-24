@@ -74,9 +74,37 @@ class ConnexionWidget(QDialog, form_connect):
     def accept(self):
         self.majParametre()
         if self.testCnxOk():
-            QMessageBox.information(self, "Test de connexion", "Test de connexion à la base de données OK ...", QMessageBox.Ok)
+            QMessageBox.information(self, "Connexion", "Connexion à la base de données réussie !", QMessageBox.Ok)
+
+            """
+                ============[ Test pour savoir si le module EXPORTS est installé ]============
+            """
+
+            db = QSqlDatabase.addDatabase("QPSQL", "geonature")
+            db.setHostName(self.le_host.text())
+            db.setPort(int(self.le_port.text()))
+            db.setDatabaseName(self.le_bdd.text())
+            db.setUserName(self.le_username.text())
+            db.setPassword(self.ple_psw.text())
+            db.open()
+
+            sql = "SELECT * FROM gn_exports.t_exports LIMIT 1;"
+            wquery = QSqlQuery(db)
+            wquery.exec_(sql)
+            wquery.prepare(sql)
+            if not wquery.exec_():
+                QMessageBox.warning(self, u"Module EXPORTS non-trouvé", u"Le module EXPORTS n'a pas été trouvé. Désactivation du menu EXPORTS.", QMessageBox.Ok)
+                self.pluginGeonatGIS.actionExport.setEnabled(False)
+            else:
+                self.pluginGeonatGIS.actionExport.setEnabled(True)
+
+            db.close()
+
+            """
+                ==============================[ FIN DU TEST ]==============================
+            """
+
             self.pluginGeonatGIS.actionRefGeo.setEnabled(True)
-            self.pluginGeonatGIS.actionExport.setEnabled(True)
             QDialog.accept(self)
         else:
             QMessageBox.critical(self, "Erreur", "Impossible de se connecter à la base de données ...", QMessageBox.Ok)
