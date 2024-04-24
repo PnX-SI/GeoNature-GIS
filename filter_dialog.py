@@ -86,8 +86,10 @@ class FilterWidget(QDialog, form_connect):
                     for i in range(wquery.record().count()):
                         field_names.append(wquery.record().fieldName(i))
                         field_type = ""
-                        # 2 = Integer // 6 = Real // 10 = Text // 14 = Date // 15 = Time
-                        if wquery.record().field(i).type() == 2:
+                        # 1 = Boolean // 2 = Integer // 6 = Real // 10 = Text // 14 = Date // 15 = Time // 16 = DateTime
+                        if wquery.record().field(i).type() == 1:
+                            field_type = "Boolean"
+                        elif wquery.record().field(i).type() == 2:
                             field_type = "Integer"
                         elif wquery.record().field(i).type() == 6:
                             field_type = "Real"
@@ -97,6 +99,8 @@ class FilterWidget(QDialog, form_connect):
                             field_type = "Date"
                         elif wquery.record().field(i).type() == 15:
                             field_type = "Time"
+                        elif wquery.record().field(i).type() == 16:
+                            field_type = "Timestamp"
                         else:
                             field_type = "Unknown"
                         self.dico_fields_name_type[wquery.record().fieldName(i)] = field_type
@@ -143,6 +147,10 @@ class FilterWidget(QDialog, form_connect):
                 elif isinstance(value, QDate):
                     # Vérification si la valeur est une date
                     value = value.toString('yyyy-MM-dd')
+                    self.lw_values.addItem(str(value))
+                elif isinstance(value, QDateTime):
+                    # Vérification si la valeur est une date
+                    value = value.toString('yyyy-MM-dd hh:ss')
                     self.lw_values.addItem(str(value))
                 else:
                     self.lw_values.addItem(str(value))  # Si le type n'est pas reconnu, le traiter comme un texte
@@ -210,6 +218,8 @@ class FilterWidget(QDialog, form_connect):
             field_type = "::date"
         elif field_type == "Time":
             field_type = "::time"
+        elif field_type == "Timestamp":
+            field_type = "::timestamp"
         elif field_type == "Boolean":
             field_type = "::boolean"
         elif field_type == "Unknown":
