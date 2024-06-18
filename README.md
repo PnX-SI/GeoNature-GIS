@@ -49,8 +49,6 @@ Il constitue une brique du projet GeoNature, porté par les [Parcs nationaux de 
 
 ## Contributeurs
 
-- Maxime Toma - LPO France (@maximetoma)
-
 [![Contributors](https://contrib.rocks/image?repo=Geonature-GIS/Geonature-GIS)](https://github.com/Geonature-GIS/Geonature-GIS/graphs/contributors)
 
 ## Licence
