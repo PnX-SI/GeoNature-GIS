@@ -115,7 +115,16 @@ class ExportWidget(QDockWidget, form_export):
     def maj_lbl_description(self):
         # Mettre à jour le texte du label avec la description de l'export sélectionné
             description = self.connexionSelect.description[0]
-            self.lbl_viewdescription.setText(description)
+            if description:
+                self.lbl_viewdescription.setText(description)
+                font = self.lbl_viewdescription.font()
+                font.setItalic(False)
+                self.lbl_viewdescription.setFont(font)
+            else:
+                self.lbl_viewdescription.setText("Pas de description disponible")
+                font = self.lbl_viewdescription.font()
+                font.setItalic(True)
+                self.lbl_viewdescription.setFont(font)
 
     def maj_lbl_filterparam(self):   
             filtre = " ".join(self.connexionFilter.filter_result)
