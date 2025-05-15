@@ -38,6 +38,7 @@ class FilterWidget(QDialog, form_connect):
         self.dico = {}
         self.dico_fields_name_type = {}
 
+        self.pb_getallvalues.clicked.connect(self.getAllValues)
         self.lw_fields.clicked.connect(self.getValues)
 
         # Connexion du signal du QPushButton (pb_filtervalue) à la fonction `filtrer_valeurs`
@@ -74,7 +75,7 @@ class FilterWidget(QDialog, form_connect):
                 QMessageBox.critical(self, "Erreur", "Impossible de se connecter à la base de données ...", QMessageBox.Ok)
             else:
 
-                wsql = "SELECT * FROM "+self.schema+"."+self.vue+"" 
+                wsql = "SELECT * FROM "+self.schema+"."+self.vue+" LIMIT 100;" 
 
                 wquery = QSqlQuery(db)
                 wquery.prepare(wsql)
@@ -123,6 +124,85 @@ class FilterWidget(QDialog, form_connect):
                   
                 db.close()
                 self.lw_fields.sortItems(Qt.AscendingOrder)
+
+    def getAllValues(self):
+            progress_dialog = QProgressDialog("Chargement de toutes les entités...", None, 0, 0, self)
+            progress_dialog.setWindowTitle("Chargement")
+            progress_dialog.setWindowModality(Qt.WindowModal)
+            progress_dialog.setAutoReset(False)
+            progress_dialog.setAutoClose(False)
+            progress_dialog.show()
+
+            self.lw_fields.clear()
+            self.lw_values.clear()
+            self.dico.clear()
+            self.dico_fields_name_type.clear()
+            
+            db = QSqlDatabase.addDatabase("QPSQL", "geonature")
+            db.setHostName(self.host)
+            db.setPort(self.port)
+            db.setDatabaseName(self.bdd)
+            db.setUserName(self.username)
+            db.setPassword(self.psw)
+
+            if (not db.open()):
+                QMessageBox.critical(self, "Erreur", "Impossible de se connecter à la base de données ...", QMessageBox.Ok)
+            else:
+
+                wsql = "SELECT * FROM "+self.schema+"."+self.vue+";" 
+
+                wquery = QSqlQuery(db)
+                wquery.prepare(wsql)
+                print(wsql)
+                if not wquery.exec_() :
+                    QMessageBox.critical(self, u"Impossible de récupérer les champs.", wquery.lastError().text(), QMessageBox.Ok)
+                else:
+                    field_names = []
+                    for i in range(wquery.record().count()):
+                        field_names.append(wquery.record().fieldName(i))
+                        field_type = ""
+                        # 1 = Boolean // 2 = Integer // 6 = Real // 10 = Text // 14 = Date // 15 = Time // 16 = DateTime
+                        if wquery.record().field(i).type() == 1:
+                            field_type = "Boolean"
+                        elif wquery.record().field(i).type() == 2:
+                            field_type = "Integer"
+                        elif wquery.record().field(i).type() == 6:
+                            field_type = "Real"
+                        elif wquery.record().field(i).type() == 10:
+                            field_type = "Text"
+                        elif wquery.record().field(i).type() == 14:
+                            field_type = "Date"
+                        elif wquery.record().field(i).type() == 15:
+                            field_type = "Time"
+                        elif wquery.record().field(i).type() == 16:
+                            field_type = "Timestamp"
+                        else:
+                            field_type = "Unknown"
+                        self.dico_fields_name_type[wquery.record().fieldName(i)] = field_type
+                    print("Column Names:", field_names)
+
+                    while wquery.next():
+                        for i in range(wquery.record().count()):
+                            value = wquery.value(i)
+                            if field_names[i] not in self.dico:
+                                self.dico[field_names[i]] = []
+                            self.dico[field_names[i]].append(value)
+
+                    if len(self.dico) > 0:
+                        for field_names in self.dico.keys():  
+                            self.lw_fields.addItem(str(field_names))
+                    else:
+                        QMessageBox.information(self, "Information", "Pas de données additionnelles trouvées ", QMessageBox.Ok)
+                    
+                    self.lbl_valuenumber.setText("Toutes les entités ont été chargés")
+                    self.lbl_valuenumber.setStyleSheet("color: green;")
+                    self.pb_getallvalues.setEnabled(False)
+                  
+                db.close()
+                self.lw_fields.sortItems(Qt.AscendingOrder)
+
+            if progress_dialog:
+                progress_dialog.hide()
 
     def getValues(self):
         self.lw_values.clear() 

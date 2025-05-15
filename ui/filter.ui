@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>734</width>
-    <height>687</height>
+    <width>727</width>
+    <height>760</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,12 +19,9 @@
   <property name="modal">
    <bool>true</bool>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout_3">
-     <property name="bottomMargin">
-      <number>10</number>
-     </property>
+    <layout class="QVBoxLayout" name="verticalLayout">
      <item>
       <widget class="QLabel" name="lbl_source">
        <property name="font">
@@ -123,6 +120,62 @@
         </size>
        </property>
       </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="lbl_valuenumber">
+       <property name="styleSheet">
+        <string notr="true">color: darkviolet;</string>
+       </property>
+       <property name="text">
+        <string>Les 100 premières entités ont été chargés</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pb_getallvalues">
+         <property name="minimumSize">
+          <size>
+           <width>250</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Récupérer les valeurs pour toutes les entités</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>
