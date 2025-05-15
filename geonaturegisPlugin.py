@@ -20,6 +20,10 @@ from .refgeo_dialog import *
 from .export_dialog import *
 from .about_dialog import *
 
+from .connexionAPI_dialog import *
+# from .refgeoAPI_dialog import *
+# from .exportAPI_dialog import *
+
 import util_dialog
 
 class pluginGeonatGIS:
@@ -46,6 +50,10 @@ class pluginGeonatGIS:
       iconCo = QIcon(os.path.dirname(__file__) + "/icons/connexion.svg")
       self.actionConnexion = QAction(iconCo, "Connexion", self.interface.mainWindow())
       self.actionConnexion.triggered.connect(self.openConnexion)
+      
+      iconCoAPI = QIcon(os.path.dirname(__file__) + "/icons/connexion_API.png") # API
+      self.actionConnexionAPI = QAction(iconCoAPI, "Connexion via API", self.interface.mainWindow())
+      self.actionConnexionAPI.triggered.connect(self.openConnexionAPI)
 
       #Multi fenêtres dockées
       self.dicoFonction = {"refgeo": [False, None], "export": [False, None]}
@@ -57,6 +65,14 @@ class pluginGeonatGIS:
       iconExport = QIcon(os.path.dirname(__file__) + "/icons/export_g.png")
       self.actionExport = QAction(iconExport, "Export", self.interface.mainWindow())
       self.actionExport.triggered.connect(lambda :self.ouverture("export"))
+      #Fenêtre du référentiel géographique via API
+      iconGeoRefAPI = QIcon(os.path.dirname(__file__) + "/icons/refgeo_API.png")
+      self.actionRefGeoAPI = QAction(iconGeoRefAPI, "Référentiel Géographique via API", self.interface.mainWindow())
+      self.actionRefGeoAPI.triggered.connect(lambda :self.ouverture("refgeo"))
+      #Fenêtre des Exports via API
+      iconExportAPI = QIcon(os.path.dirname(__file__) + "/icons/export_g_API.png")
+      self.actionExportAPI = QAction(iconExportAPI, "Export via API", self.interface.mainWindow())
+      self.actionExportAPI.triggered.connect(lambda :self.ouverture("export"))
 
       #Bouton Aide
       iconHelp = QIcon(os.path.dirname(__file__) + "/icons/help.png")
@@ -72,6 +88,8 @@ class pluginGeonatGIS:
 
       self.actionRefGeo.setEnabled(False)
       self.actionExport.setEnabled(False)
+      self.actionRefGeoAPI.setEnabled(False)
+      self.actionExportAPI.setEnabled(False)
 
       # ==================================================/ Définition du QMenu /==================================================
         
@@ -79,6 +97,10 @@ class pluginGeonatGIS:
       self.menu.addAction(self.actionConnexion)
       self.menu.addAction(self.actionRefGeo)
       self.menu.addAction(self.actionExport)
+      self.menu.addSeparator()
+      self.menu.addAction(self.actionConnexionAPI)
+      self.menu.addAction(self.actionRefGeoAPI)
+      self.menu.addAction(self.actionExportAPI)
       self.menu.addSeparator()
       self.menu.addAction(self.actionHelp)
       self.menu.addAction(self.actionAbout)
@@ -91,6 +113,11 @@ class pluginGeonatGIS:
       self.toolbar.addAction(self.actionExport)
       self.toolbar.addSeparator()
       self.toolbar.addAction(self.actionConnexion)
+      self.toolbar.addSeparator()
+      self.toolbar.addAction(self.actionRefGeoAPI)
+      self.toolbar.addAction(self.actionExportAPI)
+      self.toolbar.addSeparator()
+      self.toolbar.addAction(self.actionConnexionAPI)
 
       self.pluginEstActif = False
       self.fenetreDockee = None
@@ -100,6 +127,17 @@ class pluginGeonatGIS:
 
     def openConnexion(self):
         connexion = ConnexionWidget(self.interface, self.psw, self) # self est ici utile pour intéragir avec ConnexionWidget
+        # connexion.show()
+        result = connexion.exec_()
+        if result:
+            self.host = connexion.le_host.text()
+            self.port = int(connexion.le_port.text())
+            self.bdd = connexion.le_bdd.text()
+            self.username = connexion.le_username.text()
+            self.psw = connexion.psw
+
+    def openConnexionAPI(self):
+        connexion = ConnexionAPIWidget(self.interface, self.psw, self) # self est ici utile pour intéragir avec ConnexionWidget
         # connexion.show()
         result = connexion.exec_()
         if result:
