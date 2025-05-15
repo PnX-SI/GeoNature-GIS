@@ -18,6 +18,13 @@ form_select_export, _ = uic.loadUiType(os.path.join(ui_path, "select_export.ui")
 
 
 class SelectExportWidget(QDialog, form_select_export):
+    def eventFilter(self, obj, event): # Fonction pour emêcher le bouton Ok de prendre le focus sur la touche Entrée
+        if obj == self.le_select and event.type() == QEvent.KeyPress:
+            if event.key() in (Qt.Key_Return, Qt.Key_Enter):
+                self.filtreRechercher()
+                return True
+        return super().eventFilter(obj, event)
+
 
     def __init__(self, interfaceFenetres, whost, wport, wbdd, wusername, wpsw, parent=None):
         self.interfaceFenetres = interfaceFenetres
@@ -42,6 +49,9 @@ class SelectExportWidget(QDialog, form_select_export):
 
         self.filterText = ""
         self.pb_rechercher.clicked.connect(self.filtreRechercher)
+        # Permet d'executer la fonction filtreRechercher() lors de l'appui sur la touche Entrée sur le lineEdit
+        self.le_select.installEventFilter(self)
+        self.le_select.returnPressed.connect(self.filtreRechercher)
 
         self.lw_list_view.itemSelectionChanged.connect(self.maj_lbl_descript_detail)  # Ajout du signal
         
@@ -137,17 +147,11 @@ class SelectExportWidget(QDialog, form_select_export):
                 self.srid.append(data[5])
                 self.pk_column.append(data[6])
 
-        else : 
-              QMessageBox.warning(self, u"Aucun Export sélectioné.", QMessageBox.Ok)
+            QDialog.accept(self)
 
-        # print(self.selected_export_name)
-        # print(self.description)
-        # print(self.selected_view_schema)
-        # print(self.selected_view_name)
-        # print(self.geom_field)
-        # print(self.srid)
+        else: 
+            QMessageBox.warning(self, u"Aucun Export sélectionné.", u"Veuillez sélectionner un export.", QMessageBox.Ok)
 
-        QDialog.accept(self)
 
 
 
